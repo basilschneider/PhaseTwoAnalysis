@@ -142,7 +142,8 @@ class MiniFromPat : public edm::one::EDAnalyzer<edm::one::SharedResources, edm::
     double mvaThres_[3];
     double deepThres_[3];
 
-    TTree *t_event_, *t_genParts_, *t_vertices_, *t_genJets_, *t_looseElecs_, *t_tightElecs_, *t_looseMuons_, *t_tightMuons_, *t_puppiJets_, *t_puppiMET_;
+    //TTree *t_event_, *t_genParts_, *t_vertices_, *t_genJets_, *t_looseElecs_, *t_tightElecs_, *t_looseMuons_, *t_tightMuons_, *t_puppiJets_, *t_puppiMET_;
+    TTree *t_tree_;
 
     MiniEvent_t ev_;
 };
@@ -205,17 +206,19 @@ MiniFromPat::MiniFromPat(const edm::ParameterSet& iConfig):
 
   usesResource("TFileService");
 
-  t_event_      = fs_->make<TTree>("Event","Event");
-  t_genParts_   = fs_->make<TTree>("Particle","Particle");
-  t_vertices_   = fs_->make<TTree>("Vertex","Vertex");
-  t_genJets_    = fs_->make<TTree>("GenJet","GenJet");
-  t_looseElecs_ = fs_->make<TTree>("ElectronLoose","ElectronLoose");
-  t_tightElecs_ = fs_->make<TTree>("ElectronTight","ElectronTight");
-  t_looseMuons_ = fs_->make<TTree>("MuonLoose","MuonLoose");
-  t_tightMuons_ = fs_->make<TTree>("MuonTight","MuonTight");
-  t_puppiJets_  = fs_->make<TTree>("JetPUPPI","JetPUPPI");
-  t_puppiMET_   = fs_->make<TTree>("PuppiMissingET","PuppiMissingET");
-  createMiniEventTree(t_event_, t_genParts_, t_vertices_, t_genJets_, t_looseElecs_, t_tightElecs_, t_looseMuons_, t_tightMuons_, t_puppiJets_, t_puppiMET_, ev_);
+  //t_event_      = fs_->make<TTree>("Event","Event");
+  //t_genParts_   = fs_->make<TTree>("Particle","Particle");
+  //t_vertices_   = fs_->make<TTree>("Vertex","Vertex");
+  //t_genJets_    = fs_->make<TTree>("GenJet","GenJet");
+  //t_looseElecs_ = fs_->make<TTree>("ElectronLoose","ElectronLoose");
+  //t_tightElecs_ = fs_->make<TTree>("ElectronTight","ElectronTight");
+  //t_looseMuons_ = fs_->make<TTree>("MuonLoose","MuonLoose");
+  //t_tightMuons_ = fs_->make<TTree>("MuonTight","MuonTight");
+  //t_puppiJets_  = fs_->make<TTree>("JetPUPPI","JetPUPPI");
+  //t_puppiMET_   = fs_->make<TTree>("PuppiMissingET","PuppiMissingET");
+  t_tree_       = fs_->make<TTree>("Event","Event");
+  //createMiniEventTree(t_event_, t_genParts_, t_vertices_, t_genJets_, t_looseElecs_, t_tightElecs_, t_looseMuons_, t_tightMuons_, t_puppiJets_, t_puppiMET_, ev_);
+  createMiniEventTree(t_tree_);
 
 }
 
@@ -532,16 +535,17 @@ MiniFromPat::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
   ev_.run     = iEvent.id().run();
   ev_.lumi    = iEvent.luminosityBlock();
   ev_.event   = iEvent.id().event(); 
-  t_event_->Fill();
-  t_genParts_->Fill();
-  t_vertices_->Fill();
-  t_genJets_->Fill();
-  t_looseElecs_->Fill();
-  t_tightElecs_->Fill();
-  t_looseMuons_->Fill();
-  t_tightMuons_->Fill();
-  t_puppiJets_->Fill();
-  t_puppiMET_->Fill();
+  //t_event_->Fill();
+  //t_genParts_->Fill();
+  //t_vertices_->Fill();
+  //t_genJets_->Fill();
+  //t_looseElecs_->Fill();
+  //t_tightElecs_->Fill();
+  //t_looseMuons_->Fill();
+  //t_tightMuons_->Fill();
+  //t_puppiJets_->Fill();
+  //t_puppiMET_->Fill();
+  t_tree_->Fill();
 
 }
 
