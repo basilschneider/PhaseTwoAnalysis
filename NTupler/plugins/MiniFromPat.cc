@@ -238,13 +238,43 @@ MiniFromPat::~MiniFromPat()
     void
 MiniFromPat::genAnalysis(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 {
-    //using namespace edm;
+    using namespace edm;
 
-    //Handle<std::vector<pat::PackedGenParticle>> genParts;
-    //iEvent.getByToken(genPartsToken_, genParts);
+    Handle<std::vector<pat::PackedGenParticle>> genParts;
+    iEvent.getByToken(genPartsToken_, genParts);
 
     //Handle<std::vector<reco::GenJet>> genJets;
     //iEvent.getByToken(genJetsToken_, genJets);
+
+    // Truth leptons
+    for (size_t i = 0; i < genParts->size(); i++) {
+        if (abs(genParts->at(i).pdgId()) == 11){
+            if (ev_.el1_pt_truth.size() == 0){
+                ev_.el1_pt_truth.push_back(genParts->at(i).pt());
+                ev_.el1_eta_truth.push_back(genParts->at(i).eta());
+                ev_.el1_phi_truth.push_back(genParts->at(i).phi());
+                ev_.el1_q_truth.push_back(genParts->at(i).charge());
+            }else if (ev_.el2_pt_truth.size() == 0){
+                ev_.el2_pt_truth.push_back(genParts->at(i).pt());
+                ev_.el2_eta_truth.push_back(genParts->at(i).eta());
+                ev_.el2_phi_truth.push_back(genParts->at(i).phi());
+                ev_.el2_q_truth.push_back(genParts->at(i).charge());
+            }
+        }else if (abs(genParts->at(i).pdgId()) == 13){
+            if (ev_.mu1_pt_truth.size() == 0){
+                ev_.mu1_pt_truth.push_back(genParts->at(i).pt());
+                ev_.mu1_eta_truth.push_back(genParts->at(i).eta());
+                ev_.mu1_phi_truth.push_back(genParts->at(i).phi());
+                ev_.mu1_q_truth.push_back(genParts->at(i).charge());
+            }else if (ev_.mu2_pt_truth.size() == 0){
+                ev_.mu2_pt_truth.push_back(genParts->at(i).pt());
+                ev_.mu2_eta_truth.push_back(genParts->at(i).eta());
+                ev_.mu2_phi_truth.push_back(genParts->at(i).phi());
+                ev_.mu2_q_truth.push_back(genParts->at(i).charge());
+            }
+        }
+
+    }
 
     //// Jets
     //std::vector<size_t> jGenJets;
@@ -326,24 +356,6 @@ MiniFromPat::recoAnalysis(const edm::Event& iEvent, const edm::EventSetup& iSetu
     iEvent.getByToken(metsToken_, mets);
     Handle<std::vector<pat::Jet>> jets;
     iEvent.getByToken(jetsToken_, jets);
-
-    // Clear vectors
-    ev_.el1_pt.clear();
-    ev_.el1_eta.clear();
-    ev_.el1_phi.clear();
-    ev_.el1_q.clear();
-    ev_.el2_pt.clear();
-    ev_.el2_eta.clear();
-    ev_.el2_phi.clear();
-    ev_.el2_q.clear();
-    ev_.mu1_pt.clear();
-    ev_.mu1_eta.clear();
-    ev_.mu1_phi.clear();
-    ev_.mu1_q.clear();
-    ev_.mu2_pt.clear();
-    ev_.mu2_eta.clear();
-    ev_.mu2_phi.clear();
-    ev_.mu2_q.clear();
 
     // Vertices
     int prVtx = -1;
@@ -603,6 +615,40 @@ MiniFromPat::recoAnalysis(const edm::Event& iEvent, const edm::EventSetup& iSetu
     void
 MiniFromPat::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 {
+
+    // Clear vectors
+    ev_.el1_pt.clear();
+    ev_.el1_eta.clear();
+    ev_.el1_phi.clear();
+    ev_.el1_q.clear();
+    ev_.el2_pt.clear();
+    ev_.el2_eta.clear();
+    ev_.el2_phi.clear();
+    ev_.el2_q.clear();
+    ev_.mu1_pt.clear();
+    ev_.mu1_eta.clear();
+    ev_.mu1_phi.clear();
+    ev_.mu1_q.clear();
+    ev_.mu2_pt.clear();
+    ev_.mu2_eta.clear();
+    ev_.mu2_phi.clear();
+    ev_.mu2_q.clear();
+    ev_.el1_pt_truth.clear();
+    ev_.el1_eta_truth.clear();
+    ev_.el1_phi_truth.clear();
+    ev_.el1_q_truth.clear();
+    ev_.el2_pt_truth.clear();
+    ev_.el2_eta_truth.clear();
+    ev_.el2_phi_truth.clear();
+    ev_.el2_q_truth.clear();
+    ev_.mu1_pt_truth.clear();
+    ev_.mu1_eta_truth.clear();
+    ev_.mu1_phi_truth.clear();
+    ev_.mu1_q_truth.clear();
+    ev_.mu2_pt_truth.clear();
+    ev_.mu2_eta_truth.clear();
+    ev_.mu2_phi_truth.clear();
+    ev_.mu2_q_truth.clear();
 
     //analyze the event
     if(!iEvent.isRealData()) genAnalysis(iEvent, iSetup);

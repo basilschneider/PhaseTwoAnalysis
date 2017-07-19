@@ -22,6 +22,23 @@ void createMiniEventTree(TTree* t_tree_, MiniEvent_t &ev)
   t_tree_->Branch("mu2_phi", &ev.mu2_phi);
   t_tree_->Branch("mu2_q", &ev.mu2_q);
 
+  t_tree_->Branch("el1_pt_truth", &ev.el1_pt_truth);
+  t_tree_->Branch("el1_eta_truth", &ev.el1_eta_truth);
+  t_tree_->Branch("el1_phi_truth", &ev.el1_phi_truth);
+  t_tree_->Branch("el1_q_truth", &ev.el1_q_truth);
+  t_tree_->Branch("el2_pt_truth", &ev.el2_pt_truth);
+  t_tree_->Branch("el2_eta_truth", &ev.el2_eta_truth);
+  t_tree_->Branch("el2_phi_truth", &ev.el2_phi_truth);
+  t_tree_->Branch("el2_q_truth", &ev.el2_q_truth);
+  t_tree_->Branch("mu1_pt_truth", &ev.mu1_pt_truth);
+  t_tree_->Branch("mu1_eta_truth", &ev.mu1_eta_truth);
+  t_tree_->Branch("mu1_phi_truth", &ev.mu1_phi_truth);
+  t_tree_->Branch("mu1_q_truth", &ev.mu1_q_truth);
+  t_tree_->Branch("mu2_pt_truth", &ev.mu2_pt_truth);
+  t_tree_->Branch("mu2_eta_truth", &ev.mu2_eta_truth);
+  t_tree_->Branch("mu2_phi_truth", &ev.mu2_phi_truth);
+  t_tree_->Branch("mu2_q_truth", &ev.mu2_q_truth);
+
   ////event header
   //t_tree_->Branch("Run",               &ev.run,        "Run/I");
   //t_tree_->Branch("Event",             &ev.event,      "Event/I");
