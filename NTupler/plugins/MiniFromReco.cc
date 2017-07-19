@@ -213,7 +213,7 @@ MiniFromReco::MiniFromReco(const edm::ParameterSet& iConfig):
   //t_puppiMET_   = fs_->make<TTree>("PuppiMissingET","PuppiMissingET");
   t_tree_ = fs_->make<TTree>("Delphes", "Delphes");
   //createMiniEventTree(t_event_, t_genParts_, t_vertices_, t_genJets_, t_looseElecs_, t_tightElecs_, t_looseMuons_, t_tightMuons_, t_puppiJets_, t_puppiMET_, ev_);
-  createMiniEventTree(t_tree_);
+  createMiniEventTree(t_tree_, ev_);
 }
 
 
@@ -557,6 +557,7 @@ MiniFromReco::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
   ev_.run     = iEvent.id().run();
   ev_.lumi    = iEvent.luminosityBlock();
   ev_.event   = iEvent.id().event(); 
+  ev_.genWeight = 1.;
   //t_event_->Fill();
   //t_genParts_->Fill();
   //t_vertices_->Fill();
