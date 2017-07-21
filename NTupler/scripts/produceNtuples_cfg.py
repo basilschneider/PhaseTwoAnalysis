@@ -49,7 +49,7 @@ process.MessageLogger.cerr.INFO = cms.untracked.PSet(
 )
 
 # Input
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) ) 
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(10) )
 
 process.source = cms.Source("PoolSource",
     fileNames = cms.untracked.vstring(*(
@@ -122,7 +122,7 @@ process.countJets = cms.EDFilter("CandViewCountFilter",
 process.preYieldFilter = cms.Sequence(process.selectedMuons+process.selectedElectrons+process.allLeps+process.countLeps+process.selectedJets+process.countJets)
 
 
-# run Puppi 
+# run Puppi
 process.load('CommonTools/PileupAlgos/Puppi_cff')
 process.load('CommonTools/PileupAlgos/PhotonPuppi_cff')
 process.load('CommonTools/PileupAlgos/softKiller_cfi')
@@ -130,7 +130,7 @@ from CommonTools.PileupAlgos.PhotonPuppi_cff        import setupPuppiPhoton
 from PhysicsTools.PatAlgos.slimming.puppiForMET_cff import makePuppies
 makePuppies(process)
 process.particleFlowNoLep = cms.EDFilter("PdgIdCandViewSelector",
-                                    src = cms.InputTag("particleFlow"), 
+                                    src = cms.InputTag("particleFlow"),
                                     pdgId = cms.vint32( 1,2,22,111,130,310,2112,211,-211,321,-321,999211,2212,-2212 )
                                     )
 process.puppiNoLep = process.puppi.clone(candName = cms.InputTag('particleFlowNoLep'))
@@ -158,7 +158,7 @@ process.electronTrackIsolationLcone.intRadiusBarrel = 0.04
 process.electronTrackIsolationLcone.intRadiusEndcap = 0.04
 
 # analysis
-moduleName = "MiniFromPat"    
+moduleName = "MiniFromPat"
 if (options.inputFormat.lower() == "reco"):
     moduleName = "MiniFromReco"
 process.ntuple = cms.EDAnalyzer(moduleName)

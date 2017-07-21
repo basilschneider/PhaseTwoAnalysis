@@ -382,6 +382,10 @@ MiniFromPat::recoAnalysis(const edm::Event& iEvent, const edm::EventSetup& iSetu
 
         ev_.nLep++;
         ev_.nEl++;
+        if (elecs->at(i).pt() < ev_.el_pt_hi){
+            ev_.nSoftLep++;
+            ev_.nSoftEl++;
+        }
 
         // Fill electron variables
         if (ev_.el1_pt.size() == 0){
@@ -423,6 +427,10 @@ MiniFromPat::recoAnalysis(const edm::Event& iEvent, const edm::EventSetup& iSetu
 
         ev_.nLep++;
         ev_.nMu++;
+        if (muons->at(i).pt() < ev_.mu_pt_hi){
+            ev_.nSoftLep++;
+            ev_.nSoftMu++;
+        }
 
         // Fill muon variables
         if (ev_.mu1_pt.size() == 0){
@@ -809,6 +817,7 @@ MiniFromPat::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
     ev_.lep2_mass_truth.clear();
 
     ev_.nLep = ev_.nEl = ev_.nMu = 0;
+    ev_.nSoftLep = ev_.nSoftEl = ev_.nSoftMu = 0;
     ev_.hasSFOS = ev_.hasSoftSFOS = false;
 
     //analyze the event

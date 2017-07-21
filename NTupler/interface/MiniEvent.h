@@ -55,6 +55,7 @@ struct MiniEvent_t
 
     double genWeight;
     Int_t nLep, nMu, nEl;
+    Int_t nSoftLep, nSoftMu, nSoftEl;
     bool hasSFOS, hasSoftSFOS;
 
     std::vector<double> el1_pt, el1_eta, el1_phi, el2_pt, el2_eta, el2_phi;
