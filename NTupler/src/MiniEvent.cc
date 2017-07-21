@@ -2,7 +2,7 @@
 
 void createMiniEventTree(TTree* t_tree_, MiniEvent_t &ev)
 {
-  t_tree_->Branch("genWeight", &ev.genWeight, "genWeight/F");
+  t_tree_->Branch("genWeight", &ev.genWeight);
   // ntot
   // xs
   t_tree_->Branch("el1_pt", &ev.el1_pt);
@@ -21,6 +21,14 @@ void createMiniEventTree(TTree* t_tree_, MiniEvent_t &ev)
   t_tree_->Branch("mu2_eta", &ev.mu2_eta);
   t_tree_->Branch("mu2_phi", &ev.mu2_phi);
   t_tree_->Branch("mu2_q", &ev.mu2_q);
+  t_tree_->Branch("lep1_pt", &ev.lep1_pt);
+  t_tree_->Branch("lep1_eta", &ev.lep1_eta);
+  t_tree_->Branch("lep1_phi", &ev.lep1_phi);
+  t_tree_->Branch("lep1_mass", &ev.lep1_mass);
+  t_tree_->Branch("lep2_pt", &ev.lep2_pt);
+  t_tree_->Branch("lep2_eta", &ev.lep2_eta);
+  t_tree_->Branch("lep2_phi", &ev.lep2_phi);
+  t_tree_->Branch("lep2_mass", &ev.lep2_mass);
 
   t_tree_->Branch("el1_pt_truth", &ev.el1_pt_truth);
   t_tree_->Branch("el1_eta_truth", &ev.el1_eta_truth);
@@ -38,6 +46,23 @@ void createMiniEventTree(TTree* t_tree_, MiniEvent_t &ev)
   t_tree_->Branch("mu2_eta_truth", &ev.mu2_eta_truth);
   t_tree_->Branch("mu2_phi_truth", &ev.mu2_phi_truth);
   t_tree_->Branch("mu2_q_truth", &ev.mu2_q_truth);
+  t_tree_->Branch("lep1_pt_truth", &ev.lep1_pt_truth);
+  t_tree_->Branch("lep1_eta_truth", &ev.lep1_eta_truth);
+  t_tree_->Branch("lep1_phi_truth", &ev.lep1_phi_truth);
+  t_tree_->Branch("lep1_mass_truth", &ev.lep1_mass_truth);
+  t_tree_->Branch("lep2_pt_truth", &ev.lep2_pt_truth);
+  t_tree_->Branch("lep2_eta_truth", &ev.lep2_eta_truth);
+  t_tree_->Branch("lep2_phi_truth", &ev.lep2_phi_truth);
+  t_tree_->Branch("lep2_mass_truth", &ev.lep2_mass_truth);
+
+  t_tree_->Branch("nLep", &ev.nLep);
+  t_tree_->Branch("nEl", &ev.nEl);
+  t_tree_->Branch("nMu", &ev.nMu);
+  t_tree_->Branch("nLep5", &ev.nLep5);
+  t_tree_->Branch("nEl5", &ev.nEl5);
+  t_tree_->Branch("nMu5", &ev.nMu5);
+  t_tree_->Branch("hasSFOS", &ev.hasSFOS);
+  t_tree_->Branch("hasSoftSFOS", &ev.hasSoftSFOS);
 
   ////event header
   //t_tree_->Branch("Run",               &ev.run,        "Run/I");

@@ -248,6 +248,7 @@ MiniFromPat::genAnalysis(const edm::Event& iEvent, const edm::EventSetup& iSetup
 
     // Truth leptons
     for (size_t i = 0; i < genParts->size(); i++) {
+        if (genParts->at(i).status() != 1){ continue; }
         if (abs(genParts->at(i).pdgId()) == 11){
             if (ev_.el1_pt_truth.size() == 0){
                 ev_.el1_pt_truth.push_back(genParts->at(i).pt());
@@ -376,8 +377,14 @@ MiniFromPat::recoAnalysis(const edm::Event& iEvent, const edm::EventSetup& iSetu
         bool isTight = isTightElec(elecs->at(i), conversions, beamspot);
         if (!isTight){ continue; }
 
+        ev_.nLep++;
+        ev_.nEl++;
+
         // Only select electrons above certain pT
         if (elecs->at(i).pt() < ev_.el_pt_lo){ continue; }
+
+        ev_.nLep5++;
+        ev_.nEl5++;
 
         // Fill electron variables
         if (ev_.el1_pt.size() == 0){
@@ -414,8 +421,14 @@ MiniFromPat::recoAnalysis(const edm::Event& iEvent, const edm::EventSetup& iSetu
              && ipxy && ipz && validPxlHit && highPurity);
         if (!isTight){ continue; }
 
+        ev_.nLep++;
+        ev_.nMu++;
+
         // Only select electrons above certain pT
         if (muons->at(i).pt() < ev_.mu_pt_lo){ continue; }
+
+        ev_.nLep5++;
+        ev_.nMu5++;
 
         // Fill muon variables
         if (ev_.mu1_pt.size() == 0){
@@ -428,6 +441,141 @@ MiniFromPat::recoAnalysis(const edm::Event& iEvent, const edm::EventSetup& iSetu
             ev_.mu2_eta.push_back(muons->at(i).eta());
             ev_.mu2_phi.push_back(muons->at(i).phi());
             ev_.mu2_q.push_back(muons->at(i).charge());
+        }
+    }
+
+    // Fill leptons
+    // Put pT and eta into vector of vector for sorting
+    std::vector<std::vector<double>> lepvec;
+    if (ev_.el1_pt.size() != 0){
+        lepvec.push_back({ev_.el1_pt.at(0), ev_.el1_eta.at(0), ev_.el1_phi.at(0), ev_.mass_el});
+    }
+    if (ev_.el2_pt.size() != 0){
+        lepvec.push_back({ev_.el2_pt.at(0), ev_.el2_eta.at(0), ev_.el2_phi.at(0), ev_.mass_el});
+    }
+    if (ev_.mu1_pt.size() != 0){
+        lepvec.push_back({ev_.mu1_pt.at(0), ev_.mu1_eta.at(0), ev_.mu1_phi.at(0), ev_.mass_mu});
+    }
+    if (ev_.mu2_pt.size() != 0){
+        lepvec.push_back({ev_.mu2_pt.at(0), ev_.mu2_eta.at(0), ev_.mu2_phi.at(0), ev_.mass_mu});
+    }
+    // By definition, this sorts by the first element of the vector (in this case pT)
+    if (lepvec.size() > 1){
+        std::sort(begin(lepvec), end(lepvec));
+        std::reverse(begin(lepvec), end(lepvec));
+    }
+    if (lepvec.size() >= 1){
+        ev_.lep1_pt.push_back(lepvec[0][0]);
+        ev_.lep1_eta.push_back(lepvec[0][1]);
+        ev_.lep1_phi.push_back(lepvec[0][2]);
+        ev_.lep1_mass.push_back(lepvec[0][3]);
+    }
+    if (lepvec.size() >= 2){
+        ev_.lep2_pt.push_back(lepvec[1][0]);
+        ev_.lep2_eta.push_back(lepvec[1][1]);
+        ev_.lep2_phi.push_back(lepvec[1][2]);
+        ev_.lep2_mass.push_back(lepvec[1][3]);
+    }
+    lepvec.clear();
+
+    // Fill truth leptons
+    // Put pT and eta into vector of vector for sorting
+    std::vector<std::vector<double>> lepvec_truth;
+    if (ev_.el1_pt_truth.size() != 0){
+        lepvec_truth.push_back({ev_.el1_pt_truth.at(0), ev_.el1_eta_truth.at(0), ev_.el1_phi_truth.at(0), ev_.mass_el});
+    }
+    if (ev_.el2_pt_truth.size() != 0){
+        lepvec_truth.push_back({ev_.el2_pt_truth.at(0), ev_.el2_eta_truth.at(0), ev_.el2_phi_truth.at(0), ev_.mass_el});
+    }
+    if (ev_.mu1_pt_truth.size() != 0){
+        lepvec_truth.push_back({ev_.mu1_pt_truth.at(0), ev_.mu1_eta_truth.at(0), ev_.mu1_phi_truth.at(0), ev_.mass_mu});
+    }
+    if (ev_.mu2_pt_truth.size() != 0){
+        lepvec_truth.push_back({ev_.mu2_pt_truth.at(0), ev_.mu2_eta_truth.at(0), ev_.mu2_phi_truth.at(0), ev_.mass_mu});
+    }
+    // By definition, this sorts by the first element of the vector (in this case pT)
+    if (lepvec_truth.size() > 1){
+        std::sort(begin(lepvec_truth), end(lepvec_truth));
+        std::reverse(begin(lepvec_truth), end(lepvec_truth));
+    }
+    if (lepvec_truth.size() >= 1){
+        ev_.lep1_pt_truth.push_back(lepvec_truth[0][0]);
+        ev_.lep1_eta_truth.push_back(lepvec_truth[0][1]);
+        ev_.lep1_phi_truth.push_back(lepvec_truth[0][2]);
+        ev_.lep1_mass_truth.push_back(lepvec_truth[0][3]);
+    }
+    if (lepvec_truth.size() >= 2){
+        ev_.lep2_pt_truth.push_back(lepvec_truth[1][0]);
+        ev_.lep2_eta_truth.push_back(lepvec_truth[1][1]);
+        ev_.lep2_phi_truth.push_back(lepvec_truth[1][2]);
+        ev_.lep2_mass_truth.push_back(lepvec_truth[1][3]);
+    }
+    lepvec_truth.clear();
+
+    // Is a same flavour opposite sign lepton pair present?
+    for (size_t i=0; i<elecs->size(); ++i){
+        // Only select tight electrons
+        bool isTight = isTightElec(elecs->at(i), conversions, beamspot);
+        if (!isTight){ continue; }
+
+        for (size_t j=0; j<elecs->size(); ++j){
+            // Only select tight electrons
+            isTight = isTightElec(elecs->at(j), conversions, beamspot);
+            if (!isTight){ continue; }
+
+            if (elecs->at(i).charge()*elecs->at(j).charge() < 0){
+                ev_.hasSFOS = true;
+                if (elecs->at(i).pt() < ev_.el_pt_hi && elecs->at(j).pt() < ev_.el_pt_hi){
+                    ev_.hasSoftSFOS = true;
+                }
+            }
+        }
+    }
+
+    for (size_t i=0; i<muons->size(); ++i){
+        // Only select tight muons
+        double dPhiCut = std::min(std::max(1.2/muons->at(i).p(),1.2/100),0.032);
+        double dPhiBendCut = std::min(std::max(0.2/muons->at(i).p(),0.2/100),0.0041);
+        bool ipxy = false, ipz = false, validPxlHit = false, highPurity = false;
+        if (muons->at(i).innerTrack().isNonnull()){
+            ipxy = std::abs(muons->at(i).muonBestTrack()->dxy(vertices->at(prVtx).position())) < 0.2;
+            ipz = std::abs(muons->at(i).muonBestTrack()->dz(vertices->at(prVtx).position())) < 0.5;
+            validPxlHit = muons->at(i).innerTrack()->hitPattern().numberOfValidPixelHits() > 0;
+            highPurity = muons->at(i).innerTrack()->quality(reco::Track::highPurity);
+        }
+        bool isTight = (fabs(muons->at(i).eta()) < 2.4 &&
+                vertices->size() > 0 &&
+                muon::isTightMuon(muons->at(i),vertices->at(prVtx))) ||
+            (fabs(muons->at(i).eta()) > 2.4
+             && isME0MuonSelNew(muons->at(i), 0.048, dPhiCut, dPhiBendCut)
+             && ipxy && ipz && validPxlHit && highPurity);
+        if (!isTight){ continue; }
+
+        for (size_t j=0; j<muons->size(); ++j){
+            // Only select tight muons
+            double dPhiCut = std::min(std::max(1.2/muons->at(i).p(),1.2/100),0.032);
+            double dPhiBendCut = std::min(std::max(0.2/muons->at(i).p(),0.2/100),0.0041);
+            bool ipxy = false, ipz = false, validPxlHit = false, highPurity = false;
+            if (muons->at(i).innerTrack().isNonnull()){
+                ipxy = std::abs(muons->at(i).muonBestTrack()->dxy(vertices->at(prVtx).position())) < 0.2;
+                ipz = std::abs(muons->at(i).muonBestTrack()->dz(vertices->at(prVtx).position())) < 0.5;
+                validPxlHit = muons->at(i).innerTrack()->hitPattern().numberOfValidPixelHits() > 0;
+                highPurity = muons->at(i).innerTrack()->quality(reco::Track::highPurity);
+            }
+            isTight = (fabs(muons->at(i).eta()) < 2.4 &&
+                    vertices->size() > 0 &&
+                    muon::isTightMuon(muons->at(i),vertices->at(prVtx))) ||
+                (fabs(muons->at(i).eta()) > 2.4
+                 && isME0MuonSelNew(muons->at(i), 0.048, dPhiCut, dPhiBendCut)
+                 && ipxy && ipz && validPxlHit && highPurity);
+            if (!isTight){ continue; }
+
+            if (muons->at(i).charge()*muons->at(j).charge() < 0){
+                ev_.hasSFOS = true;
+                if (muons->at(i).pt() < ev_.mu_pt_hi && muons->at(j).pt() < ev_.mu_pt_hi){
+                    ev_.hasSoftSFOS = true;
+                }
+            }
         }
     }
 
@@ -633,6 +781,14 @@ MiniFromPat::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
     ev_.mu2_eta.clear();
     ev_.mu2_phi.clear();
     ev_.mu2_q.clear();
+    ev_.lep1_pt.clear();
+    ev_.lep1_eta.clear();
+    ev_.lep1_phi.clear();
+    ev_.lep1_mass.clear();
+    ev_.lep2_pt.clear();
+    ev_.lep2_eta.clear();
+    ev_.lep2_phi.clear();
+    ev_.lep2_mass.clear();
     ev_.el1_pt_truth.clear();
     ev_.el1_eta_truth.clear();
     ev_.el1_phi_truth.clear();
@@ -649,6 +805,18 @@ MiniFromPat::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
     ev_.mu2_eta_truth.clear();
     ev_.mu2_phi_truth.clear();
     ev_.mu2_q_truth.clear();
+    ev_.lep1_pt_truth.clear();
+    ev_.lep1_eta_truth.clear();
+    ev_.lep1_phi_truth.clear();
+    ev_.lep1_mass_truth.clear();
+    ev_.lep2_pt_truth.clear();
+    ev_.lep2_eta_truth.clear();
+    ev_.lep2_phi_truth.clear();
+    ev_.lep2_mass_truth.clear();
+
+    ev_.nLep = ev_.nEl = ev_.nMu = 0;
+    ev_.nLep5 = ev_.nEl5 = ev_.nMu5 = 0;
+    ev_.hasSFOS = ev_.hasSoftSFOS = false;
 
     //analyze the event
     if(!iEvent.isRealData()) genAnalysis(iEvent, iSetup);

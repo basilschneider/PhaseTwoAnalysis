@@ -53,16 +53,23 @@ struct MiniEvent_t
     Float_t j_pt[200], j_eta[200], j_phi[200], j_mass[200];
     Float_t met_pt[10], met_eta[10], met_phi[10];
 
-    Float_t genWeight;
+    double genWeight;
+    Int_t nLep, nMu, nEl;
+    Int_t nLep5, nMu5, nEl5;
+    bool hasSFOS, hasSoftSFOS;
+
     std::vector<double> el1_pt, el1_eta, el1_phi, el2_pt, el2_eta, el2_phi;
     std::vector<int> el1_q, el2_q;
     std::vector<double> mu1_pt, mu1_eta, mu1_phi, mu2_pt, mu2_eta, mu2_phi;
     std::vector<int> mu1_q, mu2_q;
+    std::vector<double> lep1_pt, lep1_eta, lep1_phi, lep2_pt, lep2_eta, lep2_phi;
+    std::vector<int> lep1_mass, lep2_mass;
 
     std::vector<double> el1_pt_truth, el1_eta_truth, el1_phi_truth, el2_pt_truth, el2_eta_truth, el2_phi_truth;
     std::vector<int> el1_q_truth, el2_q_truth;
     std::vector<double> mu1_pt_truth, mu1_eta_truth, mu1_phi_truth, mu2_pt_truth, mu2_eta_truth, mu2_phi_truth;
     std::vector<int> mu1_q_truth, mu2_q_truth;
+    std::vector<double> lep1_pt_truth, lep1_eta_truth, lep1_phi_truth, lep2_pt_truth, lep2_eta_truth, lep2_phi_truth, lep1_mass_truth, lep2_mass_truth;
 
 };
 
