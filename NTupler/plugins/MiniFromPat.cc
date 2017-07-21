@@ -377,14 +377,11 @@ MiniFromPat::recoAnalysis(const edm::Event& iEvent, const edm::EventSetup& iSetu
         bool isTight = isTightElec(elecs->at(i), conversions, beamspot);
         if (!isTight){ continue; }
 
+        // Only select electrons above certain pT
+        //if (elecs->at(i).pt() < ev_.el_pt_lo){ continue; }
+
         ev_.nLep++;
         ev_.nEl++;
-
-        // Only select electrons above certain pT
-        if (elecs->at(i).pt() < ev_.el_pt_lo){ continue; }
-
-        ev_.nLep5++;
-        ev_.nEl5++;
 
         // Fill electron variables
         if (ev_.el1_pt.size() == 0){
@@ -421,14 +418,11 @@ MiniFromPat::recoAnalysis(const edm::Event& iEvent, const edm::EventSetup& iSetu
              && ipxy && ipz && validPxlHit && highPurity);
         if (!isTight){ continue; }
 
+        // Only select electrons above certain pT
+        //if (muons->at(i).pt() < ev_.mu_pt_lo){ continue; }
+
         ev_.nLep++;
         ev_.nMu++;
-
-        // Only select electrons above certain pT
-        if (muons->at(i).pt() < ev_.mu_pt_lo){ continue; }
-
-        ev_.nLep5++;
-        ev_.nMu5++;
 
         // Fill muon variables
         if (ev_.mu1_pt.size() == 0){
@@ -815,7 +809,6 @@ MiniFromPat::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
     ev_.lep2_mass_truth.clear();
 
     ev_.nLep = ev_.nEl = ev_.nMu = 0;
-    ev_.nLep5 = ev_.nEl5 = ev_.nMu5 = 0;
     ev_.hasSFOS = ev_.hasSoftSFOS = false;
 
     //analyze the event

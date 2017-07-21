@@ -58,9 +58,6 @@ void createMiniEventTree(TTree* t_tree_, MiniEvent_t &ev)
   t_tree_->Branch("nLep", &ev.nLep);
   t_tree_->Branch("nEl", &ev.nEl);
   t_tree_->Branch("nMu", &ev.nMu);
-  t_tree_->Branch("nLep5", &ev.nLep5);
-  t_tree_->Branch("nEl5", &ev.nEl5);
-  t_tree_->Branch("nMu5", &ev.nMu5);
   t_tree_->Branch("hasSFOS", &ev.hasSFOS);
   t_tree_->Branch("hasSoftSFOS", &ev.hasSoftSFOS);
 
