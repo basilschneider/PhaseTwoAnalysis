@@ -55,12 +55,19 @@ void createMiniEventTree(TTree* t_tree_, MiniEvent_t &ev)
   t_tree_->Branch("lep2_phi_truth", &ev.lep2_phi_truth);
   t_tree_->Branch("lep2_mass_truth", &ev.lep2_mass_truth);
 
+  t_tree_->Branch("jet1_pt", &ev.jet1_pt);
+  t_tree_->Branch("jet1_eta", &ev.jet1_eta);
+  t_tree_->Branch("jet1_phi", &ev.jet1_phi);
+  t_tree_->Branch("jet1_mass", &ev.jet1_mass);
+
   t_tree_->Branch("nLep", &ev.nLep);
   t_tree_->Branch("nEl", &ev.nEl);
   t_tree_->Branch("nMu", &ev.nMu);
   t_tree_->Branch("nSoftLep", &ev.nSoftLep);
   t_tree_->Branch("nSoftEl", &ev.nSoftEl);
   t_tree_->Branch("nSoftMu", &ev.nSoftMu);
+  t_tree_->Branch("nJet", &ev.nJet);
+  t_tree_->Branch("nBJet", &ev.nBJet);
   t_tree_->Branch("hasSFOS", &ev.hasSFOS);
   t_tree_->Branch("hasSoftSFOS", &ev.hasSoftSFOS);
 

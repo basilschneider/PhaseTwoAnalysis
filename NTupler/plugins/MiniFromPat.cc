@@ -581,6 +581,48 @@ MiniFromPat::recoAnalysis(const edm::Event& iEvent, const edm::EventSetup& iSetu
         }
     }
 
+    // Jets
+    for (size_t i =0; i < jets->size(); i++) {
+        if (jets->at(i).pt() < ev_.jet_pt_lo) continue;
+        //if (fabs(jets->at(i).eta()) > 5) continue;
+
+        bool overlaps = false;
+        for (size_t j = 0; j < elecs->size(); j++) {
+            if (fabs(jets->at(i).pt()-elecs->at(j).pt()) < 0.01*elecs->at(j).pt() && ROOT::Math::VectorUtil::DeltaR(elecs->at(j).p4(),jets->at(i).p4()) < 0.01) {
+                overlaps = true;
+                break;
+            }
+        }
+        if (overlaps) continue;
+        for (size_t j = 0; j < muons->size(); j++) {
+            if (fabs(jets->at(i).pt()-muons->at(j).pt()) < 0.01*muons->at(j).pt() && ROOT::Math::VectorUtil::DeltaR(muons->at(j).p4(),jets->at(i).p4()) < 0.01) {
+                overlaps = true;
+                break;
+            }
+        }
+        if (overlaps) continue;
+
+        pat::strbitset retTight = jetIDTight_.getBitTemplate();
+        retTight.set(false);
+        bool isTight = jetIDTight_(jets->at(i), retTight);
+        if (!isTight){ continue; }
+
+        ev_.nJet++;
+        if (ev_.jet1_pt.size() == 0){
+            ev_.jet1_pt.push_back(jets->at(i).pt());
+            ev_.jet1_eta.push_back(jets->at(i).eta());
+            ev_.jet1_phi.push_back(jets->at(i).phi());
+            ev_.jet1_mass.push_back(jets->at(i).mass());
+        }
+
+        double deepcsv = jets->at(i).bDiscriminator("pfDeepCSVJetTags:probb") +
+            jets->at(i).bDiscriminator("pfDeepCSVJetTags:probbb");
+        bool isMediumDeepCSV = deepcsv > deepThres_[1];
+        if (!isMediumDeepCSV){ continue; }
+
+        ev_.nBJet++;
+    }
+
     //// Muons
     //ev_.nlm = 0;
     //ev_.ntm = 0;
@@ -815,9 +857,14 @@ MiniFromPat::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
     ev_.lep2_eta_truth.clear();
     ev_.lep2_phi_truth.clear();
     ev_.lep2_mass_truth.clear();
+    ev_.jet1_pt.clear();
+    ev_.jet1_eta.clear();
+    ev_.jet1_phi.clear();
+    ev_.jet1_mass.clear();
 
     ev_.nLep = ev_.nEl = ev_.nMu = 0;
     ev_.nSoftLep = ev_.nSoftEl = ev_.nSoftMu = 0;
+    ev_.nJet = ev_.nBJet = 0;
     ev_.hasSFOS = ev_.hasSoftSFOS = false;
 
     //analyze the event
