@@ -71,6 +71,13 @@ void createMiniEventTree(TTree* t_tree_, MiniEvent_t &ev)
   t_tree_->Branch("hasSFOS", &ev.hasSFOS);
   t_tree_->Branch("hasSoftSFOS", &ev.hasSoftSFOS);
 
+  t_tree_->Branch("met", &ev.met);
+  t_tree_->Branch("ht", &ev.ht);
+  t_tree_->Branch("mllMin", &ev.mllMin);
+  t_tree_->Branch("mllMax", &ev.mllMax);
+  t_tree_->Branch("mt1", &ev.mt1);
+  t_tree_->Branch("mt2", &ev.mt2);
+
   ////event header
   //t_tree_->Branch("Run",               &ev.run,        "Run/I");
   //t_tree_->Branch("Event",             &ev.event,      "Event/I");

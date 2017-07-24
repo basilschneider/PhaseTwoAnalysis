@@ -377,6 +377,11 @@ MiniFromPat::recoAnalysis(const edm::Event& iEvent, const edm::EventSetup& iSetu
         bool isTight = isTightElec(elecs->at(i), conversions, beamspot);
         if (!isTight){ continue; }
 
+        // IP3D cut
+        double dxy = std::abs(muons->at(i).muonBestTrack()->dxy(vertices->at(prVtx).position()));
+        double dz = std::abs(muons->at(i).muonBestTrack()->dz(vertices->at(prVtx).position()));
+        if (sqrt(dxy*dz) > .01){ continue; }
+
         // Only select electrons above certain pT
         //if (elecs->at(i).pt() < ev_.el_pt_lo){ continue; }
 
@@ -421,6 +426,11 @@ MiniFromPat::recoAnalysis(const edm::Event& iEvent, const edm::EventSetup& iSetu
              && isME0MuonSelNew(muons->at(i), 0.048, dPhiCut, dPhiBendCut)
              && ipxy && ipz && validPxlHit && highPurity);
         if (!isTight){ continue; }
+
+        // IP3D cut
+        double dxy = std::abs(muons->at(i).muonBestTrack()->dxy(vertices->at(prVtx).position()));
+        double dz = std::abs(muons->at(i).muonBestTrack()->dz(vertices->at(prVtx).position()));
+        if (sqrt(dxy*dz) > .01){ continue; }
 
         // Only select electrons above certain pT
         //if (muons->at(i).pt() < ev_.mu_pt_lo){ continue; }
@@ -529,6 +539,22 @@ MiniFromPat::recoAnalysis(const edm::Event& iEvent, const edm::EventSetup& iSetu
                 ev_.hasSFOS = true;
                 if (elecs->at(i).pt() < ev_.el_pt_hi && elecs->at(j).pt() < ev_.el_pt_hi){
                     ev_.hasSoftSFOS = true;
+
+                    // Mll for soft SFOS
+                    TLorentzVector l1, l2;
+                    l1.SetPtEtaPhiM(elecs->at(i).pt(), elecs->at(i).eta(), elecs->at(i).phi(), ev_.mass_el);
+                    l2.SetPtEtaPhiM(elecs->at(j).pt(), elecs->at(j).eta(), elecs->at(j).phi(), ev_.mass_el);
+                    double mll = (l1+l2).M();
+                    if (ev_.mllMin.size() == 0){
+                        ev_.mllMin.push_back(mll);
+                    }else if (ev_.mllMin.at(0) > mll){
+                        ev_.mllMin.at(0) = mll;
+                    }
+                    if (ev_.mllMax.size() == 0){
+                        ev_.mllMax.push_back(mll);
+                    }else if (ev_.mllMax.at(0) < mll){
+                        ev_.mllMax.at(0) = mll;
+                    }
                 }
             }
         }
@@ -576,6 +602,22 @@ MiniFromPat::recoAnalysis(const edm::Event& iEvent, const edm::EventSetup& iSetu
                 ev_.hasSFOS = true;
                 if (muons->at(i).pt() < ev_.mu_pt_hi && muons->at(j).pt() < ev_.mu_pt_hi){
                     ev_.hasSoftSFOS = true;
+
+                    // Mll for soft SFOS
+                    TLorentzVector l1, l2;
+                    l1.SetPtEtaPhiM(muons->at(i).pt(), muons->at(i).eta(), muons->at(i).phi(), ev_.mass_mu);
+                    l2.SetPtEtaPhiM(muons->at(j).pt(), muons->at(j).eta(), muons->at(j).phi(), ev_.mass_mu);
+                    double mll = (l1+l2).M();
+                    if (ev_.mllMin.size() == 0){
+                        ev_.mllMin.push_back(mll);
+                    }else if (ev_.mllMin.at(0) > mll){
+                        ev_.mllMin.at(0) = mll;
+                    }
+                    if (ev_.mllMax.size() == 0){
+                        ev_.mllMax.push_back(mll);
+                    }else if (ev_.mllMax.at(0) < mll){
+                        ev_.mllMax.at(0) = mll;
+                    }
                 }
             }
         }
@@ -614,6 +656,7 @@ MiniFromPat::recoAnalysis(const edm::Event& iEvent, const edm::EventSetup& iSetu
             ev_.jet1_phi.push_back(jets->at(i).phi());
             ev_.jet1_mass.push_back(jets->at(i).mass());
         }
+        ev_.ht += jets->at(i).pt();
 
         double deepcsv = jets->at(i).bDiscriminator("pfDeepCSVJetTags:probb") +
             jets->at(i).bDiscriminator("pfDeepCSVJetTags:probbb");
@@ -621,6 +664,11 @@ MiniFromPat::recoAnalysis(const edm::Event& iEvent, const edm::EventSetup& iSetu
         if (!isMediumDeepCSV){ continue; }
 
         ev_.nBJet++;
+    }
+
+    // MET
+    if (mets->size() > 0) {
+        ev_.met = mets->at(0).pt();
     }
 
     //// Muons
@@ -861,11 +909,16 @@ MiniFromPat::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
     ev_.jet1_eta.clear();
     ev_.jet1_phi.clear();
     ev_.jet1_mass.clear();
+    ev_.mllMin.clear();
+    ev_.mllMax.clear();
+    ev_.mt1.clear();
+    ev_.mt2.clear();
 
     ev_.nLep = ev_.nEl = ev_.nMu = 0;
     ev_.nSoftLep = ev_.nSoftEl = ev_.nSoftMu = 0;
     ev_.nJet = ev_.nBJet = 0;
     ev_.hasSFOS = ev_.hasSoftSFOS = false;
+    ev_.met = ev_.ht = 0.;
 
     //analyze the event
     if(!iEvent.isRealData()) genAnalysis(iEvent, iSetup);

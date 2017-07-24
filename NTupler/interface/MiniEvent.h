@@ -73,6 +73,9 @@ struct MiniEvent_t
     std::vector<double> lep1_pt_truth, lep1_eta_truth, lep1_phi_truth, lep2_pt_truth, lep2_eta_truth, lep2_phi_truth, lep1_mass_truth, lep2_mass_truth;
 
     std::vector<double> jet1_pt, jet1_eta, jet1_phi, jet1_mass;
+
+    double met, ht;
+    std::vector<double> mllMin, mllMax, mt1, mt2;
 };
 
 //void createMiniEventTree(TTree *t_event_, TTree *t_genParts_, TTree *t_vertices_, TTree *t_genJets_, TTree *t_looseElecs_, TTree *t_tightElecs_, TTree *t_looseMuons_, TTree *t_tightMuons_, TTree *t_puppiJets_, TTree *t_puppiMET_,MiniEvent_t &ev);
