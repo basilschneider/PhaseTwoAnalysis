@@ -16,7 +16,7 @@ struct MiniEvent_t
         nle=0; nte = 0; nlm=0; ntm=0; nj=0; nmet=0;
     }
 
-    Int_t run,event,lumi;
+    Int_t run, event, lumi;
 
     // Cut variables
     static constexpr double el_pt_lo = 5.;

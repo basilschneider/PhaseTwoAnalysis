@@ -2,6 +2,10 @@
 
 void createMiniEventTree(TTree* t_tree_, MiniEvent_t &ev)
 {
+  t_tree_->Branch("Run", &ev.run);
+  t_tree_->Branch("Event", &ev.event);
+  t_tree_->Branch("Lumi", &ev.lumi);
+
   t_tree_->Branch("genWeight", &ev.genWeight);
   // ntot
   // xs
