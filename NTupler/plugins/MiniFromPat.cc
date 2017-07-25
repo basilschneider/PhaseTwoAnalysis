@@ -513,29 +513,30 @@ MiniFromPat::recoAnalysis(const edm::Event& iEvent, const edm::EventSetup& iSetu
         // Only select good electrons
         if (!isGoodElecSOS(elecs->at(i), conversions, beamspot)){ continue; }
 
-        for (size_t j=0; j<elecs->size(); ++j){
+        for (size_t j=i+1; j<elecs->size(); ++j){
             // Only select good electrons
-            if (!isGoodElecSOS(elecs->at(i), conversions, beamspot)){ continue; }
+            if (!isGoodElecSOS(elecs->at(j), conversions, beamspot)){ continue; }
 
-            if (elecs->at(i).charge()*elecs->at(j).charge() < 0){
-                if (elecs->at(i).pt() < ev_.el_pt_hi && elecs->at(j).pt() < ev_.el_pt_hi){
+            // is SFOS?
+            if (elecs->at(i).charge()*elecs->at(j).charge() > 0){ continue; }
 
-                    // Mll for soft SFOS
-                    TLorentzVector l1, l2;
-                    l1.SetPtEtaPhiM(elecs->at(i).pt(), elecs->at(i).eta(), elecs->at(i).phi(), ev_.mass_el);
-                    l2.SetPtEtaPhiM(elecs->at(j).pt(), elecs->at(j).eta(), elecs->at(j).phi(), ev_.mass_el);
-                    double mll = (l1+l2).M();
-                    if (ev_.mllMin.size() == 0){
-                        ev_.mllMin.push_back(mll);
-                    }else if (ev_.mllMin.at(0) > mll){
-                        ev_.mllMin.at(0) = mll;
-                    }
-                    if (ev_.mllMax.size() == 0){
-                        ev_.mllMax.push_back(mll);
-                    }else if (ev_.mllMax.at(0) < mll){
-                        ev_.mllMax.at(0) = mll;
-                    }
-                }
+            // Are leptons soft?
+            if (elecs->at(i).pt() > ev_.el_pt_hi || elecs->at(j).pt() > ev_.el_pt_hi){ continue; }
+
+            // Mll for soft SFOS
+            TLorentzVector l1, l2;
+            l1.SetPtEtaPhiM(elecs->at(i).pt(), elecs->at(i).eta(), elecs->at(i).phi(), ev_.mass_el);
+            l2.SetPtEtaPhiM(elecs->at(j).pt(), elecs->at(j).eta(), elecs->at(j).phi(), ev_.mass_el);
+            double mll = (l1+l2).M();
+            if (ev_.mllMin.size() == 0){
+                ev_.mllMin.push_back(mll);
+            }else if (ev_.mllMin.at(0) > mll){
+                ev_.mllMin.at(0) = mll;
+            }
+            if (ev_.mllMax.size() == 0){
+                ev_.mllMax.push_back(mll);
+            }else if (ev_.mllMax.at(0) < mll){
+                ev_.mllMax.at(0) = mll;
             }
         }
     }
@@ -544,29 +545,30 @@ MiniFromPat::recoAnalysis(const edm::Event& iEvent, const edm::EventSetup& iSetu
         // Only select good muons
         if (!isGoodMuonSOS(muons->at(i), vertices, prVtx)){ continue; }
 
-        for (size_t j=0; j<muons->size(); ++j){
+        for (size_t j=i+1; j<muons->size(); ++j){
             // Only select good muons
-            if (!isGoodMuonSOS(muons->at(i), vertices, prVtx)){ continue; }
+            if (!isGoodMuonSOS(muons->at(j), vertices, prVtx)){ continue; }
 
-            if (muons->at(i).charge()*muons->at(j).charge() < 0){
-                if (muons->at(i).pt() < ev_.mu_pt_hi && muons->at(j).pt() < ev_.mu_pt_hi){
+            // is SFOS?
+            if (muons->at(i).charge()*muons->at(j).charge() > 0){ continue; }
 
-                    // Mll for soft SFOS
-                    TLorentzVector l1, l2;
-                    l1.SetPtEtaPhiM(muons->at(i).pt(), muons->at(i).eta(), muons->at(i).phi(), ev_.mass_mu);
-                    l2.SetPtEtaPhiM(muons->at(j).pt(), muons->at(j).eta(), muons->at(j).phi(), ev_.mass_mu);
-                    double mll = (l1+l2).M();
-                    if (ev_.mllMin.size() == 0){
-                        ev_.mllMin.push_back(mll);
-                    }else if (ev_.mllMin.at(0) > mll){
-                        ev_.mllMin.at(0) = mll;
-                    }
-                    if (ev_.mllMax.size() == 0){
-                        ev_.mllMax.push_back(mll);
-                    }else if (ev_.mllMax.at(0) < mll){
-                        ev_.mllMax.at(0) = mll;
-                    }
-                }
+            // Are leptons soft?
+            if (muons->at(i).pt() > ev_.mu_pt_hi || muons->at(j).pt() > ev_.mu_pt_hi){ continue; }
+
+            // Mll for soft SFOS
+            TLorentzVector l1, l2;
+            l1.SetPtEtaPhiM(muons->at(i).pt(), muons->at(i).eta(), muons->at(i).phi(), ev_.mass_mu);
+            l2.SetPtEtaPhiM(muons->at(j).pt(), muons->at(j).eta(), muons->at(j).phi(), ev_.mass_mu);
+            double mll = (l1+l2).M();
+            if (ev_.mllMin.size() == 0){
+                ev_.mllMin.push_back(mll);
+            }else if (ev_.mllMin.at(0) > mll){
+                ev_.mllMin.at(0) = mll;
+            }
+            if (ev_.mllMax.size() == 0){
+                ev_.mllMax.push_back(mll);
+            }else if (ev_.mllMax.at(0) < mll){
+                ev_.mllMax.at(0) = mll;
             }
         }
     }
