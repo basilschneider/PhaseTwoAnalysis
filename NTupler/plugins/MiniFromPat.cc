@@ -120,6 +120,8 @@ class MiniFromPat : public edm::one::EDAnalyzer<edm::one::SharedResources, edm::
         bool isLooseElec(const pat::Electron & patEl, edm::Handle<reco::ConversionCollection> conversions, const reco::BeamSpot beamspot);
         bool isMediumElec(const pat::Electron & patEl, edm::Handle<reco::ConversionCollection> conversions, const reco::BeamSpot beamspot);
         bool isTightElec(const pat::Electron & patEl, edm::Handle<reco::ConversionCollection> conversions, const reco::BeamSpot beamspot);
+        bool isGoodElecSOS(const pat::Electron & patEl, edm::Handle<reco::ConversionCollection> conversions, const reco::BeamSpot beamspot);
+        bool isGoodMuonSOS(const pat::Muon & patMu, edm::Handle<std::vector<reco::Vertex>> vertices, int prVtx);
         bool isME0MuonSel(reco::Muon, double pullXCut, double dXCut, double pullYCut, double dYCut, double dPhi);
         bool isME0MuonSelNew(reco::Muon, double, double, double);
 
@@ -373,14 +375,8 @@ MiniFromPat::recoAnalysis(const edm::Event& iEvent, const edm::EventSetup& iSetu
     // Electrons
     for (size_t i=0; i<elecs->size(); ++i) {
 
-        // Only select tight electrons
-        bool isTight = isTightElec(elecs->at(i), conversions, beamspot);
-        if (!isTight){ continue; }
-
-        // IP3D cut
-        double dxy = std::abs(muons->at(i).muonBestTrack()->dxy(vertices->at(prVtx).position()));
-        double dz = std::abs(muons->at(i).muonBestTrack()->dz(vertices->at(prVtx).position()));
-        if (sqrt(dxy*dz) > .01){ continue; }
+        // Only select good electrons
+        if (!isGoodElecSOS(elecs->at(i), conversions, beamspot)){ continue; }
 
         // Only select electrons above certain pT
         //if (elecs->at(i).pt() < ev_.el_pt_lo){ continue; }
@@ -409,30 +405,10 @@ MiniFromPat::recoAnalysis(const edm::Event& iEvent, const edm::EventSetup& iSetu
     // Muons
     for (size_t i=0; i<muons->size(); ++i) {
 
-        // Only select tight muons
-        double dPhiCut = std::min(std::max(1.2/muons->at(i).p(),1.2/100),0.032);
-        double dPhiBendCut = std::min(std::max(0.2/muons->at(i).p(),0.2/100),0.0041);
-        bool ipxy = false, ipz = false, validPxlHit = false, highPurity = false;
-        if (muons->at(i).innerTrack().isNonnull()){
-            ipxy = std::abs(muons->at(i).muonBestTrack()->dxy(vertices->at(prVtx).position())) < 0.2;
-            ipz = std::abs(muons->at(i).muonBestTrack()->dz(vertices->at(prVtx).position())) < 0.5;
-            validPxlHit = muons->at(i).innerTrack()->hitPattern().numberOfValidPixelHits() > 0;
-            highPurity = muons->at(i).innerTrack()->quality(reco::Track::highPurity);
-        }
-        bool isTight = (fabs(muons->at(i).eta()) < 2.4 &&
-                vertices->size() > 0 &&
-                muon::isTightMuon(muons->at(i),vertices->at(prVtx))) ||
-            (fabs(muons->at(i).eta()) > 2.4
-             && isME0MuonSelNew(muons->at(i), 0.048, dPhiCut, dPhiBendCut)
-             && ipxy && ipz && validPxlHit && highPurity);
-        if (!isTight){ continue; }
+        // Only select good muons
+        if (!isGoodMuonSOS(muons->at(i), vertices, prVtx)){ continue; }
 
-        // IP3D cut
-        double dxy = std::abs(muons->at(i).muonBestTrack()->dxy(vertices->at(prVtx).position()));
-        double dz = std::abs(muons->at(i).muonBestTrack()->dz(vertices->at(prVtx).position()));
-        if (sqrt(dxy*dz) > .01){ continue; }
-
-        // Only select electrons above certain pT
+        // Only select muons above certain pT
         //if (muons->at(i).pt() < ev_.mu_pt_lo){ continue; }
 
         ev_.nLep++;
@@ -526,14 +502,12 @@ MiniFromPat::recoAnalysis(const edm::Event& iEvent, const edm::EventSetup& iSetu
 
     // Is a same flavour opposite sign lepton pair present?
     for (size_t i=0; i<elecs->size(); ++i){
-        // Only select tight electrons
-        bool isTight = isTightElec(elecs->at(i), conversions, beamspot);
-        if (!isTight){ continue; }
+        // Only select good electrons
+        if (!isGoodElecSOS(elecs->at(i), conversions, beamspot)){ continue; }
 
         for (size_t j=0; j<elecs->size(); ++j){
-            // Only select tight electrons
-            isTight = isTightElec(elecs->at(j), conversions, beamspot);
-            if (!isTight){ continue; }
+            // Only select good electrons
+            if (!isGoodElecSOS(elecs->at(i), conversions, beamspot)){ continue; }
 
             if (elecs->at(i).charge()*elecs->at(j).charge() < 0){
                 ev_.hasSFOS = true;
@@ -561,42 +535,12 @@ MiniFromPat::recoAnalysis(const edm::Event& iEvent, const edm::EventSetup& iSetu
     }
 
     for (size_t i=0; i<muons->size(); ++i){
-        // Only select tight muons
-        double dPhiCut = std::min(std::max(1.2/muons->at(i).p(),1.2/100),0.032);
-        double dPhiBendCut = std::min(std::max(0.2/muons->at(i).p(),0.2/100),0.0041);
-        bool ipxy = false, ipz = false, validPxlHit = false, highPurity = false;
-        if (muons->at(i).innerTrack().isNonnull()){
-            ipxy = std::abs(muons->at(i).muonBestTrack()->dxy(vertices->at(prVtx).position())) < 0.2;
-            ipz = std::abs(muons->at(i).muonBestTrack()->dz(vertices->at(prVtx).position())) < 0.5;
-            validPxlHit = muons->at(i).innerTrack()->hitPattern().numberOfValidPixelHits() > 0;
-            highPurity = muons->at(i).innerTrack()->quality(reco::Track::highPurity);
-        }
-        bool isTight = (fabs(muons->at(i).eta()) < 2.4 &&
-                vertices->size() > 0 &&
-                muon::isTightMuon(muons->at(i),vertices->at(prVtx))) ||
-            (fabs(muons->at(i).eta()) > 2.4
-             && isME0MuonSelNew(muons->at(i), 0.048, dPhiCut, dPhiBendCut)
-             && ipxy && ipz && validPxlHit && highPurity);
-        if (!isTight){ continue; }
+        // Only select good muons
+        if (!isGoodMuonSOS(muons->at(i), vertices, prVtx)){ continue; }
 
         for (size_t j=0; j<muons->size(); ++j){
-            // Only select tight muons
-            double dPhiCut = std::min(std::max(1.2/muons->at(i).p(),1.2/100),0.032);
-            double dPhiBendCut = std::min(std::max(0.2/muons->at(i).p(),0.2/100),0.0041);
-            bool ipxy = false, ipz = false, validPxlHit = false, highPurity = false;
-            if (muons->at(i).innerTrack().isNonnull()){
-                ipxy = std::abs(muons->at(i).muonBestTrack()->dxy(vertices->at(prVtx).position())) < 0.2;
-                ipz = std::abs(muons->at(i).muonBestTrack()->dz(vertices->at(prVtx).position())) < 0.5;
-                validPxlHit = muons->at(i).innerTrack()->hitPattern().numberOfValidPixelHits() > 0;
-                highPurity = muons->at(i).innerTrack()->quality(reco::Track::highPurity);
-            }
-            isTight = (fabs(muons->at(i).eta()) < 2.4 &&
-                    vertices->size() > 0 &&
-                    muon::isTightMuon(muons->at(i),vertices->at(prVtx))) ||
-                (fabs(muons->at(i).eta()) > 2.4
-                 && isME0MuonSelNew(muons->at(i), 0.048, dPhiCut, dPhiBendCut)
-                 && ipxy && ipz && validPxlHit && highPurity);
-            if (!isTight){ continue; }
+            // Only select good muons
+            if (!isGoodMuonSOS(muons->at(i), vertices, prVtx)){ continue; }
 
             if (muons->at(i).charge()*muons->at(j).charge() < 0){
                 ev_.hasSFOS = true;
@@ -998,6 +942,44 @@ MiniFromPat::isTightElec(const pat::Electron & patEl, edm::Handle<reco::Conversi
     else Ooemoop = fabs(1./patEl.ecalEnergy() - patEl.eSuperClusterOverP()/patEl.ecalEnergy());
     if (Ooemoop > 18.26) return false;
     if (ConversionTools::hasMatchedConversion(patEl, conversions, beamspot.position())) return false;
+    return true;
+}
+
+bool MiniFromPat::isGoodElecSOS(const pat::Electron & patEl, edm::Handle<reco::ConversionCollection> conversions, const reco::BeamSpot beamspot){
+    if (!isTightElec(patEl, conversions, beamspot)) return false;
+    // not sure how to implement IP3D cut for electrons, postpone for now
+    // IP3D cut
+    //double dxy = std::abs(patEl.elecBestTrack()->dxy(vertices->at(prVtx).position()));
+    //double dz = std::abs(patEl.elecBestTrack()->dz(vertices->at(prVtx).position()));
+    //if (sqrt(dxy*dz) > .01){ return false; }
+
+    return true;
+}
+
+bool MiniFromPat::isGoodMuonSOS(const pat::Muon & patMu, edm::Handle<std::vector<reco::Vertex>> vertices, int prVtx){
+
+    // Default cuts
+    double dPhiCut = std::min(std::max(1.2/patMu.p(),1.2/100),0.032);
+    double dPhiBendCut = std::min(std::max(0.2/patMu.p(),0.2/100),0.0041);
+    bool ipxy = false, ipz = false, validPxlHit = false, highPurity = false;
+    if (patMu.innerTrack().isNonnull()){
+        ipxy = std::abs(patMu.muonBestTrack()->dxy(vertices->at(prVtx).position())) < 0.2;
+        ipz = std::abs(patMu.muonBestTrack()->dz(vertices->at(prVtx).position())) < 0.5;
+        validPxlHit = patMu.innerTrack()->hitPattern().numberOfValidPixelHits() > 0;
+        highPurity = patMu.innerTrack()->quality(reco::Track::highPurity);
+    }
+    if (!(fabs(patMu.eta()) < 2.4 &&
+                vertices->size() > 0 &&
+                muon::isTightMuon(patMu,vertices->at(prVtx))) ||
+            (fabs(patMu.eta()) > 2.4
+             && isME0MuonSelNew(patMu, 0.048, dPhiCut, dPhiBendCut)
+             && ipxy && ipz && validPxlHit && highPurity)){ return false; }
+
+    // IP3D cut
+    double dxy = std::abs(patMu.muonBestTrack()->dxy(vertices->at(prVtx).position()));
+    double dz = std::abs(patMu.muonBestTrack()->dz(vertices->at(prVtx).position()));
+    if (sqrt(dxy*dz) > .01){ return false; }
+
     return true;
 }
 
