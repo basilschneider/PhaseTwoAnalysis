@@ -72,8 +72,6 @@ void createMiniEventTree(TTree* t_tree_, MiniEvent_t &ev)
   t_tree_->Branch("nSoftMu", &ev.nSoftMu);
   t_tree_->Branch("nJet", &ev.nJet);
   t_tree_->Branch("nBJet", &ev.nBJet);
-  t_tree_->Branch("hasSFOS", &ev.hasSFOS);
-  t_tree_->Branch("hasSoftSFOS", &ev.hasSoftSFOS);
 
   t_tree_->Branch("met", &ev.met);
   t_tree_->Branch("ht", &ev.ht);

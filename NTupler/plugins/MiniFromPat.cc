@@ -510,9 +510,7 @@ MiniFromPat::recoAnalysis(const edm::Event& iEvent, const edm::EventSetup& iSetu
             if (!isGoodElecSOS(elecs->at(i), conversions, beamspot)){ continue; }
 
             if (elecs->at(i).charge()*elecs->at(j).charge() < 0){
-                ev_.hasSFOS = true;
                 if (elecs->at(i).pt() < ev_.el_pt_hi && elecs->at(j).pt() < ev_.el_pt_hi){
-                    ev_.hasSoftSFOS = true;
 
                     // Mll for soft SFOS
                     TLorentzVector l1, l2;
@@ -543,9 +541,7 @@ MiniFromPat::recoAnalysis(const edm::Event& iEvent, const edm::EventSetup& iSetu
             if (!isGoodMuonSOS(muons->at(i), vertices, prVtx)){ continue; }
 
             if (muons->at(i).charge()*muons->at(j).charge() < 0){
-                ev_.hasSFOS = true;
                 if (muons->at(i).pt() < ev_.mu_pt_hi && muons->at(j).pt() < ev_.mu_pt_hi){
-                    ev_.hasSoftSFOS = true;
 
                     // Mll for soft SFOS
                     TLorentzVector l1, l2;
@@ -861,7 +857,6 @@ MiniFromPat::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
     ev_.nLep = ev_.nEl = ev_.nMu = 0;
     ev_.nSoftLep = ev_.nSoftEl = ev_.nSoftMu = 0;
     ev_.nJet = ev_.nBJet = 0;
-    ev_.hasSFOS = ev_.hasSoftSFOS = false;
     ev_.met = ev_.ht = 0.;
 
     //analyze the event
