@@ -946,12 +946,14 @@ MiniFromPat::isTightElec(const pat::Electron & patEl, edm::Handle<reco::Conversi
 }
 
 bool MiniFromPat::isGoodElecSOS(const pat::Electron & patEl, edm::Handle<reco::ConversionCollection> conversions, const reco::BeamSpot beamspot){
-    if (!isTightElec(patEl, conversions, beamspot)) return false;
+    // Default cuts
+    if (!isTightElec(patEl, conversions, beamspot)){ return false };
+
+    // Isolation
+    if (patEl.pfIsolationVariables().sumChargedHadronPt / patEl.pt() > 0.5){ return false };
+    if (patEl.pfIsolationVariables().sumChargedHadronPt > 5.){ return false; }
+
     // not sure how to implement IP3D cut for electrons, postpone for now
-    // IP3D cut
-    //double dxy = std::abs(patEl.elecBestTrack()->dxy(vertices->at(prVtx).position()));
-    //double dz = std::abs(patEl.elecBestTrack()->dz(vertices->at(prVtx).position()));
-    //if (sqrt(dxy*dz) > .01){ return false; }
 
     return true;
 }
@@ -975,7 +977,9 @@ bool MiniFromPat::isGoodMuonSOS(const pat::Muon & patMu, edm::Handle<std::vector
              && isME0MuonSelNew(patMu, 0.048, dPhiCut, dPhiBendCut)
              && ipxy && ipz && validPxlHit && highPurity)){ return false; }
 
-    // IP3D cut
+    // Not sure how to do isolation on muons
+
+    // IP3D
     double dxy = std::abs(patMu.muonBestTrack()->dxy(vertices->at(prVtx).position()));
     double dz = std::abs(patMu.muonBestTrack()->dz(vertices->at(prVtx).position()));
     if (sqrt(dxy*dz) > .01){ return false; }
