@@ -466,6 +466,14 @@ MiniFromPat::recoAnalysis(const edm::Event& iEvent, const edm::EventSetup& iSetu
     }
     lepvec.clear();
 
+    // Fill pt of two leptons
+    if (ev_.lep2_pt.size() != 0){
+        TLorentzVector l1, l2;
+        l1.SetPtEtaPhiM(ev_.lep1_pt[0], ev_.lep1_eta[0], ev_.lep1_phi[0], ev_.lep1_mass[0]);
+        l2.SetPtEtaPhiM(ev_.lep2_pt[0], ev_.lep2_eta[0], ev_.lep2_phi[0], ev_.lep2_mass[0]);
+        ev_.pt2l.push_back((l1 + l2).Pt());
+    }
+
     // Fill truth leptons
     // Put pT and eta into vector of vector for sorting
     std::vector<std::vector<double>> lepvec_truth;
@@ -853,6 +861,7 @@ MiniFromPat::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
     ev_.mllMax.clear();
     ev_.mt1.clear();
     ev_.mt2.clear();
+    ev_.pt2l.clear();
 
     ev_.nLep = ev_.nEl = ev_.nMu = 0;
     ev_.nSoftLep = ev_.nSoftEl = ev_.nSoftMu = 0;
@@ -942,10 +951,10 @@ MiniFromPat::isTightElec(const pat::Electron & patEl, edm::Handle<reco::Conversi
 
 bool MiniFromPat::isGoodElecSOS(const pat::Electron & patEl, edm::Handle<reco::ConversionCollection> conversions, const reco::BeamSpot beamspot){
     // Default cuts
-    if (!isTightElec(patEl, conversions, beamspot)){ return false };
+    if (!isTightElec(patEl, conversions, beamspot)){ return false; }
 
     // Isolation
-    if (patEl.pfIsolationVariables().sumChargedHadronPt / patEl.pt() > 0.5){ return false };
+    if (patEl.pfIsolationVariables().sumChargedHadronPt / patEl.pt() > 0.5){ return false; }
     if (patEl.pfIsolationVariables().sumChargedHadronPt > 5.){ return false; }
 
     // not sure how to implement IP3D cut for electrons, postpone for now

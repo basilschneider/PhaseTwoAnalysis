@@ -79,6 +79,7 @@ void createMiniEventTree(TTree* t_tree_, MiniEvent_t &ev)
   t_tree_->Branch("mllMax", &ev.mllMax);
   t_tree_->Branch("mt1", &ev.mt1);
   t_tree_->Branch("mt2", &ev.mt2);
+  t_tree_->Branch("pt2l", &ev.pt2l);
 
   ////event header
   //t_tree_->Branch("Run",               &ev.run,        "Run/I");
