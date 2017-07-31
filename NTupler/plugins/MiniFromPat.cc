@@ -122,6 +122,7 @@ class MiniFromPat : public edm::one::EDAnalyzer<edm::one::SharedResources, edm::
         bool isTightElec(const pat::Electron & patEl, edm::Handle<reco::ConversionCollection> conversions, const reco::BeamSpot beamspot);
         bool isGoodElecSOS(const pat::Electron & patEl, edm::Handle<reco::ConversionCollection> conversions, const reco::BeamSpot beamspot);
         bool isGoodMuonSOS(const pat::Muon & patMu, edm::Handle<std::vector<reco::Vertex>> vertices, int prVtx);
+        bool isGoodJetSOS(const pat::Jet & patJet);
         bool isME0MuonSel(reco::Muon, double pullXCut, double dXCut, double pullYCut, double dYCut, double dPhi);
         bool isME0MuonSelNew(reco::Muon, double, double, double);
 
@@ -574,7 +575,7 @@ MiniFromPat::recoAnalysis(const edm::Event& iEvent, const edm::EventSetup& iSetu
     }
 
     // Jets
-    for (size_t i =0; i < jets->size(); i++) {
+    for (size_t i=0; i<jets->size(); ++i) {
         if (jets->at(i).pt() < ev_.jet_pt_lo) continue;
         //if (fabs(jets->at(i).eta()) > 5) continue;
 
@@ -594,10 +595,8 @@ MiniFromPat::recoAnalysis(const edm::Event& iEvent, const edm::EventSetup& iSetu
         }
         if (overlaps) continue;
 
-        pat::strbitset retTight = jetIDTight_.getBitTemplate();
-        retTight.set(false);
-        bool isTight = jetIDTight_(jets->at(i), retTight);
-        if (!isTight){ continue; }
+        // Only select good jets
+        if (!isGoodJetSOS(jets->at(i))){ continue; }
 
         ev_.nJet++;
         if (ev_.jet1_pt.size() == 0){
@@ -990,6 +989,13 @@ bool MiniFromPat::isGoodMuonSOS(const pat::Muon & patMu, edm::Handle<std::vector
     double dz = std::abs(patMu.muonBestTrack()->dz(vertices->at(prVtx).position()));
     if (sqrt(dxy*dz) > .01){ return false; }
 
+    return true;
+}
+
+bool MiniFromPat::isGoodJetSOS(const pat::Jet& patJet){
+    pat::strbitset retTight = jetIDTight_.getBitTemplate();
+    retTight.set(false);
+    if (!jetIDTight_(patJet, retTight)){ return false; }
     return true;
 }
 
