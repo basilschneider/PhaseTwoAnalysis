@@ -993,9 +993,23 @@ bool MiniFromPat::isGoodMuonSOS(const pat::Muon & patMu, edm::Handle<std::vector
 }
 
 bool MiniFromPat::isGoodJetSOS(const pat::Jet& patJet){
+    // Only select tight jets
     pat::strbitset retTight = jetIDTight_.getBitTemplate();
     retTight.set(false);
     if (!jetIDTight_(patJet, retTight)){ return false; }
+
+    // Additional requirements for ISR jets
+    // (from PhysicsTools/Heppy/python/physicsobjects/Jet.py)
+    double eta = abs(patJet.eta());
+    double chf = patJet.chargedHadronEnergyFraction();
+    double nhf = patJet.neutralHadronEnergyFraction();
+    double phf = patJet.neutralEmEnergyFraction();
+    double elf = patJet.chargedEmEnergyFraction();
+    double chm = patJet.chargedHadronMultiplicity();
+    double npr = patJet.chargedMultiplicity() + patJet.neutralMultiplicity();
+    double npn = patJet.neutralMultiplicity();
+    if (!(eta<3. and chf>.2 and nhf<.7 and phf<.7)){ return false; }
+    if (!((eta<2.7 and ((npr>1 and phf<0.90 and nhf<0.90) and (eta>2.4 or (elf<0.99 and chf>0 and chm>0)))) or ((eta>2.7 and eta<3.0) and (nhf<0.98 and phf>0.01 and npn>2)) or (eta>3.0 and (phf<0.90 and npn>10)))){ return false; }
     return true;
 }
 
