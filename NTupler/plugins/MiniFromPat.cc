@@ -280,6 +280,41 @@ MiniFromPat::genAnalysis(const edm::Event& iEvent, const edm::EventSetup& iSetup
 
     }
 
+    // Fill truth leptons
+    // Put pT and eta into vector of vector for sorting
+    std::vector<std::vector<double>> lepvec_truth;
+    if (ev_.el1_pt_truth.size() != 0){
+        lepvec_truth.push_back({ev_.el1_pt_truth.at(0), ev_.el1_eta_truth.at(0), ev_.el1_phi_truth.at(0), ev_.mass_el});
+    }
+    if (ev_.el2_pt_truth.size() != 0){
+        lepvec_truth.push_back({ev_.el2_pt_truth.at(0), ev_.el2_eta_truth.at(0), ev_.el2_phi_truth.at(0), ev_.mass_el});
+    }
+    if (ev_.mu1_pt_truth.size() != 0){
+        lepvec_truth.push_back({ev_.mu1_pt_truth.at(0), ev_.mu1_eta_truth.at(0), ev_.mu1_phi_truth.at(0), ev_.mass_mu});
+    }
+    if (ev_.mu2_pt_truth.size() != 0){
+        lepvec_truth.push_back({ev_.mu2_pt_truth.at(0), ev_.mu2_eta_truth.at(0), ev_.mu2_phi_truth.at(0), ev_.mass_mu});
+    }
+    // By definition, this sorts by the first element of the vector (in this case pT)
+    if (lepvec_truth.size() > 1){
+        std::sort(begin(lepvec_truth), end(lepvec_truth));
+        std::reverse(begin(lepvec_truth), end(lepvec_truth));
+    }
+    if (lepvec_truth.size() >= 1){
+        ev_.lep1_pt_truth.push_back(lepvec_truth[0][0]);
+        ev_.lep1_eta_truth.push_back(lepvec_truth[0][1]);
+        ev_.lep1_phi_truth.push_back(lepvec_truth[0][2]);
+        ev_.lep1_mass_truth.push_back(lepvec_truth[0][3]);
+    }
+    if (lepvec_truth.size() >= 2){
+        ev_.lep2_pt_truth.push_back(lepvec_truth[1][0]);
+        ev_.lep2_eta_truth.push_back(lepvec_truth[1][1]);
+        ev_.lep2_phi_truth.push_back(lepvec_truth[1][2]);
+        ev_.lep2_mass_truth.push_back(lepvec_truth[1][3]);
+    }
+    lepvec_truth.clear();
+
+
     //// Jets
     //std::vector<size_t> jGenJets;
     //ev_.ngj = 0;
@@ -474,40 +509,6 @@ MiniFromPat::recoAnalysis(const edm::Event& iEvent, const edm::EventSetup& iSetu
         l2.SetPtEtaPhiM(ev_.lep2_pt[0], ev_.lep2_eta[0], ev_.lep2_phi[0], ev_.lep2_mass[0]);
         ev_.pt2l.push_back((l1 + l2).Pt());
     }
-
-    // Fill truth leptons
-    // Put pT and eta into vector of vector for sorting
-    std::vector<std::vector<double>> lepvec_truth;
-    if (ev_.el1_pt_truth.size() != 0){
-        lepvec_truth.push_back({ev_.el1_pt_truth.at(0), ev_.el1_eta_truth.at(0), ev_.el1_phi_truth.at(0), ev_.mass_el});
-    }
-    if (ev_.el2_pt_truth.size() != 0){
-        lepvec_truth.push_back({ev_.el2_pt_truth.at(0), ev_.el2_eta_truth.at(0), ev_.el2_phi_truth.at(0), ev_.mass_el});
-    }
-    if (ev_.mu1_pt_truth.size() != 0){
-        lepvec_truth.push_back({ev_.mu1_pt_truth.at(0), ev_.mu1_eta_truth.at(0), ev_.mu1_phi_truth.at(0), ev_.mass_mu});
-    }
-    if (ev_.mu2_pt_truth.size() != 0){
-        lepvec_truth.push_back({ev_.mu2_pt_truth.at(0), ev_.mu2_eta_truth.at(0), ev_.mu2_phi_truth.at(0), ev_.mass_mu});
-    }
-    // By definition, this sorts by the first element of the vector (in this case pT)
-    if (lepvec_truth.size() > 1){
-        std::sort(begin(lepvec_truth), end(lepvec_truth));
-        std::reverse(begin(lepvec_truth), end(lepvec_truth));
-    }
-    if (lepvec_truth.size() >= 1){
-        ev_.lep1_pt_truth.push_back(lepvec_truth[0][0]);
-        ev_.lep1_eta_truth.push_back(lepvec_truth[0][1]);
-        ev_.lep1_phi_truth.push_back(lepvec_truth[0][2]);
-        ev_.lep1_mass_truth.push_back(lepvec_truth[0][3]);
-    }
-    if (lepvec_truth.size() >= 2){
-        ev_.lep2_pt_truth.push_back(lepvec_truth[1][0]);
-        ev_.lep2_eta_truth.push_back(lepvec_truth[1][1]);
-        ev_.lep2_phi_truth.push_back(lepvec_truth[1][2]);
-        ev_.lep2_mass_truth.push_back(lepvec_truth[1][3]);
-    }
-    lepvec_truth.clear();
 
     // Is a same flavour opposite sign lepton pair present?
     for (size_t i=0; i<elecs->size(); ++i){
