@@ -72,6 +72,7 @@ struct MiniEvent_t
     std::vector<double> lep1_pt_truth, lep1_eta_truth, lep1_phi_truth, lep2_pt_truth, lep2_eta_truth, lep2_phi_truth, lep1_mass_truth, lep2_mass_truth;
 
     std::vector<double> jet1_pt, jet1_eta, jet1_phi, jet1_mass;
+    std::vector<double> jet1_pt_truth, jet1_eta_truth, jet1_phi_truth, jet1_mass_truth;
 
     double met, ht;
     std::vector<double> mllMin, mllMax, mt1, mt2, pt2l;

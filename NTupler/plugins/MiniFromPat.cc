@@ -123,6 +123,8 @@ class MiniFromPat : public edm::one::EDAnalyzer<edm::one::SharedResources, edm::
         bool isGoodElecSOS(const pat::Electron & patEl, edm::Handle<reco::ConversionCollection> conversions, const reco::BeamSpot beamspot);
         bool isGoodMuonSOS(const pat::Muon & patMu, edm::Handle<std::vector<reco::Vertex>> vertices, int prVtx);
         bool isGoodJetSOS(const pat::Jet & patJet);
+        bool isGoodElecTruthSOS(const pat::PackedGenParticle truthEl, const std::vector<size_t> jGenJets, const edm::Handle<std::vector<reco::GenJet>> genJets);
+        bool isGoodMuonTruthSOS(const pat::PackedGenParticle truthMu, const std::vector<size_t> jGenJets, const edm::Handle<std::vector<reco::GenJet>> genJets);
         bool isME0MuonSel(reco::Muon, double pullXCut, double dXCut, double pullYCut, double dYCut, double dPhi);
         bool isME0MuonSelNew(reco::Muon, double, double, double);
 
@@ -246,13 +248,40 @@ MiniFromPat::genAnalysis(const edm::Event& iEvent, const edm::EventSetup& iSetup
     Handle<std::vector<pat::PackedGenParticle>> genParts;
     iEvent.getByToken(genPartsToken_, genParts);
 
-    //Handle<std::vector<reco::GenJet>> genJets;
-    //iEvent.getByToken(genJetsToken_, genJets);
+    Handle<std::vector<reco::GenJet>> genJets;
+    iEvent.getByToken(genJetsToken_, genJets);
+
+    // Truth Jets
+    std::vector<size_t> jGenJets;
+    for (size_t i = 0; i < genJets->size(); i++) {
+        if (genJets->at(i).pt() < 20.){ continue; }
+        if (fabs(genJets->at(i).eta()) > 5){ continue; }
+
+        bool overlaps = false;
+        for (size_t j = 0; j < genParts->size(); j++) {
+            if (abs(genParts->at(j).pdgId()) != 11 && abs(genParts->at(j).pdgId()) != 13) continue;
+            if (fabs(genJets->at(i).pt()-genParts->at(j).pt()) < .01*genParts->at(j).pt() && ROOT::Math::VectorUtil::DeltaR(genParts->at(j).p4(),genJets->at(i).p4()) < .01) {
+                overlaps = true;
+                break;
+            }
+        }
+        if (overlaps){ continue; }
+        jGenJets.push_back(i);
+
+        if (ev_.jet1_pt_truth.size() == 0){
+            ev_.jet1_pt_truth.push_back(genJets->at(i).pt());
+            ev_.jet1_eta_truth.push_back(genJets->at(i).eta());
+            ev_.jet1_phi_truth.push_back(genJets->at(i).phi());
+            ev_.jet1_mass_truth.push_back(genJets->at(i).mass());
+        }
+    }
 
     // Truth leptons
     for (size_t i = 0; i < genParts->size(); i++) {
         if (genParts->at(i).status() != 1){ continue; }
         if (abs(genParts->at(i).pdgId()) == 11){
+            // Only select good truth electrons
+            if (!isGoodElecTruthSOS(genParts->at(i), jGenJets, genJets)){ continue; }
             if (ev_.el1_pt_truth.size() == 0){
                 ev_.el1_pt_truth.push_back(genParts->at(i).pt());
                 ev_.el1_eta_truth.push_back(genParts->at(i).eta());
@@ -265,6 +294,7 @@ MiniFromPat::genAnalysis(const edm::Event& iEvent, const edm::EventSetup& iSetup
                 ev_.el2_q_truth.push_back(genParts->at(i).charge());
             }
         }else if (abs(genParts->at(i).pdgId()) == 13){
+            if (!isGoodMuonTruthSOS(genParts->at(i), jGenJets, genJets)){ continue; }
             if (ev_.mu1_pt_truth.size() == 0){
                 ev_.mu1_pt_truth.push_back(genParts->at(i).pt());
                 ev_.mu1_eta_truth.push_back(genParts->at(i).eta());
@@ -859,6 +889,10 @@ MiniFromPat::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
     ev_.jet1_eta.clear();
     ev_.jet1_phi.clear();
     ev_.jet1_mass.clear();
+    ev_.jet1_pt_truth.clear();
+    ev_.jet1_eta_truth.clear();
+    ev_.jet1_phi_truth.clear();
+    ev_.jet1_mass_truth.clear();
     ev_.mllMin.clear();
     ev_.mllMax.clear();
     ev_.mt1.clear();
@@ -1011,6 +1045,46 @@ bool MiniFromPat::isGoodJetSOS(const pat::Jet& patJet){
     double npn = patJet.neutralMultiplicity();
     if (!(eta<3. and chf>.2 and nhf<.7 and phf<.7)){ return false; }
     if (!((eta<2.7 and ((npr>1 and phf<0.90 and nhf<0.90) and (eta>2.4 or (elf<0.99 and chf>0 and chm>0)))) or ((eta>2.7 and eta<3.0) and (nhf<0.98 and phf>0.01 and npn>2)) or (eta>3.0 and (phf<0.90 and npn>10)))){ return false; }
+    return true;
+}
+
+bool MiniFromPat::isGoodElecTruthSOS(const pat::PackedGenParticle truthEl, const std::vector<size_t> jGenJets, const edm::Handle<std::vector<reco::GenJet>> genJets){
+    // Isolation
+    double absIso = 0.;
+    for (size_t i = 0; i < jGenJets.size(); ++i) {
+        if (ROOT::Math::VectorUtil::DeltaR(truthEl.p4(), genJets->at(jGenJets[i]).p4()) > .7){ continue; }
+        std::vector<const reco::Candidate*> jconst = genJets->at(jGenJets[i]).getJetConstituentsQuick();
+        for (size_t j = 0; j < jconst.size(); j++) {
+            double deltaR = ROOT::Math::VectorUtil::DeltaR(truthEl.p4(),jconst[j]->p4());
+            if (deltaR < .01 || deltaR > .4){ continue; }
+            absIso = absIso + jconst[j]->pt();
+        }
+    }
+    double relIso = absIso / truthEl.pt();
+
+    if (relIso > .5){ return false; }
+    if (absIso > 5.){ return false; }
+
+    return true;
+}
+
+bool MiniFromPat::isGoodMuonTruthSOS(const pat::PackedGenParticle truthMu, const std::vector<size_t> jGenJets, const edm::Handle<std::vector<reco::GenJet>> genJets){
+    // Isolation
+    double absIso = 0.;
+    for (size_t i = 0; i < jGenJets.size(); ++i) {
+        if (ROOT::Math::VectorUtil::DeltaR(truthMu.p4(), genJets->at(jGenJets[i]).p4()) > .7){ continue; }
+        std::vector<const reco::Candidate*> jconst = genJets->at(jGenJets[i]).getJetConstituentsQuick();
+        for (size_t j = 0; j < jconst.size(); j++) {
+            double deltaR = ROOT::Math::VectorUtil::DeltaR(truthMu.p4(),jconst[j]->p4());
+            if (deltaR < .01 || deltaR > .4){ continue; }
+            absIso = absIso + jconst[j]->pt();
+        }
+    }
+    double relIso = absIso / truthMu.pt();
+
+    if (relIso > .5){ return false; }
+    if (absIso > 5.){ return false; }
+
     return true;
 }
 
