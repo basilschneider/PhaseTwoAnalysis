@@ -7,6 +7,7 @@
 // Description: Define the structure of ntuples
 
 #include "TTree.h"
+#include "TH2D.h"
 
 struct MiniEvent_t
 {
@@ -17,6 +18,9 @@ struct MiniEvent_t
     }
 
     Int_t run, event, lumi;
+
+    // Cutflow control
+    static constexpr bool fill_rle = false;
 
     // Cut variables
     static constexpr double el_pt_lo = 5.;
@@ -76,6 +80,12 @@ struct MiniEvent_t
 
     double met, ht;
     std::vector<double> mllMin, mllMax, mt1, mt2, pt2l;
+
+    // Real lepton efficiency histograms
+    TH2D* rle_el_num = new TH2D("rle_el_num", "rle_el_num", 6, 0., 30., 8, 0., 4.);
+    TH2D* rle_el_den = new TH2D("rle_el_den", "rle_el_den", 6, 0., 30., 8, 0., 4.);
+    TH2D* rle_mu_num = new TH2D("rle_mu_num", "rle_mu_num", 6, 0., 30., 8, 0., 4.);
+    TH2D* rle_mu_den = new TH2D("rle_mu_den", "rle_mu_den", 6, 0., 30., 8, 0., 4.);
 };
 
 //void createMiniEventTree(TTree *t_event_, TTree *t_genParts_, TTree *t_vertices_, TTree *t_genJets_, TTree *t_looseElecs_, TTree *t_tightElecs_, TTree *t_looseMuons_, TTree *t_tightMuons_, TTree *t_puppiJets_, TTree *t_puppiMET_,MiniEvent_t &ev);

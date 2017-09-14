@@ -232,6 +232,20 @@ MiniFromPat::~MiniFromPat()
     // do anything here that needs to be done at desctruction time
     // (e.g. close files, deallocate resources etc.)
 
+    if (ev_.fill_rle){
+        ev_.rle_el_num->Write();
+        ev_.rle_el_den->Write();
+        ev_.rle_mu_num->Write();
+        ev_.rle_mu_den->Write();
+        TH2D* rle_el = (TH2D*)ev_.rle_el_num->Clone();
+        TH2D* rle_mu = (TH2D*)ev_.rle_mu_num->Clone();
+        rle_el->SetNameTitle("rle_el", "rle_el");
+        rle_mu->SetNameTitle("rle_mu", "rle_mu");
+        rle_el->Divide(ev_.rle_el_den);
+        rle_mu->Divide(ev_.rle_mu_den);
+        rle_el->Write();
+        rle_mu->Write();
+    }
 }
 
 
@@ -247,9 +261,31 @@ MiniFromPat::genAnalysis(const edm::Event& iEvent, const edm::EventSetup& iSetup
 
     Handle<std::vector<pat::PackedGenParticle>> genParts;
     iEvent.getByToken(genPartsToken_, genParts);
-
     Handle<std::vector<reco::GenJet>> genJets;
     iEvent.getByToken(genJetsToken_, genJets);
+    Handle<std::vector<pat::Electron>> elecs;
+    iEvent.getByToken(elecsToken_, elecs);
+    Handle<reco::ConversionCollection> conversions;
+    iEvent.getByToken(convToken_, conversions);
+    Handle<reco::BeamSpot> bsHandle;
+    iEvent.getByToken(bsToken_, bsHandle);
+    const reco::BeamSpot &beamspot = *bsHandle.product();
+    Handle<std::vector<pat::Muon>> muons;
+    iEvent.getByToken(muonsToken_, muons);
+    Handle<std::vector<reco::Vertex>> vertices;
+    iEvent.getByToken(verticesToken_, vertices);
+
+    // Vertices
+    int prVtx = -1;
+    ev_.nvtx = 0;
+    for (size_t i=0; i<vertices->size(); ++i){
+        if (vertices->at(i).isFake()){ continue; }
+        if (vertices->at(i).ndof() <= 4){ continue; }
+        if (prVtx < 0){ prVtx = i; }
+        ev_.v_pt2[ev_.nvtx] = vertices->at(i).p4().pt();
+        ev_.nvtx++;
+    }
+    if (prVtx < 0) return;
 
     // Truth Jets
     std::vector<size_t> jGenJets;
@@ -276,38 +312,123 @@ MiniFromPat::genAnalysis(const edm::Event& iEvent, const edm::EventSetup& iSetup
         }
     }
 
+    // Count particles with status 23 for real lepton efficiency histograms
+    // This is not working, as status 23 particles are not stored. Only select
+    // the hardest lepton (for semileptonic ttbar); if you want to store more
+    // than one lepton, the logic with maxLepPt needs to be rewritten
+    unsigned int nGenElStatus23 = 0;
+    unsigned int nGenMuStatus23 = 0;
+    double maxLepPt = -1.;
+    if (ev_.fill_rle){
+        for (size_t i=0; i<genParts->size(); ++i){
+            if (genParts->at(i).pt() > maxLepPt){
+                if (fabs(genParts->at(i).pdgId()) == 11){
+                    if (!isGoodElecTruthSOS(genParts->at(i), jGenJets, genJets)){ continue; }
+                    nGenElStatus23 = 1;
+                    nGenMuStatus23 = 0;
+                    maxLepPt = genParts->at(i).pt();
+                }else if (fabs(genParts->at(i).pdgId()) == 13){
+                    if (!isGoodMuonTruthSOS(genParts->at(i), jGenJets, genJets)){ continue; }
+                    nGenElStatus23 = 0;
+                    nGenMuStatus23 = 1;
+                    maxLepPt = genParts->at(i).pt();
+                }
+            }
+            //if (genParts->at(i).status() == 23){
+            //    if (fabs(genParts->at(i).pdgId()) == 11){
+            //        nGenElStatus23++;
+            //    }else if (fabs(genParts->at(i).pdgId()) == 13){
+            //        nGenMuStatus23++;
+            //    }
+            //}
+        }
+    }
+
+    Int_t binx1 = ev_.rle_el_den->GetXaxis()->FindBin(0.);
+    Int_t binx2 = ev_.rle_el_den->GetXaxis()->FindBin(30.);
+    Int_t biny1 = ev_.rle_el_den->GetYaxis()->FindBin(0.);
+    Int_t biny2 = ev_.rle_el_den->GetYaxis()->FindBin(4.);
+
     // Truth leptons
     for (size_t i = 0; i < genParts->size(); i++) {
         if (genParts->at(i).status() != 1){ continue; }
-        if (abs(genParts->at(i).pdgId()) == 11){
-            // Only select good truth electrons
-            if (!isGoodElecTruthSOS(genParts->at(i), jGenJets, genJets)){ continue; }
-            if (ev_.el1_pt_truth.size() == 0){
-                ev_.el1_pt_truth.push_back(genParts->at(i).pt());
-                ev_.el1_eta_truth.push_back(genParts->at(i).eta());
-                ev_.el1_phi_truth.push_back(genParts->at(i).phi());
-                ev_.el1_q_truth.push_back(genParts->at(i).charge());
-            }else if (ev_.el2_pt_truth.size() == 0){
-                ev_.el2_pt_truth.push_back(genParts->at(i).pt());
-                ev_.el2_eta_truth.push_back(genParts->at(i).eta());
-                ev_.el2_phi_truth.push_back(genParts->at(i).phi());
-                ev_.el2_q_truth.push_back(genParts->at(i).charge());
-            }
-        }else if (abs(genParts->at(i).pdgId()) == 13){
-            if (!isGoodMuonTruthSOS(genParts->at(i), jGenJets, genJets)){ continue; }
-            if (ev_.mu1_pt_truth.size() == 0){
-                ev_.mu1_pt_truth.push_back(genParts->at(i).pt());
-                ev_.mu1_eta_truth.push_back(genParts->at(i).eta());
-                ev_.mu1_phi_truth.push_back(genParts->at(i).phi());
-                ev_.mu1_q_truth.push_back(genParts->at(i).charge());
-            }else if (ev_.mu2_pt_truth.size() == 0){
-                ev_.mu2_pt_truth.push_back(genParts->at(i).pt());
-                ev_.mu2_eta_truth.push_back(genParts->at(i).eta());
-                ev_.mu2_phi_truth.push_back(genParts->at(i).phi());
-                ev_.mu2_q_truth.push_back(genParts->at(i).charge());
+
+        if (ev_.fill_rle){
+            // Fill real lepton efficiency histograms as many times as there are
+            // Status 23 particles, but use Status 1 particles for this
+            if (fabs(genParts->at(i).pdgId()) == 11){
+                if (!nGenElStatus23){ continue; }
+                if (!isGoodElecTruthSOS(genParts->at(i), jGenJets, genJets)){ continue; }
+                if (genParts->at(i).pt() != maxLepPt){ continue; }
+
+                // Fill denominator histogram
+                ev_.rle_el_den->Fill(genParts->at(i).pt(), fabs(genParts->at(i).eta()));
+                nGenElStatus23--;
+
+                // Check if we can match that particle
+                for (size_t j=0; j<elecs->size(); ++j){
+                    if (!isGoodElecSOS(elecs->at(j), conversions, beamspot)){ continue; }
+                    // If we make it here, this is a proper reco electron
+                    // Fill numerator histogram if it can be matched
+                    if (fabs(genParts->at(i).pt() - elecs->at(j).pt()) < ev_.truth_match_diff_pt \
+                            && fabs(genParts->at(i).eta() - elecs->at(j).eta()) < ev_.truth_match_diff_eta){
+                        ev_.rle_el_num->Fill(genParts->at(i).pt(), genParts->at(i).eta());
+                        break;
+                    }
+                }
+
+            }else if (fabs(genParts->at(i).pdgId()) == 13){
+                if (!nGenMuStatus23){ continue; }
+                if (!isGoodMuonTruthSOS(genParts->at(i), jGenJets, genJets)){ continue; }
+                if (genParts->at(i).pt() != maxLepPt){ continue; }
+
+                // Fill denominator histogram
+                ev_.rle_mu_den->Fill(genParts->at(i).pt(), fabs(genParts->at(i).eta()));
+                nGenMuStatus23--;
+
+                // Check if we can match that particle
+                for (size_t j=0; j<muons->size(); ++j){
+                    if (!isGoodMuonSOS(muons->at(j), vertices, prVtx)){ continue; }
+                    // If we make it here, this is a proper reco muon
+                    // Fill numerator histogram if it can be matched
+                    if (fabs(genParts->at(i).pt() - muons->at(j).pt()) < ev_.truth_match_diff_pt \
+                            && fabs(genParts->at(i).eta() - muons->at(j).eta()) < ev_.truth_match_diff_eta){
+                        ev_.rle_mu_num->Fill(genParts->at(i).pt(), genParts->at(i).eta());
+                        break;
+                    }
+                }
             }
         }
 
+        // FIXME: truth leptons are not ordered
+        //if (abs(genParts->at(i).pdgId()) == 11){
+        //    // Only select good truth electrons
+        //    if (!isGoodElecTruthSOS(genParts->at(i), jGenJets, genJets)){ continue; }
+        //    if (ev_.el1_pt_truth.size() == 0){
+        //        ev_.el1_pt_truth.push_back(genParts->at(i).pt());
+        //        ev_.el1_eta_truth.push_back(genParts->at(i).eta());
+        //        ev_.el1_phi_truth.push_back(genParts->at(i).phi());
+        //        ev_.el1_q_truth.push_back(genParts->at(i).charge());
+        //    }else if (ev_.el2_pt_truth.size() == 0){
+        //        ev_.el2_pt_truth.push_back(genParts->at(i).pt());
+        //        ev_.el2_eta_truth.push_back(genParts->at(i).eta());
+        //        ev_.el2_phi_truth.push_back(genParts->at(i).phi());
+        //        ev_.el2_q_truth.push_back(genParts->at(i).charge());
+        //    }
+        //}else if (abs(genParts->at(i).pdgId()) == 13){
+        //    if (!isGoodMuonTruthSOS(genParts->at(i), jGenJets, genJets)){ continue; }
+        //    if (ev_.mu1_pt_truth.size() == 0){
+        //        ev_.mu1_pt_truth.push_back(genParts->at(i).pt());
+        //        ev_.mu1_eta_truth.push_back(genParts->at(i).eta());
+        //        ev_.mu1_phi_truth.push_back(genParts->at(i).phi());
+        //        ev_.mu1_q_truth.push_back(genParts->at(i).charge());
+        //    }else if (ev_.mu2_pt_truth.size() == 0){
+        //        ev_.mu2_pt_truth.push_back(genParts->at(i).pt());
+        //        ev_.mu2_eta_truth.push_back(genParts->at(i).eta());
+        //        ev_.mu2_phi_truth.push_back(genParts->at(i).phi());
+        //        ev_.mu2_q_truth.push_back(genParts->at(i).charge());
+        //    }
+        //}
     }
 
     // Fill truth leptons
@@ -1089,8 +1210,7 @@ bool MiniFromPat::isGoodMuonTruthSOS(const pat::PackedGenParticle truthMu, const
 }
 
 // ------------ method to improve ME0 muon ID ----------------
-    bool
-MiniFromPat::isME0MuonSel(reco::Muon muon, double pullXCut, double dXCut, double pullYCut, double dYCut, double dPhi)
+bool MiniFromPat::isME0MuonSel(reco::Muon muon, double pullXCut, double dXCut, double pullYCut, double dYCut, double dPhi)
 {
 
     bool result = false;
