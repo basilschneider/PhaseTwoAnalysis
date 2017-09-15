@@ -246,6 +246,16 @@ MiniFromPat::~MiniFromPat()
         rle_el->Write();
         rle_mu->Write();
     }
+    if (ev_.fill_vld){
+        ev_.vld_el_tight_pt_iso_abs->Write();
+        ev_.vld_el_pt_iso_abs->Write();
+        ev_.vld_el_tight_pt_iso_rel->Write();
+        ev_.vld_el_pt_iso_rel->Write();
+        ev_.vld_mu_tight_pt_dxy->Write();
+        ev_.vld_mu_pt_dxy->Write();
+        ev_.vld_mu_tight_pt_dz->Write();
+        ev_.vld_mu_pt_dz->Write();
+    }
 }
 
 
@@ -555,6 +565,44 @@ MiniFromPat::recoAnalysis(const edm::Event& iEvent, const edm::EventSetup& iSetu
         ev_.nvtx++;
     }
     if (prVtx < 0) return;
+
+    // Validation
+    if (ev_.fill_vld){
+
+        // Electrons
+        for (size_t i=0; i<elecs->size(); ++i) {
+            double pt = elecs->at(i).pt();
+            double iso_abs = elecs->at(i).pfIsolationVariables().sumChargedHadronPt;
+            double iso_rel = iso_abs/pt;
+            ev_.vld_el_iso_abs.push_back(iso_abs);
+            ev_.vld_el_iso_rel.push_back(iso_rel);
+            ev_.vld_el_pt_iso_abs->Fill(pt, iso_abs);
+            ev_.vld_el_pt_iso_rel->Fill(pt, iso_rel);
+            if (isGoodElecSOS(elecs->at(i), conversions, beamspot)){
+                ev_.vld_el_tight_iso_abs.push_back(iso_abs);
+                ev_.vld_el_tight_iso_rel.push_back(iso_rel);
+                ev_.vld_el_tight_pt_iso_abs->Fill(pt, iso_abs);
+                ev_.vld_el_tight_pt_iso_rel->Fill(pt, iso_rel);
+            }
+        }
+
+        // Muons
+        for (size_t i=0; i<muons->size(); ++i){
+            double dxy = std::abs(muons->at(i).muonBestTrack()->dxy(vertices->at(prVtx).position()));
+            double dz = std::abs(muons->at(i).muonBestTrack()->dz(vertices->at(prVtx).position()));
+            double pt = muons->at(i).pt();
+            ev_.vld_mu_dxy.push_back(dxy);
+            ev_.vld_mu_dz.push_back(dz);
+            ev_.vld_mu_pt_dxy->Fill(pt, dxy);
+            ev_.vld_mu_pt_dz->Fill(pt, dz);
+            if (isGoodMuonSOS(muons->at(i), vertices, prVtx)){
+                ev_.vld_mu_tight_dxy.push_back(dxy);
+                ev_.vld_mu_tight_dz.push_back(dz);
+                ev_.vld_mu_tight_pt_dxy->Fill(pt, dxy);
+                ev_.vld_mu_tight_pt_dz->Fill(pt, dz);
+            }
+        }
+    }
 
     // Electrons
     for (size_t i=0; i<elecs->size(); ++i) {
@@ -1016,6 +1064,14 @@ MiniFromPat::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
     ev_.mt1.clear();
     ev_.mt2.clear();
     ev_.pt2l.clear();
+    ev_.vld_el_tight_iso_abs.clear();
+    ev_.vld_el_iso_abs.clear();
+    ev_.vld_el_tight_iso_rel.clear();
+    ev_.vld_el_iso_rel.clear();
+    ev_.vld_mu_tight_dxy.clear();
+    ev_.vld_mu_dxy.clear();
+    ev_.vld_mu_tight_dz.clear();
+    ev_.vld_mu_dz.clear();
 
     ev_.nLep = ev_.nEl = ev_.nMu = 0;
     ev_.nSoftLep = ev_.nSoftEl = ev_.nSoftMu = 0;
