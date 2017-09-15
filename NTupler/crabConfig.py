@@ -2,7 +2,7 @@ from WMCore.Configuration import Configuration
 config = Configuration()
 
 config.section_("General")
-config.General.requestName = 'TChiWZ_300_293_run24'
+config.General.requestName = 'TChiWZ_300_293_run25'
 config.General.workArea = 'crab_tasks/'
 
 config.section_("JobType")

@@ -344,11 +344,6 @@ MiniFromPat::genAnalysis(const edm::Event& iEvent, const edm::EventSetup& iSetup
         }
     }
 
-    Int_t binx1 = ev_.rle_el_den->GetXaxis()->FindBin(0.);
-    Int_t binx2 = ev_.rle_el_den->GetXaxis()->FindBin(30.);
-    Int_t biny1 = ev_.rle_el_den->GetYaxis()->FindBin(0.);
-    Int_t biny2 = ev_.rle_el_den->GetYaxis()->FindBin(4.);
-
     // Truth leptons
     for (size_t i = 0; i < genParts->size(); i++) {
         if (genParts->at(i).status() != 1){ continue; }
@@ -431,39 +426,41 @@ MiniFromPat::genAnalysis(const edm::Event& iEvent, const edm::EventSetup& iSetup
         //}
     }
 
-    // Fill truth leptons
-    // Put pT and eta into vector of vector for sorting
-    std::vector<std::vector<double>> lepvec_truth;
-    if (ev_.el1_pt_truth.size() != 0){
-        lepvec_truth.push_back({ev_.el1_pt_truth.at(0), ev_.el1_eta_truth.at(0), ev_.el1_phi_truth.at(0), ev_.mass_el});
-    }
-    if (ev_.el2_pt_truth.size() != 0){
-        lepvec_truth.push_back({ev_.el2_pt_truth.at(0), ev_.el2_eta_truth.at(0), ev_.el2_phi_truth.at(0), ev_.mass_el});
-    }
-    if (ev_.mu1_pt_truth.size() != 0){
-        lepvec_truth.push_back({ev_.mu1_pt_truth.at(0), ev_.mu1_eta_truth.at(0), ev_.mu1_phi_truth.at(0), ev_.mass_mu});
-    }
-    if (ev_.mu2_pt_truth.size() != 0){
-        lepvec_truth.push_back({ev_.mu2_pt_truth.at(0), ev_.mu2_eta_truth.at(0), ev_.mu2_phi_truth.at(0), ev_.mass_mu});
-    }
-    // By definition, this sorts by the first element of the vector (in this case pT)
-    if (lepvec_truth.size() > 1){
-        std::sort(begin(lepvec_truth), end(lepvec_truth));
-        std::reverse(begin(lepvec_truth), end(lepvec_truth));
-    }
-    if (lepvec_truth.size() >= 1){
-        ev_.lep1_pt_truth.push_back(lepvec_truth[0][0]);
-        ev_.lep1_eta_truth.push_back(lepvec_truth[0][1]);
-        ev_.lep1_phi_truth.push_back(lepvec_truth[0][2]);
-        ev_.lep1_mass_truth.push_back(lepvec_truth[0][3]);
-    }
-    if (lepvec_truth.size() >= 2){
-        ev_.lep2_pt_truth.push_back(lepvec_truth[1][0]);
-        ev_.lep2_eta_truth.push_back(lepvec_truth[1][1]);
-        ev_.lep2_phi_truth.push_back(lepvec_truth[1][2]);
-        ev_.lep2_mass_truth.push_back(lepvec_truth[1][3]);
-    }
-    lepvec_truth.clear();
+    // FIXME: Once the truth lepton ordering above is fixed, you can put them
+    // back in
+    //// Fill truth leptons
+    //// Put pT and eta into vector of vector for sorting
+    //std::vector<std::vector<double>> lepvec_truth;
+    //if (ev_.el1_pt_truth.size() != 0){
+    //    lepvec_truth.push_back({ev_.el1_pt_truth.at(0), ev_.el1_eta_truth.at(0), ev_.el1_phi_truth.at(0), ev_.mass_el});
+    //}
+    //if (ev_.el2_pt_truth.size() != 0){
+    //    lepvec_truth.push_back({ev_.el2_pt_truth.at(0), ev_.el2_eta_truth.at(0), ev_.el2_phi_truth.at(0), ev_.mass_el});
+    //}
+    //if (ev_.mu1_pt_truth.size() != 0){
+    //    lepvec_truth.push_back({ev_.mu1_pt_truth.at(0), ev_.mu1_eta_truth.at(0), ev_.mu1_phi_truth.at(0), ev_.mass_mu});
+    //}
+    //if (ev_.mu2_pt_truth.size() != 0){
+    //    lepvec_truth.push_back({ev_.mu2_pt_truth.at(0), ev_.mu2_eta_truth.at(0), ev_.mu2_phi_truth.at(0), ev_.mass_mu});
+    //}
+    //// By definition, this sorts by the first element of the vector (in this case pT)
+    //if (lepvec_truth.size() > 1){
+    //    std::sort(begin(lepvec_truth), end(lepvec_truth));
+    //    std::reverse(begin(lepvec_truth), end(lepvec_truth));
+    //}
+    //if (lepvec_truth.size() >= 1){
+    //    ev_.lep1_pt_truth.push_back(lepvec_truth[0][0]);
+    //    ev_.lep1_eta_truth.push_back(lepvec_truth[0][1]);
+    //    ev_.lep1_phi_truth.push_back(lepvec_truth[0][2]);
+    //    ev_.lep1_mass_truth.push_back(lepvec_truth[0][3]);
+    //}
+    //if (lepvec_truth.size() >= 2){
+    //    ev_.lep2_pt_truth.push_back(lepvec_truth[1][0]);
+    //    ev_.lep2_eta_truth.push_back(lepvec_truth[1][1]);
+    //    ev_.lep2_phi_truth.push_back(lepvec_truth[1][2]);
+    //    ev_.lep2_mass_truth.push_back(lepvec_truth[1][3]);
+    //}
+    //lepvec_truth.clear();
 
 
     //// Jets
@@ -982,30 +979,30 @@ MiniFromPat::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
     ev_.lep2_eta.clear();
     ev_.lep2_phi.clear();
     ev_.lep2_mass.clear();
-    ev_.el1_pt_truth.clear();
-    ev_.el1_eta_truth.clear();
-    ev_.el1_phi_truth.clear();
-    ev_.el1_q_truth.clear();
-    ev_.el2_pt_truth.clear();
-    ev_.el2_eta_truth.clear();
-    ev_.el2_phi_truth.clear();
-    ev_.el2_q_truth.clear();
-    ev_.mu1_pt_truth.clear();
-    ev_.mu1_eta_truth.clear();
-    ev_.mu1_phi_truth.clear();
-    ev_.mu1_q_truth.clear();
-    ev_.mu2_pt_truth.clear();
-    ev_.mu2_eta_truth.clear();
-    ev_.mu2_phi_truth.clear();
-    ev_.mu2_q_truth.clear();
-    ev_.lep1_pt_truth.clear();
-    ev_.lep1_eta_truth.clear();
-    ev_.lep1_phi_truth.clear();
-    ev_.lep1_mass_truth.clear();
-    ev_.lep2_pt_truth.clear();
-    ev_.lep2_eta_truth.clear();
-    ev_.lep2_phi_truth.clear();
-    ev_.lep2_mass_truth.clear();
+    //ev_.el1_pt_truth.clear();
+    //ev_.el1_eta_truth.clear();
+    //ev_.el1_phi_truth.clear();
+    //ev_.el1_q_truth.clear();
+    //ev_.el2_pt_truth.clear();
+    //ev_.el2_eta_truth.clear();
+    //ev_.el2_phi_truth.clear();
+    //ev_.el2_q_truth.clear();
+    //ev_.mu1_pt_truth.clear();
+    //ev_.mu1_eta_truth.clear();
+    //ev_.mu1_phi_truth.clear();
+    //ev_.mu1_q_truth.clear();
+    //ev_.mu2_pt_truth.clear();
+    //ev_.mu2_eta_truth.clear();
+    //ev_.mu2_phi_truth.clear();
+    //ev_.mu2_q_truth.clear();
+    //ev_.lep1_pt_truth.clear();
+    //ev_.lep1_eta_truth.clear();
+    //ev_.lep1_phi_truth.clear();
+    //ev_.lep1_mass_truth.clear();
+    //ev_.lep2_pt_truth.clear();
+    //ev_.lep2_eta_truth.clear();
+    //ev_.lep2_phi_truth.clear();
+    //ev_.lep2_mass_truth.clear();
     ev_.jet1_pt.clear();
     ev_.jet1_eta.clear();
     ev_.jet1_phi.clear();
