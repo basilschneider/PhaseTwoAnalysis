@@ -377,7 +377,7 @@ MiniFromPat::genAnalysis(const edm::Event& iEvent, const edm::EventSetup& iSetup
                     // Fill numerator histogram if it can be matched
                     if (fabs(genParts->at(i).pt() - elecs->at(j).pt()) < ev_.truth_match_diff_pt \
                             && fabs(genParts->at(i).eta() - elecs->at(j).eta()) < ev_.truth_match_diff_eta){
-                        ev_.rle_el_num->Fill(genParts->at(i).pt(), genParts->at(i).eta());
+                        ev_.rle_el_num->Fill(genParts->at(i).pt(), fabs(genParts->at(i).eta()));
                         break;
                     }
                 }
@@ -398,7 +398,7 @@ MiniFromPat::genAnalysis(const edm::Event& iEvent, const edm::EventSetup& iSetup
                     // Fill numerator histogram if it can be matched
                     if (fabs(genParts->at(i).pt() - muons->at(j).pt()) < ev_.truth_match_diff_pt \
                             && fabs(genParts->at(i).eta() - muons->at(j).eta()) < ev_.truth_match_diff_eta){
-                        ev_.rle_mu_num->Fill(genParts->at(i).pt(), genParts->at(i).eta());
+                        ev_.rle_mu_num->Fill(genParts->at(i).pt(), fabs(genParts->at(i).eta()));
                         break;
                     }
                 }

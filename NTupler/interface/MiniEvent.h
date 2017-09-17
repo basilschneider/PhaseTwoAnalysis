@@ -20,7 +20,7 @@ struct MiniEvent_t
     Int_t run, event, lumi;
 
     // Cutflow control
-    static constexpr bool fill_rle = false;
+    static constexpr bool fill_rle = true;
     static constexpr bool fill_vld = true;
 
     // Cut variables
