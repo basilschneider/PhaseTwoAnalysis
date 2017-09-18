@@ -331,7 +331,7 @@ MiniFromPat::genAnalysis(const edm::Event& iEvent, const edm::EventSetup& iSetup
     double maxLepPt = -1.;
     if (ev_.fill_rle){
         for (size_t i=0; i<genParts->size(); ++i){
-            if (genParts->at(i).pt() > maxLepPt){
+            if (genParts->at(i).pt() > 2 && genParts->at(i).pt() > maxLepPt){
                 if (fabs(genParts->at(i).pdgId()) == 11){
                     if (!isGoodElecTruthSOS(genParts->at(i), jGenJets, genJets)){ continue; }
                     nGenElStatus23 = 1;
