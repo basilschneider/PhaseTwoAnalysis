@@ -120,7 +120,7 @@ class MiniFromPat : public edm::one::EDAnalyzer<edm::one::SharedResources, edm::
         bool isLooseElec(const pat::Electron & patEl, edm::Handle<reco::ConversionCollection> conversions, const reco::BeamSpot beamspot);
         bool isMediumElec(const pat::Electron & patEl, edm::Handle<reco::ConversionCollection> conversions, const reco::BeamSpot beamspot);
         bool isTightElec(const pat::Electron & patEl, edm::Handle<reco::ConversionCollection> conversions, const reco::BeamSpot beamspot);
-        bool isGoodElecSOS(const pat::Electron & patEl, edm::Handle<reco::ConversionCollection> conversions, const reco::BeamSpot beamspot);
+        bool isGoodElecSOS(const pat::Electron & patEl, edm::Handle<reco::ConversionCollection> conversions, const reco::BeamSpot beamspot, edm::Handle<std::vector<reco::Vertex>> vertices);
         bool isGoodMuonSOS(const pat::Muon & patMu, edm::Handle<std::vector<reco::Vertex>> vertices, int prVtx);
         bool isGoodJetSOS(const pat::Jet & patJet);
         bool isGoodElecTruthSOS(const pat::PackedGenParticle truthEl, const std::vector<size_t> jGenJets, const edm::Handle<std::vector<reco::GenJet>> genJets);
@@ -372,7 +372,7 @@ MiniFromPat::genAnalysis(const edm::Event& iEvent, const edm::EventSetup& iSetup
 
                 // Check if we can match that particle
                 for (size_t j=0; j<elecs->size(); ++j){
-                    if (!isGoodElecSOS(elecs->at(j), conversions, beamspot)){ continue; }
+                    if (!isGoodElecSOS(elecs->at(j), conversions, beamspot, vertices)){ continue; }
                     // If we make it here, this is a proper reco electron
                     // Fill numerator histogram if it can be matched
                     if (fabs(genParts->at(i).pt() - elecs->at(j).pt()) < ev_.truth_match_diff_pt \
@@ -580,7 +580,7 @@ MiniFromPat::recoAnalysis(const edm::Event& iEvent, const edm::EventSetup& iSetu
             ev_.vld_el_is_tight.push_back(isTightElec(elecs->at(i), conversions, beamspot));
             ev_.vld_el_pt_iso_abs->Fill(pt, iso_abs);
             ev_.vld_el_pt_iso_rel->Fill(pt, iso_rel);
-            if (isGoodElecSOS(elecs->at(i), conversions, beamspot)){
+            if (isGoodElecSOS(elecs->at(i), conversions, beamspot, vertices)){
                 ev_.vld_el_tight_iso_abs.push_back(iso_abs);
                 ev_.vld_el_tight_iso_rel.push_back(iso_rel);
                 ev_.vld_el_tight_pt.push_back(pt);
@@ -614,7 +614,7 @@ MiniFromPat::recoAnalysis(const edm::Event& iEvent, const edm::EventSetup& iSetu
     for (size_t i=0; i<elecs->size(); ++i) {
 
         // Only select good electrons
-        if (!isGoodElecSOS(elecs->at(i), conversions, beamspot)){ continue; }
+        if (!isGoodElecSOS(elecs->at(i), conversions, beamspot, vertices)){ continue; }
 
         // Only select electrons above certain pT
         //if (elecs->at(i).pt() < ev_.el_pt_lo){ continue; }
@@ -715,11 +715,11 @@ MiniFromPat::recoAnalysis(const edm::Event& iEvent, const edm::EventSetup& iSetu
     // Is a same flavour opposite sign lepton pair present?
     for (size_t i=0; i<elecs->size(); ++i){
         // Only select good electrons
-        if (!isGoodElecSOS(elecs->at(i), conversions, beamspot)){ continue; }
+        if (!isGoodElecSOS(elecs->at(i), conversions, beamspot, vertices)){ continue; }
 
         for (size_t j=i+1; j<elecs->size(); ++j){
             // Only select good electrons
-            if (!isGoodElecSOS(elecs->at(j), conversions, beamspot)){ continue; }
+            if (!isGoodElecSOS(elecs->at(j), conversions, beamspot, vertices)){ continue; }
 
             // is SFOS?
             if (elecs->at(i).charge()*elecs->at(j).charge() > 0){ continue; }
@@ -1171,7 +1171,7 @@ MiniFromPat::isTightElec(const pat::Electron & patEl, edm::Handle<reco::Conversi
     return true;
 }
 
-bool MiniFromPat::isGoodElecSOS(const pat::Electron & patEl, edm::Handle<reco::ConversionCollection> conversions, const reco::BeamSpot beamspot){
+bool MiniFromPat::isGoodElecSOS(const pat::Electron & patEl, edm::Handle<reco::ConversionCollection> conversions, const reco::BeamSpot beamspot, edm::Handle<std::vector<reco::Vertex>> vertices){
     // Default cuts
     if (!isTightElec(patEl, conversions, beamspot)){ return false; }
 
@@ -1179,7 +1179,11 @@ bool MiniFromPat::isGoodElecSOS(const pat::Electron & patEl, edm::Handle<reco::C
     if (patEl.pfIsolationVariables().sumChargedHadronPt / patEl.pt() > 0.5){ return false; }
     if (patEl.pfIsolationVariables().sumChargedHadronPt > 5.){ return false; }
 
-    // not sure how to implement IP3D cut for electrons, postpone for now
+    // IP3D cuts
+    const reco::Vertex &pv = vertices->front();
+    double dxy = patEl.gsfTrack()->dxy(pv.position());
+    double dz = patEl.gsfTrack()->dz(pv.position());
+    if (sqrt(dxy*dz) > .01){ return false; }
 
     return true;
 }
