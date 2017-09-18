@@ -255,6 +255,10 @@ MiniFromPat::~MiniFromPat()
         ev_.vld_el_tight_pt_dxy->Write();
         ev_.vld_el_pt_dz->Write();
         ev_.vld_el_tight_pt_dz->Write();
+        ev_.vld_mu_pt_iso_abs->Write();
+        ev_.vld_mu_tight_pt_iso_abs->Write();
+        ev_.vld_mu_pt_iso_rel->Write();
+        ev_.vld_mu_tight_pt_iso_rel->Write();
         ev_.vld_mu_pt_dxy->Write();
         ev_.vld_mu_tight_pt_dxy->Write();
         ev_.vld_mu_pt_dz->Write();
@@ -595,10 +599,10 @@ MiniFromPat::recoAnalysis(const edm::Event& iEvent, const edm::EventSetup& iSetu
                 ev_.vld_el_tight_pt.push_back(pt);
                 ev_.vld_el_tight_iso_abs.push_back(iso_abs);
                 ev_.vld_el_tight_iso_rel.push_back(iso_rel);
-                ev_.vld_el_tight_pt_iso_abs->Fill(pt, iso_abs);
-                ev_.vld_el_tight_pt_iso_rel->Fill(pt, iso_rel);
                 ev_.vld_el_tight_dxy.push_back(dxy);
                 ev_.vld_el_tight_dz.push_back(dz);
+                ev_.vld_el_tight_pt_iso_abs->Fill(pt, iso_abs);
+                ev_.vld_el_tight_pt_iso_rel->Fill(pt, iso_rel);
                 ev_.vld_el_tight_pt_dxy->Fill(pt, dxy);
                 ev_.vld_el_tight_pt_dz->Fill(pt, dz);
             }
@@ -606,19 +610,29 @@ MiniFromPat::recoAnalysis(const edm::Event& iEvent, const edm::EventSetup& iSetu
 
         // Muons
         for (size_t i=0; i<muons->size(); ++i){
+            double pt = muons->at(i).pt();
+            double iso_abs = muons->at(i).puppiChargedHadronIso() + muons->at(i).puppiNeutralHadronIso() + muons->at(i).puppiPhotonIso();
+            double iso_rel = iso_abs/pt;
             double dxy = std::abs(muons->at(i).muonBestTrack()->dxy(vertices->at(prVtx).position()));
             double dz = std::abs(muons->at(i).muonBestTrack()->dz(vertices->at(prVtx).position()));
-            double pt = muons->at(i).pt();
             ev_.vld_mu_pt.push_back(pt);
             ev_.vld_mu_is_tight.push_back(muon::isTightMuon(muons->at(i), vertices->at(prVtx)));
+            ev_.vld_mu_iso_abs.push_back(iso_abs);
+            ev_.vld_mu_iso_rel.push_back(iso_rel);
             ev_.vld_mu_dxy.push_back(dxy);
             ev_.vld_mu_dz.push_back(dz);
+            ev_.vld_mu_pt_iso_abs->Fill(pt, iso_abs);
+            ev_.vld_mu_pt_iso_rel->Fill(pt, iso_rel);
             ev_.vld_mu_pt_dxy->Fill(pt, dxy);
             ev_.vld_mu_pt_dz->Fill(pt, dz);
             if (isGoodMuonSOS(muons->at(i), vertices, prVtx)){
                 ev_.vld_mu_tight_pt.push_back(pt);
+                ev_.vld_mu_tight_iso_abs.push_back(iso_abs);
+                ev_.vld_mu_tight_iso_rel.push_back(iso_rel);
                 ev_.vld_mu_tight_dxy.push_back(dxy);
                 ev_.vld_mu_tight_dz.push_back(dz);
+                ev_.vld_mu_tight_pt_iso_abs->Fill(pt, iso_abs);
+                ev_.vld_mu_tight_pt_iso_rel->Fill(pt, iso_rel);
                 ev_.vld_mu_tight_pt_dxy->Fill(pt, dxy);
                 ev_.vld_mu_tight_pt_dz->Fill(pt, dz);
             }
@@ -1085,20 +1099,28 @@ MiniFromPat::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
     ev_.mt1.clear();
     ev_.mt2.clear();
     ev_.pt2l.clear();
-    ev_.vld_el_tight_iso_abs.clear();
-    ev_.vld_el_iso_abs.clear();
-    ev_.vld_el_tight_iso_rel.clear();
-    ev_.vld_el_iso_rel.clear();
     ev_.vld_el_pt.clear();
     ev_.vld_el_tight_pt.clear();
     ev_.vld_el_is_tight.clear();
-    ev_.vld_mu_tight_dxy.clear();
-    ev_.vld_mu_dxy.clear();
-    ev_.vld_mu_tight_dz.clear();
-    ev_.vld_mu_dz.clear();
+    ev_.vld_el_iso_abs.clear();
+    ev_.vld_el_tight_iso_abs.clear();
+    ev_.vld_el_iso_rel.clear();
+    ev_.vld_el_tight_iso_rel.clear();
+    ev_.vld_el_dxy.clear();
+    ev_.vld_el_tight_dxy.clear();
+    ev_.vld_el_dz.clear();
+    ev_.vld_el_tight_dz.clear();
     ev_.vld_mu_pt.clear();
     ev_.vld_mu_tight_pt.clear();
     ev_.vld_mu_is_tight.clear();
+    ev_.vld_mu_iso_abs.clear();
+    ev_.vld_mu_tight_iso_abs.clear();
+    ev_.vld_mu_iso_rel.clear();
+    ev_.vld_mu_tight_iso_rel.clear();
+    ev_.vld_mu_dxy.clear();
+    ev_.vld_mu_tight_dxy.clear();
+    ev_.vld_mu_dz.clear();
+    ev_.vld_mu_tight_dz.clear();
 
     ev_.nLep = ev_.nEl = ev_.nMu = 0;
     ev_.nSoftLep = ev_.nSoftEl = ev_.nSoftMu = 0;
