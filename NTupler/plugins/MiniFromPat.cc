@@ -576,11 +576,14 @@ MiniFromPat::recoAnalysis(const edm::Event& iEvent, const edm::EventSetup& iSetu
             double iso_rel = iso_abs/pt;
             ev_.vld_el_iso_abs.push_back(iso_abs);
             ev_.vld_el_iso_rel.push_back(iso_rel);
+            ev_.vld_el_pt.push_back(pt);
+            ev_.vld_el_is_tight.push_back(isTightElec(elecs->at(i), conversions, beamspot));
             ev_.vld_el_pt_iso_abs->Fill(pt, iso_abs);
             ev_.vld_el_pt_iso_rel->Fill(pt, iso_rel);
             if (isGoodElecSOS(elecs->at(i), conversions, beamspot)){
                 ev_.vld_el_tight_iso_abs.push_back(iso_abs);
                 ev_.vld_el_tight_iso_rel.push_back(iso_rel);
+                ev_.vld_el_tight_pt.push_back(pt);
                 ev_.vld_el_tight_pt_iso_abs->Fill(pt, iso_abs);
                 ev_.vld_el_tight_pt_iso_rel->Fill(pt, iso_rel);
             }
@@ -1068,6 +1071,9 @@ MiniFromPat::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
     ev_.vld_el_iso_abs.clear();
     ev_.vld_el_tight_iso_rel.clear();
     ev_.vld_el_iso_rel.clear();
+    ev_.vld_el_pt.clear();
+    ev_.vld_el_tight_pt.clear();
+    ev_.vld_el_is_tight.clear();
     ev_.vld_mu_tight_dxy.clear();
     ev_.vld_mu_dxy.clear();
     ev_.vld_mu_tight_dz.clear();

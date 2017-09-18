@@ -90,6 +90,9 @@ void createMiniEventTree(TTree* t_tree_, MiniEvent_t &ev)
   t_tree_->Branch("vld_el_iso_abs", &ev.vld_el_iso_abs);
   t_tree_->Branch("vld_el_tight_iso_rel", &ev.vld_el_tight_iso_rel);
   t_tree_->Branch("vld_el_iso_rel", &ev.vld_el_iso_rel);
+  t_tree_->Branch("vld_el_pt", &ev.vld_el_pt);
+  t_tree_->Branch("vld_el_tight_pt", &ev.vld_el_tight_pt);
+  t_tree_->Branch("vld_el_is_tight", &ev.vld_el_is_tight);
   t_tree_->Branch("vld_mu_tight_dxy", &ev.vld_mu_tight_dxy);
   t_tree_->Branch("vld_mu_dxy", &ev.vld_mu_dxy);
   t_tree_->Branch("vld_mu_tight_dz", &ev.vld_mu_tight_dz);

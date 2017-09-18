@@ -83,7 +83,7 @@ struct MiniEvent_t
     std::vector<double> mllMin, mllMax, mt1, mt2, pt2l;
 
     // Isolation variables for validation
-    std::vector<double> vld_el_tight_iso_abs, vld_el_iso_abs, vld_el_tight_iso_rel, vld_el_iso_rel;
+    std::vector<double> vld_el_tight_iso_abs, vld_el_iso_abs, vld_el_tight_iso_rel, vld_el_iso_rel, vld_el_pt, vld_el_tight_pt, vld_el_is_tight;
     std::vector<double> vld_mu_tight_dxy, vld_mu_dxy, vld_mu_tight_dz, vld_mu_dz;
     TH2D* vld_el_tight_pt_iso_abs = new TH2D("vld_el_tight_pt_iso_abs", "vld_el_tight_pt_iso_abs", 12, 0., 30., 40, 0., 20.);
     TH2D* vld_el_pt_iso_abs = new TH2D("vld_el_pt_iso_abs", "vld_el_pt_iso_abs", 12, 0., 30., 40, 0., 20.);
