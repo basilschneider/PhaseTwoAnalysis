@@ -596,11 +596,14 @@ MiniFromPat::recoAnalysis(const edm::Event& iEvent, const edm::EventSetup& iSetu
             double pt = muons->at(i).pt();
             ev_.vld_mu_dxy.push_back(dxy);
             ev_.vld_mu_dz.push_back(dz);
+            ev_.vld_mu_pt.push_back(pt);
+            ev_.vld_mu_is_tight.push_back(muon::isTightMuon(muons->at(i), vertices->at(prVtx)));
             ev_.vld_mu_pt_dxy->Fill(pt, dxy);
             ev_.vld_mu_pt_dz->Fill(pt, dz);
             if (isGoodMuonSOS(muons->at(i), vertices, prVtx)){
                 ev_.vld_mu_tight_dxy.push_back(dxy);
                 ev_.vld_mu_tight_dz.push_back(dz);
+                ev_.vld_mu_tight_pt.push_back(pt);
                 ev_.vld_mu_tight_pt_dxy->Fill(pt, dxy);
                 ev_.vld_mu_tight_pt_dz->Fill(pt, dz);
             }
@@ -1078,6 +1081,9 @@ MiniFromPat::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
     ev_.vld_mu_dxy.clear();
     ev_.vld_mu_tight_dz.clear();
     ev_.vld_mu_dz.clear();
+    ev_.vld_mu_pt.clear();
+    ev_.vld_mu_tight_pt.clear();
+    ev_.vld_mu_is_tight.clear();
 
     ev_.nLep = ev_.nEl = ev_.nMu = 0;
     ev_.nSoftLep = ev_.nSoftEl = ev_.nSoftMu = 0;

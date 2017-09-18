@@ -97,6 +97,9 @@ void createMiniEventTree(TTree* t_tree_, MiniEvent_t &ev)
   t_tree_->Branch("vld_mu_dxy", &ev.vld_mu_dxy);
   t_tree_->Branch("vld_mu_tight_dz", &ev.vld_mu_tight_dz);
   t_tree_->Branch("vld_mu_dz", &ev.vld_mu_dz);
+  t_tree_->Branch("vld_mu_pt", &ev.vld_mu_pt);
+  t_tree_->Branch("vld_mu_tight_pt", &ev.vld_mu_tight_pt);
+  t_tree_->Branch("vld_mu_is_tight", &ev.vld_mu_is_tight);
 
   ////event header
   //t_tree_->Branch("Run",               &ev.run,        "Run/I");
