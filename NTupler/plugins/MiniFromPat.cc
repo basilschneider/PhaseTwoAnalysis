@@ -1222,7 +1222,10 @@ bool MiniFromPat::isGoodMuonSOS(const pat::Muon & patMu, edm::Handle<std::vector
              && isME0MuonSelNew(patMu, 0.048, dPhiCut, dPhiBendCut)
              && ipxy && ipz && validPxlHit && highPurity)){ return false; }
 
-    // Not sure how to do isolation on muons
+    // Isolation (might be revised)
+    double muIsolation = patMu.puppiChargedHadronIso() + patMu.puppiNeutralHadronIso() + patMu.puppiPhotonIso();
+    if (muIsolation / patMu.pt() > 0.5){ return false; }
+    if (muIsolation > 5.){ return false; }
 
     // IP3D
     double dxy = std::abs(patMu.muonBestTrack()->dxy(vertices->at(prVtx).position()));
