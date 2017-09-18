@@ -247,14 +247,18 @@ MiniFromPat::~MiniFromPat()
         rle_mu->Write();
     }
     if (ev_.fill_vld){
-        ev_.vld_el_tight_pt_iso_abs->Write();
         ev_.vld_el_pt_iso_abs->Write();
-        ev_.vld_el_tight_pt_iso_rel->Write();
+        ev_.vld_el_tight_pt_iso_abs->Write();
         ev_.vld_el_pt_iso_rel->Write();
-        ev_.vld_mu_tight_pt_dxy->Write();
+        ev_.vld_el_tight_pt_iso_rel->Write();
+        ev_.vld_el_pt_dxy->Write();
+        ev_.vld_el_tight_pt_dxy->Write();
+        ev_.vld_el_pt_dz->Write();
+        ev_.vld_el_tight_pt_dz->Write();
         ev_.vld_mu_pt_dxy->Write();
-        ev_.vld_mu_tight_pt_dz->Write();
+        ev_.vld_mu_tight_pt_dxy->Write();
         ev_.vld_mu_pt_dz->Write();
+        ev_.vld_mu_tight_pt_dz->Write();
     }
 }
 
@@ -574,18 +578,29 @@ MiniFromPat::recoAnalysis(const edm::Event& iEvent, const edm::EventSetup& iSetu
             double pt = elecs->at(i).pt();
             double iso_abs = elecs->at(i).pfIsolationVariables().sumChargedHadronPt;
             double iso_rel = iso_abs/pt;
-            ev_.vld_el_iso_abs.push_back(iso_abs);
-            ev_.vld_el_iso_rel.push_back(iso_rel);
+            const reco::Vertex &pv = vertices->front();
+            double dxy = std::abs(elecs->at(i).gsfTrack()->dxy(pv.position()));
+            double dz = std::abs(elecs->at(i).gsfTrack()->dz(pv.position()));
             ev_.vld_el_pt.push_back(pt);
             ev_.vld_el_is_tight.push_back(isTightElec(elecs->at(i), conversions, beamspot));
+            ev_.vld_el_iso_abs.push_back(iso_abs);
+            ev_.vld_el_iso_rel.push_back(iso_rel);
+            ev_.vld_el_dxy.push_back(dxy);
+            ev_.vld_el_dz.push_back(dz);
             ev_.vld_el_pt_iso_abs->Fill(pt, iso_abs);
             ev_.vld_el_pt_iso_rel->Fill(pt, iso_rel);
+            ev_.vld_el_pt_dxy->Fill(pt, dxy);
+            ev_.vld_el_pt_dz->Fill(pt, dz);
             if (isGoodElecSOS(elecs->at(i), conversions, beamspot, vertices)){
+                ev_.vld_el_tight_pt.push_back(pt);
                 ev_.vld_el_tight_iso_abs.push_back(iso_abs);
                 ev_.vld_el_tight_iso_rel.push_back(iso_rel);
-                ev_.vld_el_tight_pt.push_back(pt);
                 ev_.vld_el_tight_pt_iso_abs->Fill(pt, iso_abs);
                 ev_.vld_el_tight_pt_iso_rel->Fill(pt, iso_rel);
+                ev_.vld_el_tight_dxy.push_back(dxy);
+                ev_.vld_el_tight_dz.push_back(dz);
+                ev_.vld_el_tight_pt_dxy->Fill(pt, dxy);
+                ev_.vld_el_tight_pt_dz->Fill(pt, dz);
             }
         }
 
@@ -594,16 +609,16 @@ MiniFromPat::recoAnalysis(const edm::Event& iEvent, const edm::EventSetup& iSetu
             double dxy = std::abs(muons->at(i).muonBestTrack()->dxy(vertices->at(prVtx).position()));
             double dz = std::abs(muons->at(i).muonBestTrack()->dz(vertices->at(prVtx).position()));
             double pt = muons->at(i).pt();
-            ev_.vld_mu_dxy.push_back(dxy);
-            ev_.vld_mu_dz.push_back(dz);
             ev_.vld_mu_pt.push_back(pt);
             ev_.vld_mu_is_tight.push_back(muon::isTightMuon(muons->at(i), vertices->at(prVtx)));
+            ev_.vld_mu_dxy.push_back(dxy);
+            ev_.vld_mu_dz.push_back(dz);
             ev_.vld_mu_pt_dxy->Fill(pt, dxy);
             ev_.vld_mu_pt_dz->Fill(pt, dz);
             if (isGoodMuonSOS(muons->at(i), vertices, prVtx)){
+                ev_.vld_mu_tight_pt.push_back(pt);
                 ev_.vld_mu_tight_dxy.push_back(dxy);
                 ev_.vld_mu_tight_dz.push_back(dz);
-                ev_.vld_mu_tight_pt.push_back(pt);
                 ev_.vld_mu_tight_pt_dxy->Fill(pt, dxy);
                 ev_.vld_mu_tight_pt_dz->Fill(pt, dz);
             }
@@ -1181,8 +1196,8 @@ bool MiniFromPat::isGoodElecSOS(const pat::Electron & patEl, edm::Handle<reco::C
 
     // IP3D cuts
     const reco::Vertex &pv = vertices->front();
-    double dxy = patEl.gsfTrack()->dxy(pv.position());
-    double dz = patEl.gsfTrack()->dz(pv.position());
+    double dxy = std::abs(patEl.gsfTrack()->dxy(pv.position()));
+    double dz = std::abs(patEl.gsfTrack()->dz(pv.position()));
     if (sqrt(dxy*dz) > .01){ return false; }
 
     return true;
