@@ -126,6 +126,8 @@ class MiniFromPat : public edm::one::EDAnalyzer<edm::one::SharedResources, edm::
         bool isGoodElecTruthSOS(const pat::PackedGenParticle truthEl, const std::vector<size_t> jGenJets, const edm::Handle<std::vector<reco::GenJet>> genJets);
         bool isGoodMuonTruthSOS(const pat::PackedGenParticle truthMu, const std::vector<size_t> jGenJets, const edm::Handle<std::vector<reco::GenJet>> genJets);
         template <typename T> bool isMatched(const pat::PackedGenParticle truthEl, T particle);
+        template <typename T> bool matchAny(const edm::Handle<std::vector<pat::PackedGenParticle>> genParts, T particle, bool hs);
+        bool isHs(const pat::PackedGenParticle truthParticle, int pdgId);
         bool isME0MuonSel(reco::Muon, double pullXCut, double dXCut, double pullYCut, double dYCut, double dPhi);
         bool isME0MuonSelNew(reco::Muon, double, double, double);
 
@@ -363,38 +365,6 @@ MiniFromPat::genAnalysis(const edm::Event& iEvent, const edm::EventSetup& iSetup
         }
     }
 
-    // Count leptons coming from N2 (pdgId = 1000023)
-    unsigned int nGenElFromN2 = 0;
-    unsigned int nGenMuFromN2 = 0;
-    std::vector<double> nGenLepPts;
-    if (ev_.fill_vld){
-        for (size_t i=0; i<genParts->size(); ++i){
-            if (fabs(genParts->at(i).pdgId()) == 11){
-                // Loop over all mothers to find N2 (or not)
-                const reco::Candidate* mom = genParts->at(i).mother(0);
-                while (mom->numberOfMothers() != 0){
-                    mom = mom->mother(0);
-                    if (mom->pdgId() == 1000023){
-                        nGenElFromN2++;
-                        nGenLepPts.push_back(genParts->at(i).pt());
-                        break;
-                    }
-                }
-            }else if (fabs(genParts->at(i).pdgId()) == 13){
-                // Loop over all mothers to find N2 (or not)
-                const reco::Candidate* mom = genParts->at(i).mother(0);
-                while (mom->numberOfMothers() != 0){
-                    mom = mom->mother(0);
-                    if (mom->pdgId() == 1000023){
-                        nGenMuFromN2++;
-                        nGenLepPts.push_back(genParts->at(i).pt());
-                        break;
-                    }
-                }
-            }
-        }
-    }
-
     // Truth leptons
     for (size_t i = 0; i < genParts->size(); i++) {
         if (genParts->at(i).status() != 1){ continue; }
@@ -592,6 +562,8 @@ MiniFromPat::recoAnalysis(const edm::Event& iEvent, const edm::EventSetup& iSetu
     iEvent.getByToken(metsToken_, mets);
     Handle<std::vector<pat::Jet>> jets;
     iEvent.getByToken(jetsToken_, jets);
+    Handle<std::vector<pat::PackedGenParticle>> genParts;
+    iEvent.getByToken(genPartsToken_, genParts);
 
     // Vertices
     int prVtx = -1;
@@ -616,6 +588,18 @@ MiniFromPat::recoAnalysis(const edm::Event& iEvent, const edm::EventSetup& iSetu
             const reco::Vertex &pv = vertices->front();
             double dxy = std::abs(elecs->at(i).gsfTrack()->dxy(pv.position()));
             double dz = std::abs(elecs->at(i).gsfTrack()->dz(pv.position()));
+
+            if (matchAny(genParts, elecs->at(i), true)){
+                // Hard scattering electrons
+                ev_.vld_el_hs_pt.push_back(pt);
+            }else if (matchAny(genParts, elecs->at(i), false)){
+                // py8 electrons
+                ev_.vld_el_py8_pt.push_back(pt);
+            }else{
+                // Other electrons
+                ev_.vld_el_others_pt.push_back(pt);
+            }
+
             ev_.vld_el_pt.push_back(pt);
             ev_.vld_el_is_tight.push_back(isTightElec(elecs->at(i), conversions, beamspot));
             ev_.vld_el_iso_abs.push_back(iso_abs);
@@ -627,6 +611,18 @@ MiniFromPat::recoAnalysis(const edm::Event& iEvent, const edm::EventSetup& iSetu
             ev_.vld_el_pt_dxy->Fill(pt, dxy);
             ev_.vld_el_pt_dz->Fill(pt, dz);
             if (isGoodElecSOS(elecs->at(i), conversions, beamspot, vertices)){
+
+                if (matchAny(genParts, elecs->at(i), true)){
+                    // Hard scattering electrons
+                    ev_.vld_el_tight_hs_pt.push_back(pt);
+                }else if (matchAny(genParts, elecs->at(i), false)){
+                    // py8 electrons
+                    ev_.vld_el_tight_py8_pt.push_back(pt);
+                }else{
+                    // Other electrons
+                    ev_.vld_el_tight_others_pt.push_back(pt);
+                }
+
                 ev_.vld_el_tight_pt.push_back(pt);
                 ev_.vld_el_tight_iso_abs.push_back(iso_abs);
                 ev_.vld_el_tight_iso_rel.push_back(iso_rel);
@@ -639,6 +635,38 @@ MiniFromPat::recoAnalysis(const edm::Event& iEvent, const edm::EventSetup& iSetu
             }
         }
 
+    // Count leptons coming from N2 (pdgId = 1000023)
+    unsigned int nGenElFromN2 = 0;
+    unsigned int nGenMuFromN2 = 0;
+    std::vector<double> nGenLepPts;
+    if (ev_.fill_vld){
+        for (size_t i=0; i<genParts->size(); ++i){
+            if (fabs(genParts->at(i).pdgId()) == 11){
+                // Loop over all mothers to find N2 (or not)
+                const reco::Candidate* mom = genParts->at(i).mother(0);
+                while (mom->numberOfMothers() != 0){
+                    mom = mom->mother(0);
+                    if (mom->pdgId() == 1000023){
+                        nGenElFromN2++;
+                        nGenLepPts.push_back(genParts->at(i).pt());
+                        break;
+                    }
+                }
+            }else if (fabs(genParts->at(i).pdgId()) == 13){
+                // Loop over all mothers to find N2 (or not)
+                const reco::Candidate* mom = genParts->at(i).mother(0);
+                while (mom->numberOfMothers() != 0){
+                    mom = mom->mother(0);
+                    if (mom->pdgId() == 1000023){
+                        nGenMuFromN2++;
+                        nGenLepPts.push_back(genParts->at(i).pt());
+                        break;
+                    }
+                }
+            }
+        }
+    }
+
         // Muons
         for (size_t i=0; i<muons->size(); ++i){
             double pt = muons->at(i).pt();
@@ -646,6 +674,18 @@ MiniFromPat::recoAnalysis(const edm::Event& iEvent, const edm::EventSetup& iSetu
             double iso_rel = iso_abs/pt;
             double dxy = std::abs(muons->at(i).muonBestTrack()->dxy(vertices->at(prVtx).position()));
             double dz = std::abs(muons->at(i).muonBestTrack()->dz(vertices->at(prVtx).position()));
+
+            if (matchAny(genParts, muons->at(i), true)){
+                // Hard scattering muons
+                ev_.vld_mu_hs_pt.push_back(pt);
+            }else if (matchAny(genParts, muons->at(i), false)){
+                // py8 muons
+                ev_.vld_mu_py8_pt.push_back(pt);
+            }else{
+            // Other muons
+                ev_.vld_mu_others_pt.push_back(pt);
+            }
+
             ev_.vld_mu_pt.push_back(pt);
             ev_.vld_mu_is_tight.push_back(muon::isTightMuon(muons->at(i), vertices->at(prVtx)));
             ev_.vld_mu_iso_abs.push_back(iso_abs);
@@ -657,6 +697,18 @@ MiniFromPat::recoAnalysis(const edm::Event& iEvent, const edm::EventSetup& iSetu
             ev_.vld_mu_pt_dxy->Fill(pt, dxy);
             ev_.vld_mu_pt_dz->Fill(pt, dz);
             if (isGoodMuonSOS(muons->at(i), vertices, prVtx)){
+
+                if (matchAny(genParts, muons->at(i), true)){
+                    // Hard scattering muons
+                    ev_.vld_mu_tight_hs_pt.push_back(pt);
+                }else if (matchAny(genParts, muons->at(i), false)){
+                    // py8 muons
+                    ev_.vld_mu_tight_py8_pt.push_back(pt);
+                }else{
+                    // Other muons
+                    ev_.vld_mu_tight_others_pt.push_back(pt);
+                }
+
                 ev_.vld_mu_tight_pt.push_back(pt);
                 ev_.vld_mu_tight_iso_abs.push_back(iso_abs);
                 ev_.vld_mu_tight_iso_rel.push_back(iso_rel);
@@ -1152,6 +1204,18 @@ MiniFromPat::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
     ev_.vld_mu_tight_dxy.clear();
     ev_.vld_mu_dz.clear();
     ev_.vld_mu_tight_dz.clear();
+    ev_.vld_el_hs_pt.clear();
+    ev_.vld_el_tight_hs_pt.clear();
+    ev_.vld_el_py8_pt.clear();
+    ev_.vld_el_tight_py8_pt.clear();
+    ev_.vld_el_others_pt.clear();
+    ev_.vld_el_tight_others_pt.clear();
+    ev_.vld_mu_hs_pt.clear();
+    ev_.vld_mu_tight_hs_pt.clear();
+    ev_.vld_mu_py8_pt.clear();
+    ev_.vld_mu_tight_py8_pt.clear();
+    ev_.vld_mu_others_pt.clear();
+    ev_.vld_mu_tight_others_pt.clear();
 
     ev_.nLep = ev_.nEl = ev_.nMu = 0;
     ev_.nSoftLep = ev_.nSoftEl = ev_.nSoftMu = 0;
@@ -1353,6 +1417,35 @@ template <typename T> bool MiniFromPat::isMatched(const pat::PackedGenParticle t
     if (fabs(truthParticle.pt() - particle.pt()) < ev_.truth_match_diff_pt \
             && fabs(truthParticle.eta() - particle.eta()) < ev_.truth_match_diff_eta){
         return true;
+    }
+    return false;
+}
+
+template <typename T> bool MiniFromPat::matchAny(const edm::Handle<std::vector<pat::PackedGenParticle>> genParts, T particle, bool hs){
+    for (size_t i=0; i<genParts->size(); ++i){
+        if (genParts->at(i).pdgId() != particle.pdgId()){ continue; }
+        // Only consider particles that are from hard scattering when hs is
+        // true, or that are *not* from hard scattering when hs is false
+        if (hs ^ isHs(genParts->at(i), particle.pdgId())){ continue; }
+        if (isMatched(genParts->at(i), particle)){
+            return true;
+        }
+    }
+    return false;
+}
+
+// Is truth particle from hard scattering?
+bool MiniFromPat::isHs(const pat::PackedGenParticle truthParticle, int pdgId){
+    if (truthParticle.pdgId() == pdgId){
+        // Loop over all mothers to find N2 (or not)
+        const reco::Candidate* mom = truthParticle.mother(0);
+        if (mom->pdgId() == 1000023){ return true; }
+        while (mom->numberOfMothers() != 0){
+            mom = mom->mother(0);
+            if (mom->pdgId() == 1000023){
+                return true;
+            }
+        }
     }
     return false;
 }

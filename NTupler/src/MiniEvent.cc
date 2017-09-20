@@ -108,6 +108,18 @@ void createMiniEventTree(TTree* t_tree_, MiniEvent_t &ev)
   t_tree_->Branch("vld_mu_tight_dxy", &ev.vld_mu_tight_dxy);
   t_tree_->Branch("vld_mu_dz", &ev.vld_mu_dz);
   t_tree_->Branch("vld_mu_tight_dz", &ev.vld_mu_tight_dz);
+  t_tree_->Branch("vld_el_hs_pt", &ev.vld_el_hs_pt);
+  t_tree_->Branch("vld_el_tight_hs_pt", &ev.vld_el_tight_hs_pt);
+  t_tree_->Branch("vld_el_py8_pt", &ev.vld_el_py8_pt);
+  t_tree_->Branch("vld_el_tight_py8_pt", &ev.vld_el_tight_py8_pt);
+  t_tree_->Branch("vld_el_others_pt", &ev.vld_el_others_pt);
+  t_tree_->Branch("vld_el_tight_others_pt", &ev.vld_el_tight_others_pt);
+  t_tree_->Branch("vld_mu_hs_pt", &ev.vld_mu_hs_pt);
+  t_tree_->Branch("vld_mu_tight_hs_pt", &ev.vld_mu_tight_hs_pt);
+  t_tree_->Branch("vld_mu_py8_pt", &ev.vld_mu_py8_pt);
+  t_tree_->Branch("vld_mu_tight_py8_pt", &ev.vld_mu_tight_py8_pt);
+  t_tree_->Branch("vld_mu_others_pt", &ev.vld_mu_others_pt);
+  t_tree_->Branch("vld_mu_tight_others_pt", &ev.vld_mu_tight_others_pt);
 
   ////event header
   //t_tree_->Branch("Run",               &ev.run,        "Run/I");
