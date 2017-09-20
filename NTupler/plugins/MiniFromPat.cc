@@ -125,6 +125,7 @@ class MiniFromPat : public edm::one::EDAnalyzer<edm::one::SharedResources, edm::
         bool isGoodJetSOS(const pat::Jet & patJet);
         bool isGoodElecTruthSOS(const pat::PackedGenParticle truthEl, const std::vector<size_t> jGenJets, const edm::Handle<std::vector<reco::GenJet>> genJets);
         bool isGoodMuonTruthSOS(const pat::PackedGenParticle truthMu, const std::vector<size_t> jGenJets, const edm::Handle<std::vector<reco::GenJet>> genJets);
+        template <typename T> bool isMatched(const pat::PackedGenParticle truthEl, T particle);
         bool isME0MuonSel(reco::Muon, double pullXCut, double dXCut, double pullYCut, double dYCut, double dPhi);
         bool isME0MuonSelNew(reco::Muon, double, double, double);
 
@@ -415,8 +416,7 @@ MiniFromPat::genAnalysis(const edm::Event& iEvent, const edm::EventSetup& iSetup
                     if (!isGoodElecSOS(elecs->at(j), conversions, beamspot, vertices)){ continue; }
                     // If we make it here, this is a proper reco electron
                     // Fill numerator histogram if it can be matched
-                    if (fabs(genParts->at(i).pt() - elecs->at(j).pt()) < ev_.truth_match_diff_pt \
-                            && fabs(genParts->at(i).eta() - elecs->at(j).eta()) < ev_.truth_match_diff_eta){
+                    if (isMatched(genParts->at(i), elecs->at(j))){
                         ev_.rle_el_num->Fill(genParts->at(i).pt(), fabs(genParts->at(i).eta()));
                         break;
                     }
@@ -436,8 +436,7 @@ MiniFromPat::genAnalysis(const edm::Event& iEvent, const edm::EventSetup& iSetup
                     if (!isGoodMuonSOS(muons->at(j), vertices, prVtx)){ continue; }
                     // If we make it here, this is a proper reco muon
                     // Fill numerator histogram if it can be matched
-                    if (fabs(genParts->at(i).pt() - muons->at(j).pt()) < ev_.truth_match_diff_pt \
-                            && fabs(genParts->at(i).eta() - muons->at(j).eta()) < ev_.truth_match_diff_eta){
+                    if (isMatched(genParts->at(i), muons->at(j))){
                         ev_.rle_mu_num->Fill(genParts->at(i).pt(), fabs(genParts->at(i).eta()));
                         break;
                     }
@@ -1348,6 +1347,14 @@ bool MiniFromPat::isGoodMuonTruthSOS(const pat::PackedGenParticle truthMu, const
     if (absIso > 5.){ return false; }
 
     return true;
+}
+
+template <typename T> bool MiniFromPat::isMatched(const pat::PackedGenParticle truthParticle, T particle){
+    if (fabs(truthParticle.pt() - particle.pt()) < ev_.truth_match_diff_pt \
+            && fabs(truthParticle.eta() - particle.eta()) < ev_.truth_match_diff_eta){
+        return true;
+    }
+    return false;
 }
 
 // ------------ method to improve ME0 muon ID ----------------
