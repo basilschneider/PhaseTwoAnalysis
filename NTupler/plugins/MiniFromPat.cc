@@ -635,30 +635,30 @@ MiniFromPat::recoAnalysis(const edm::Event& iEvent, const edm::EventSetup& iSetu
             }
         }
 
-    //// Count leptons coming from N2 (pdgId = 1000023)
-    //unsigned int nGenElFromN2 = 0;
-    //unsigned int nGenMuFromN2 = 0;
+    //// Count leptons coming from SUSY (pdgId >= 1000000)
+    //unsigned int nGenElFromSusy = 0;
+    //unsigned int nGenMuFromSusy = 0;
     //std::vector<double> nGenLepPts;
     //if (ev_.fill_vld){
     //    for (size_t i=0; i<genParts->size(); ++i){
     //        if (fabs(genParts->at(i).pdgId()) == 11){
-    //            // Loop over all mothers to find N2 (or not)
+    //            // Loop over all mothers to find SUSY mother particle (or not)
     //            const reco::Candidate* mom = genParts->at(i).mother(0);
     //            while (mom->numberOfMothers() != 0){
     //                mom = mom->mother(0);
-    //                if (mom->pdgId() == 1000023){
-    //                    nGenElFromN2++;
+    //                if (mom->pdgId() >= 1000000){
+    //                    nGenElFromSusy++;
     //                    nGenLepPts.push_back(genParts->at(i).pt());
     //                    break;
     //                }
     //            }
     //        }else if (fabs(genParts->at(i).pdgId()) == 13){
-    //            // Loop over all mothers to find N2 (or not)
+    //            // Loop over all mothers to find SUSY mother particle (or not)
     //            const reco::Candidate* mom = genParts->at(i).mother(0);
     //            while (mom->numberOfMothers() != 0){
     //                mom = mom->mother(0);
-    //                if (mom->pdgId() == 1000023){
-    //                    nGenMuFromN2++;
+    //                if (mom->pdgId() >= 1000000){
+    //                    nGenMuFromSusy++;
     //                    nGenLepPts.push_back(genParts->at(i).pt());
     //                    break;
     //                }
@@ -1437,12 +1437,12 @@ template <typename T> bool MiniFromPat::matchAny(const edm::Handle<std::vector<p
 // Is truth particle from hard scattering?
 bool MiniFromPat::isHs(const pat::PackedGenParticle truthParticle, int pdgId){
     if (truthParticle.pdgId() == pdgId){
-        // Loop over all mothers to find N2 (or not)
+        // Loop over all mothers to find SUSY mother particle (or not)
         const reco::Candidate* mom = truthParticle.mother(0);
-        if (mom->pdgId() == 1000023){ return true; }
+        if (mom->pdgId() >= 1000000){ return true; }
         while (mom->numberOfMothers() != 0){
             mom = mom->mother(0);
-            if (mom->pdgId() == 1000023){
+            if (mom->pdgId() >= 1000000){
                 return true;
             }
         }
