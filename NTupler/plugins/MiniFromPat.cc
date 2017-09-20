@@ -635,37 +635,37 @@ MiniFromPat::recoAnalysis(const edm::Event& iEvent, const edm::EventSetup& iSetu
             }
         }
 
-    // Count leptons coming from N2 (pdgId = 1000023)
-    unsigned int nGenElFromN2 = 0;
-    unsigned int nGenMuFromN2 = 0;
-    std::vector<double> nGenLepPts;
-    if (ev_.fill_vld){
-        for (size_t i=0; i<genParts->size(); ++i){
-            if (fabs(genParts->at(i).pdgId()) == 11){
-                // Loop over all mothers to find N2 (or not)
-                const reco::Candidate* mom = genParts->at(i).mother(0);
-                while (mom->numberOfMothers() != 0){
-                    mom = mom->mother(0);
-                    if (mom->pdgId() == 1000023){
-                        nGenElFromN2++;
-                        nGenLepPts.push_back(genParts->at(i).pt());
-                        break;
-                    }
-                }
-            }else if (fabs(genParts->at(i).pdgId()) == 13){
-                // Loop over all mothers to find N2 (or not)
-                const reco::Candidate* mom = genParts->at(i).mother(0);
-                while (mom->numberOfMothers() != 0){
-                    mom = mom->mother(0);
-                    if (mom->pdgId() == 1000023){
-                        nGenMuFromN2++;
-                        nGenLepPts.push_back(genParts->at(i).pt());
-                        break;
-                    }
-                }
-            }
-        }
-    }
+    //// Count leptons coming from N2 (pdgId = 1000023)
+    //unsigned int nGenElFromN2 = 0;
+    //unsigned int nGenMuFromN2 = 0;
+    //std::vector<double> nGenLepPts;
+    //if (ev_.fill_vld){
+    //    for (size_t i=0; i<genParts->size(); ++i){
+    //        if (fabs(genParts->at(i).pdgId()) == 11){
+    //            // Loop over all mothers to find N2 (or not)
+    //            const reco::Candidate* mom = genParts->at(i).mother(0);
+    //            while (mom->numberOfMothers() != 0){
+    //                mom = mom->mother(0);
+    //                if (mom->pdgId() == 1000023){
+    //                    nGenElFromN2++;
+    //                    nGenLepPts.push_back(genParts->at(i).pt());
+    //                    break;
+    //                }
+    //            }
+    //        }else if (fabs(genParts->at(i).pdgId()) == 13){
+    //            // Loop over all mothers to find N2 (or not)
+    //            const reco::Candidate* mom = genParts->at(i).mother(0);
+    //            while (mom->numberOfMothers() != 0){
+    //                mom = mom->mother(0);
+    //                if (mom->pdgId() == 1000023){
+    //                    nGenMuFromN2++;
+    //                    nGenLepPts.push_back(genParts->at(i).pt());
+    //                    break;
+    //                }
+    //            }
+    //        }
+    //    }
+    //}
 
         // Muons
         for (size_t i=0; i<muons->size(); ++i){
