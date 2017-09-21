@@ -266,6 +266,19 @@ MiniFromPat::~MiniFromPat()
         ev_.vld_mu_tight_pt_dxy->Write();
         ev_.vld_mu_pt_dz->Write();
         ev_.vld_mu_tight_pt_dz->Write();
+
+        ev_.vld_el_hs_pt_eta->Write();
+        ev_.vld_el_tight_hs_pt_eta->Write();
+        ev_.vld_el_py8_pt_eta->Write();
+        ev_.vld_el_tight_py8_pt_eta->Write();
+        ev_.vld_el_others_pt_eta->Write();
+        ev_.vld_el_tight_others_pt_eta->Write();
+        ev_.vld_mu_hs_pt_eta->Write();
+        ev_.vld_mu_tight_hs_pt_eta->Write();
+        ev_.vld_mu_py8_pt_eta->Write();
+        ev_.vld_mu_tight_py8_pt_eta->Write();
+        ev_.vld_mu_others_pt_eta->Write();
+        ev_.vld_mu_tight_others_pt_eta->Write();
     }
 }
 
@@ -594,14 +607,17 @@ MiniFromPat::recoAnalysis(const edm::Event& iEvent, const edm::EventSetup& iSetu
                 // Hard scattering electrons
                 ev_.vld_el_hs_pt.push_back(pt);
                 ev_.vld_el_hs_eta.push_back(eta);
+                ev_.vld_el_hs_pt_eta->Fill(pt, eta);
             }else if (matchAny(genParts, elecs->at(i), false)){
                 // py8 electrons
                 ev_.vld_el_py8_pt.push_back(pt);
                 ev_.vld_el_py8_eta.push_back(eta);
+                ev_.vld_el_py8_pt_eta->Fill(pt, eta);
             }else{
                 // Other electrons
                 ev_.vld_el_others_pt.push_back(pt);
                 ev_.vld_el_others_eta.push_back(eta);
+                ev_.vld_el_others_pt_eta->Fill(pt, eta);
             }
 
             ev_.vld_el_pt.push_back(pt);
@@ -620,14 +636,17 @@ MiniFromPat::recoAnalysis(const edm::Event& iEvent, const edm::EventSetup& iSetu
                     // Hard scattering electrons
                     ev_.vld_el_tight_hs_pt.push_back(pt);
                     ev_.vld_el_tight_hs_eta.push_back(eta);
+                    ev_.vld_el_tight_hs_pt_eta->Fill(pt, eta);
                 }else if (matchAny(genParts, elecs->at(i), false)){
                     // py8 electrons
                     ev_.vld_el_tight_py8_pt.push_back(pt);
                     ev_.vld_el_tight_py8_eta.push_back(eta);
+                    ev_.vld_el_tight_py8_pt_eta->Fill(pt, eta);
                 }else{
                     // Other electrons
                     ev_.vld_el_tight_others_pt.push_back(pt);
                     ev_.vld_el_tight_others_eta.push_back(eta);
+                    ev_.vld_el_tight_others_pt_eta->Fill(pt, eta);
                 }
 
                 ev_.vld_el_tight_pt.push_back(pt);
@@ -687,14 +706,17 @@ MiniFromPat::recoAnalysis(const edm::Event& iEvent, const edm::EventSetup& iSetu
                 // Hard scattering muons
                 ev_.vld_mu_hs_pt.push_back(pt);
                 ev_.vld_mu_hs_eta.push_back(eta);
+                ev_.vld_mu_hs_pt_eta->Fill(pt, eta);
             }else if (matchAny(genParts, muons->at(i), false)){
                 // py8 muons
                 ev_.vld_mu_py8_pt.push_back(pt);
                 ev_.vld_mu_py8_eta.push_back(eta);
+                ev_.vld_mu_py8_pt_eta->Fill(pt, eta);
             }else{
                 // Other muons
                 ev_.vld_mu_others_pt.push_back(pt);
                 ev_.vld_mu_others_eta.push_back(eta);
+                ev_.vld_mu_others_pt_eta->Fill(pt, eta);
             }
 
             ev_.vld_mu_pt.push_back(pt);
@@ -713,14 +735,17 @@ MiniFromPat::recoAnalysis(const edm::Event& iEvent, const edm::EventSetup& iSetu
                     // Hard scattering muons
                     ev_.vld_mu_tight_hs_pt.push_back(pt);
                     ev_.vld_mu_tight_hs_eta.push_back(eta);
+                    ev_.vld_mu_tight_hs_pt_eta->Fill(pt, eta);
                 }else if (matchAny(genParts, muons->at(i), false)){
                     // py8 muons
                     ev_.vld_mu_tight_py8_pt.push_back(pt);
                     ev_.vld_mu_tight_py8_eta.push_back(eta);
+                    ev_.vld_mu_tight_py8_pt_eta->Fill(pt, eta);
                 }else{
                     // Other muons
                     ev_.vld_mu_tight_others_pt.push_back(pt);
                     ev_.vld_mu_tight_others_eta.push_back(eta);
+                    ev_.vld_mu_tight_others_pt_eta->Fill(pt, eta);
                 }
 
                 ev_.vld_mu_tight_pt.push_back(pt);

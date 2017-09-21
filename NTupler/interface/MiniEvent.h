@@ -89,10 +89,25 @@ struct MiniEvent_t
     std::vector<double> vld_mu_pt, vld_mu_tight_pt, vld_mu_is_tight;
     std::vector<double> vld_mu_iso_abs, vld_mu_tight_iso_abs, vld_mu_iso_rel, vld_mu_tight_iso_rel;
     std::vector<double> vld_mu_dxy, vld_mu_tight_dxy, vld_mu_dz, vld_mu_tight_dz;
+
     std::vector<double> vld_el_hs_pt, vld_el_tight_hs_pt, vld_el_py8_pt, vld_el_tight_py8_pt, vld_el_others_pt, vld_el_tight_others_pt;
     std::vector<double> vld_el_hs_eta, vld_el_tight_hs_eta, vld_el_py8_eta, vld_el_tight_py8_eta, vld_el_others_eta, vld_el_tight_others_eta;
     std::vector<double> vld_mu_hs_pt, vld_mu_tight_hs_pt, vld_mu_py8_pt, vld_mu_tight_py8_pt, vld_mu_others_pt, vld_mu_tight_others_pt;
     std::vector<double> vld_mu_hs_eta, vld_mu_tight_hs_eta, vld_mu_py8_eta, vld_mu_tight_py8_eta, vld_mu_others_eta, vld_mu_tight_others_eta;
+
+    TH2D* vld_el_hs_pt_eta = new TH2D("vld_el_hs_pt_eta", "vld_el_hs_pt_eta", 36, 0., 90., 40, 0., 4.);
+    TH2D* vld_el_tight_hs_pt_eta = new TH2D("vld_el_tight_hs_pt_eta", "vld_el_tight_hs_pt_eta", 36, 0., 90., 40, 0., 4.);
+    TH2D* vld_el_py8_pt_eta = new TH2D("vld_el_py8_pt_eta", "vld_el_py8_pt_eta", 36, 0., 90., 40, 0., 4.);
+    TH2D* vld_el_tight_py8_pt_eta = new TH2D("vld_el_tight_py8_pt_eta", "vld_el_tight_py8_pt_eta", 36, 0., 90., 40, 0., 4.);
+    TH2D* vld_el_others_pt_eta = new TH2D("vld_el_others_pt_eta", "vld_el_others_pt_eta", 36, 0., 90., 40, 0., 4.);
+    TH2D* vld_el_tight_others_pt_eta = new TH2D("vld_el_tight_others_pt_eta", "vld_el_tight_others_pt_eta", 36, 0., 90., 40, 0., 4.);
+    TH2D* vld_mu_hs_pt_eta = new TH2D("vld_mu_hs_pt_eta", "vld_mu_hs_pt_eta", 36, 0., 90., 40, 0., 4.);
+    TH2D* vld_mu_tight_hs_pt_eta = new TH2D("vld_mu_tight_hs_pt_eta", "vld_mu_tight_hs_pt_eta", 36, 0., 90., 40, 0., 4.);
+    TH2D* vld_mu_py8_pt_eta = new TH2D("vld_mu_py8_pt_eta", "vld_mu_py8_pt_eta", 36, 0., 90., 40, 0., 4.);
+    TH2D* vld_mu_tight_py8_pt_eta = new TH2D("vld_mu_tight_py8_pt_eta", "vld_mu_tight_py8_pt_eta", 36, 0., 90., 40, 0., 4.);
+    TH2D* vld_mu_others_pt_eta = new TH2D("vld_mu_others_pt_eta", "vld_mu_others_pt_eta", 36, 0., 90., 40, 0., 4.);
+    TH2D* vld_mu_tight_others_pt_eta = new TH2D("vld_mu_tight_others_pt_eta", "vld_mu_tight_others_pt_eta", 36, 0., 90., 40, 0., 4.);
+
     TH2D* vld_el_pt_iso_abs = new TH2D("vld_el_pt_iso_abs", "vld_el_pt_iso_abs", 12, 0., 30., 40, 0., 20.);
     TH2D* vld_el_tight_pt_iso_abs = new TH2D("vld_el_tight_pt_iso_abs", "vld_el_tight_pt_iso_abs", 12, 0., 30., 40, 0., 20.);
     TH2D* vld_el_pt_iso_rel = new TH2D("vld_el_pt_iso_rel", "vld_el_pt_iso_rel", 12, 0., 30., 40, 0., 2.);
