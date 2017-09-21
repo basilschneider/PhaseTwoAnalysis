@@ -35,6 +35,7 @@ struct MiniEvent_t
     static constexpr double iso_cut_abs = 5.;
     static constexpr double truth_match_diff_pt = 5.;
     static constexpr double truth_match_diff_eta = .1;
+    static constexpr double truth_match_diff_phi = .1;
 
     //gen level event
     Int_t ng,ngj,ngl;

@@ -1467,6 +1467,7 @@ bool MiniFromPat::isGoodMuonTruthSOS(const pat::PackedGenParticle truthMu, const
 template <typename T> bool MiniFromPat::isMatched(const pat::PackedGenParticle truthParticle, T particle){
     if (fabs(truthParticle.pt() - particle.pt()) > ev_.truth_match_diff_pt){ return false; }
     if (fabs(truthParticle.eta() - particle.eta()) > ev_.truth_match_diff_eta){ return false; }
+    if (fabs(truthParticle.phi() - particle.phi()) > ev_.truth_match_diff_phi){ return false; }
     return true;
 }
 
