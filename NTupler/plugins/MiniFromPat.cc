@@ -626,7 +626,7 @@ MiniFromPat::recoAnalysis(const edm::Event& iEvent, const edm::EventSetup& iSetu
         //}
 
         // Electrons
-        for (size_t i=0; i<elecs->size(); ++i) {
+        for (size_t i=0; i<elecs->size(); ++i){
             double pt = elecs->at(i).pt();
             double eta = elecs->at(i).eta();
             double iso_abs = elecs->at(i).pfIsolationVariables().sumChargedHadronPt;
@@ -1465,11 +1465,9 @@ bool MiniFromPat::isGoodMuonTruthSOS(const pat::PackedGenParticle truthMu, const
 }
 
 template <typename T> bool MiniFromPat::isMatched(const pat::PackedGenParticle truthParticle, T particle){
-    if (fabs(truthParticle.pt() - particle.pt()) < ev_.truth_match_diff_pt \
-            && fabs(truthParticle.eta() - particle.eta()) < ev_.truth_match_diff_eta){
-        return true;
-    }
-    return false;
+    if (fabs(truthParticle.pt() - particle.pt()) > ev_.truth_match_diff_pt){ return false; }
+    if (fabs(truthParticle.eta() - particle.eta()) > ev_.truth_match_diff_eta){ return false; }
+    return true;
 }
 
 template <typename T> bool MiniFromPat::matchAny(const edm::Handle<std::vector<pat::PackedGenParticle>> genParts, T particle, bool hs){
