@@ -114,12 +114,24 @@ void createMiniEventTree(TTree* t_tree_, MiniEvent_t &ev)
   t_tree_->Branch("vld_el_tight_py8_pt", &ev.vld_el_tight_py8_pt);
   t_tree_->Branch("vld_el_others_pt", &ev.vld_el_others_pt);
   t_tree_->Branch("vld_el_tight_others_pt", &ev.vld_el_tight_others_pt);
+  t_tree_->Branch("vld_el_hs_eta", &ev.vld_el_hs_eta);
+  t_tree_->Branch("vld_el_tight_hs_eta", &ev.vld_el_tight_hs_eta);
+  t_tree_->Branch("vld_el_py8_eta", &ev.vld_el_py8_eta);
+  t_tree_->Branch("vld_el_tight_py8_eta", &ev.vld_el_tight_py8_eta);
+  t_tree_->Branch("vld_el_others_eta", &ev.vld_el_others_eta);
+  t_tree_->Branch("vld_el_tight_others_eta", &ev.vld_el_tight_others_eta);
   t_tree_->Branch("vld_mu_hs_pt", &ev.vld_mu_hs_pt);
   t_tree_->Branch("vld_mu_tight_hs_pt", &ev.vld_mu_tight_hs_pt);
   t_tree_->Branch("vld_mu_py8_pt", &ev.vld_mu_py8_pt);
   t_tree_->Branch("vld_mu_tight_py8_pt", &ev.vld_mu_tight_py8_pt);
   t_tree_->Branch("vld_mu_others_pt", &ev.vld_mu_others_pt);
   t_tree_->Branch("vld_mu_tight_others_pt", &ev.vld_mu_tight_others_pt);
+  t_tree_->Branch("vld_mu_hs_eta", &ev.vld_mu_hs_eta);
+  t_tree_->Branch("vld_mu_tight_hs_eta", &ev.vld_mu_tight_hs_eta);
+  t_tree_->Branch("vld_mu_py8_eta", &ev.vld_mu_py8_eta);
+  t_tree_->Branch("vld_mu_tight_py8_eta", &ev.vld_mu_tight_py8_eta);
+  t_tree_->Branch("vld_mu_others_eta", &ev.vld_mu_others_eta);
+  t_tree_->Branch("vld_mu_tight_others_eta", &ev.vld_mu_tight_others_eta);
 
   ////event header
   //t_tree_->Branch("Run",               &ev.run,        "Run/I");

@@ -583,6 +583,7 @@ MiniFromPat::recoAnalysis(const edm::Event& iEvent, const edm::EventSetup& iSetu
         // Electrons
         for (size_t i=0; i<elecs->size(); ++i) {
             double pt = elecs->at(i).pt();
+            double eta = elecs->at(i).eta();
             double iso_abs = elecs->at(i).pfIsolationVariables().sumChargedHadronPt;
             double iso_rel = iso_abs/pt;
             const reco::Vertex &pv = vertices->front();
@@ -592,12 +593,15 @@ MiniFromPat::recoAnalysis(const edm::Event& iEvent, const edm::EventSetup& iSetu
             if (matchAny(genParts, elecs->at(i), true)){
                 // Hard scattering electrons
                 ev_.vld_el_hs_pt.push_back(pt);
+                ev_.vld_el_hs_eta.push_back(eta);
             }else if (matchAny(genParts, elecs->at(i), false)){
                 // py8 electrons
                 ev_.vld_el_py8_pt.push_back(pt);
+                ev_.vld_el_py8_eta.push_back(eta);
             }else{
                 // Other electrons
                 ev_.vld_el_others_pt.push_back(pt);
+                ev_.vld_el_others_eta.push_back(eta);
             }
 
             ev_.vld_el_pt.push_back(pt);
@@ -615,12 +619,15 @@ MiniFromPat::recoAnalysis(const edm::Event& iEvent, const edm::EventSetup& iSetu
                 if (matchAny(genParts, elecs->at(i), true)){
                     // Hard scattering electrons
                     ev_.vld_el_tight_hs_pt.push_back(pt);
+                    ev_.vld_el_tight_hs_eta.push_back(eta);
                 }else if (matchAny(genParts, elecs->at(i), false)){
                     // py8 electrons
                     ev_.vld_el_tight_py8_pt.push_back(pt);
+                    ev_.vld_el_tight_py8_eta.push_back(eta);
                 }else{
                     // Other electrons
                     ev_.vld_el_tight_others_pt.push_back(pt);
+                    ev_.vld_el_tight_others_eta.push_back(eta);
                 }
 
                 ev_.vld_el_tight_pt.push_back(pt);
@@ -670,6 +677,7 @@ MiniFromPat::recoAnalysis(const edm::Event& iEvent, const edm::EventSetup& iSetu
         // Muons
         for (size_t i=0; i<muons->size(); ++i){
             double pt = muons->at(i).pt();
+            double eta = muons->at(i).eta();
             double iso_abs = muons->at(i).puppiChargedHadronIso() + muons->at(i).puppiNeutralHadronIso() + muons->at(i).puppiPhotonIso();
             double iso_rel = iso_abs/pt;
             double dxy = std::abs(muons->at(i).muonBestTrack()->dxy(vertices->at(prVtx).position()));
@@ -678,12 +686,15 @@ MiniFromPat::recoAnalysis(const edm::Event& iEvent, const edm::EventSetup& iSetu
             if (matchAny(genParts, muons->at(i), true)){
                 // Hard scattering muons
                 ev_.vld_mu_hs_pt.push_back(pt);
+                ev_.vld_mu_hs_eta.push_back(eta);
             }else if (matchAny(genParts, muons->at(i), false)){
                 // py8 muons
                 ev_.vld_mu_py8_pt.push_back(pt);
+                ev_.vld_mu_py8_eta.push_back(eta);
             }else{
-            // Other muons
+                // Other muons
                 ev_.vld_mu_others_pt.push_back(pt);
+                ev_.vld_mu_others_eta.push_back(eta);
             }
 
             ev_.vld_mu_pt.push_back(pt);
@@ -701,12 +712,15 @@ MiniFromPat::recoAnalysis(const edm::Event& iEvent, const edm::EventSetup& iSetu
                 if (matchAny(genParts, muons->at(i), true)){
                     // Hard scattering muons
                     ev_.vld_mu_tight_hs_pt.push_back(pt);
+                    ev_.vld_mu_tight_hs_eta.push_back(eta);
                 }else if (matchAny(genParts, muons->at(i), false)){
                     // py8 muons
                     ev_.vld_mu_tight_py8_pt.push_back(pt);
+                    ev_.vld_mu_tight_py8_eta.push_back(eta);
                 }else{
                     // Other muons
                     ev_.vld_mu_tight_others_pt.push_back(pt);
+                    ev_.vld_mu_tight_others_eta.push_back(eta);
                 }
 
                 ev_.vld_mu_tight_pt.push_back(pt);
@@ -1216,6 +1230,18 @@ MiniFromPat::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
     ev_.vld_mu_tight_py8_pt.clear();
     ev_.vld_mu_others_pt.clear();
     ev_.vld_mu_tight_others_pt.clear();
+    ev_.vld_el_hs_eta.clear();
+    ev_.vld_el_tight_hs_eta.clear();
+    ev_.vld_el_py8_eta.clear();
+    ev_.vld_el_tight_py8_eta.clear();
+    ev_.vld_el_others_eta.clear();
+    ev_.vld_el_tight_others_eta.clear();
+    ev_.vld_mu_hs_eta.clear();
+    ev_.vld_mu_tight_hs_eta.clear();
+    ev_.vld_mu_py8_eta.clear();
+    ev_.vld_mu_tight_py8_eta.clear();
+    ev_.vld_mu_others_eta.clear();
+    ev_.vld_mu_tight_others_eta.clear();
 
     ev_.nLep = ev_.nEl = ev_.nMu = 0;
     ev_.nSoftLep = ev_.nSoftEl = ev_.nSoftMu = 0;
