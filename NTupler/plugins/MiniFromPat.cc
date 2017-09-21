@@ -125,6 +125,8 @@ class MiniFromPat : public edm::one::EDAnalyzer<edm::one::SharedResources, edm::
         bool isGoodJetSOS(const pat::Jet & patJet);
         bool isGoodElecTruthSOS(const pat::PackedGenParticle truthEl, const std::vector<size_t> jGenJets, const edm::Handle<std::vector<reco::GenJet>> genJets);
         bool isGoodMuonTruthSOS(const pat::PackedGenParticle truthMu, const std::vector<size_t> jGenJets, const edm::Handle<std::vector<reco::GenJet>> genJets);
+        double DeltaR(double eta1, double eta2, double phi1, double phi2);
+        double DeltaPhi(double phi1, double phi2);
         template <typename T> bool isMatched(const pat::PackedGenParticle truthEl, T particle);
         template <typename T> bool matchAny(const edm::Handle<std::vector<pat::PackedGenParticle>> genParts, T particle, bool hs);
         bool isHs(const pat::PackedGenParticle truthParticle, int pdgId);
@@ -1464,10 +1466,22 @@ bool MiniFromPat::isGoodMuonTruthSOS(const pat::PackedGenParticle truthMu, const
     return true;
 }
 
+double MiniFromPat::DeltaR(double eta1, double eta2, double phi1, double phi2){
+    double dEta = eta1 - eta2;
+    double dPhi = DeltaPhi(phi1, phi2);
+    return TMath::Sqrt(dEta*dEta + dPhi*dPhi);
+}
+
+double MiniFromPat::DeltaPhi(double phi1, double phi2){
+    double dPhi = phi1 - phi2;
+    while (dPhi  >  TMath::Pi()) dPhi -= 2*TMath::Pi();
+    while (dPhi <= -TMath::Pi()) dPhi += 2*TMath::Pi();
+    return fabs(dPhi);
+}
+
 template <typename T> bool MiniFromPat::isMatched(const pat::PackedGenParticle truthParticle, T particle){
     if (fabs(truthParticle.pt() - particle.pt()) > ev_.truth_match_diff_pt){ return false; }
-    if (fabs(truthParticle.eta() - particle.eta()) > ev_.truth_match_diff_eta){ return false; }
-    if (fabs(truthParticle.phi() - particle.phi()) > ev_.truth_match_diff_phi){ return false; }
+    if (DeltaR(truthParticle.eta(), particle.eta(), truthParticle.phi(), particle.phi()) > ev_.truth_match_diff_dr){ return false; }
     return true;
 }
 
