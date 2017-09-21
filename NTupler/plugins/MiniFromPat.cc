@@ -593,6 +593,38 @@ MiniFromPat::recoAnalysis(const edm::Event& iEvent, const edm::EventSetup& iSetu
     // Validation
     if (ev_.fill_vld){
 
+        //// Count leptons coming from SUSY (pdgId >= 1000000)
+        //unsigned int nGenElFromSusy = 0;
+        //unsigned int nGenMuFromSusy = 0;
+        //std::vector<double> nGenLepPts;
+        //if (ev_.fill_vld){
+        //    for (size_t i=0; i<genParts->size(); ++i){
+        //        if (fabs(genParts->at(i).pdgId()) == 11){
+        //            // Loop over all mothers to find SUSY mother particle (or not)
+        //            const reco::Candidate* mom = genParts->at(i).mother(0);
+        //            while (mom->numberOfMothers() != 0){
+        //                mom = mom->mother(0);
+        //                if (mom->pdgId() >= 1000000){
+        //                    nGenElFromSusy++;
+        //                    nGenLepPts.push_back(genParts->at(i).pt());
+        //                    break;
+        //                }
+        //            }
+        //        }else if (fabs(genParts->at(i).pdgId()) == 13){
+        //            // Loop over all mothers to find SUSY mother particle (or not)
+        //            const reco::Candidate* mom = genParts->at(i).mother(0);
+        //            while (mom->numberOfMothers() != 0){
+        //                mom = mom->mother(0);
+        //                if (mom->pdgId() >= 1000000){
+        //                    nGenMuFromSusy++;
+        //                    nGenLepPts.push_back(genParts->at(i).pt());
+        //                    break;
+        //                }
+        //            }
+        //        }
+        //    }
+        //}
+
         // Electrons
         for (size_t i=0; i<elecs->size(); ++i) {
             double pt = elecs->at(i).pt();
@@ -660,38 +692,6 @@ MiniFromPat::recoAnalysis(const edm::Event& iEvent, const edm::EventSetup& iSetu
                 ev_.vld_el_tight_pt_dz->Fill(pt, dz);
             }
         }
-
-    //// Count leptons coming from SUSY (pdgId >= 1000000)
-    //unsigned int nGenElFromSusy = 0;
-    //unsigned int nGenMuFromSusy = 0;
-    //std::vector<double> nGenLepPts;
-    //if (ev_.fill_vld){
-    //    for (size_t i=0; i<genParts->size(); ++i){
-    //        if (fabs(genParts->at(i).pdgId()) == 11){
-    //            // Loop over all mothers to find SUSY mother particle (or not)
-    //            const reco::Candidate* mom = genParts->at(i).mother(0);
-    //            while (mom->numberOfMothers() != 0){
-    //                mom = mom->mother(0);
-    //                if (mom->pdgId() >= 1000000){
-    //                    nGenElFromSusy++;
-    //                    nGenLepPts.push_back(genParts->at(i).pt());
-    //                    break;
-    //                }
-    //            }
-    //        }else if (fabs(genParts->at(i).pdgId()) == 13){
-    //            // Loop over all mothers to find SUSY mother particle (or not)
-    //            const reco::Candidate* mom = genParts->at(i).mother(0);
-    //            while (mom->numberOfMothers() != 0){
-    //                mom = mom->mother(0);
-    //                if (mom->pdgId() >= 1000000){
-    //                    nGenMuFromSusy++;
-    //                    nGenLepPts.push_back(genParts->at(i).pt());
-    //                    break;
-    //                }
-    //            }
-    //        }
-    //    }
-    //}
 
         // Muons
         for (size_t i=0; i<muons->size(); ++i){
