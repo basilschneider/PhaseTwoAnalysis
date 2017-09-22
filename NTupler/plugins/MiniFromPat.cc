@@ -121,6 +121,7 @@ class MiniFromPat : public edm::one::EDAnalyzer<edm::one::SharedResources, edm::
         bool isMediumElec(const pat::Electron & patEl, edm::Handle<reco::ConversionCollection> conversions, const reco::BeamSpot beamspot);
         bool isTightElec(const pat::Electron & patEl, edm::Handle<reco::ConversionCollection> conversions, const reco::BeamSpot beamspot);
         bool isGoodElecSOS(const pat::Electron & patEl, edm::Handle<reco::ConversionCollection> conversions, const reco::BeamSpot beamspot, edm::Handle<std::vector<reco::Vertex>> vertices);
+        bool isTightMuon(const pat::Muon & patMu, edm::Handle<std::vector<reco::Vertex>> vertices, int prVtx);
         bool isGoodMuonSOS(const pat::Muon & patMu, edm::Handle<std::vector<reco::Vertex>> vertices, int prVtx);
         bool isGoodJetSOS(const pat::Jet & patJet);
         bool isGoodElecTruthSOS(const pat::PackedGenParticle truthEl, const std::vector<size_t> jGenJets, const edm::Handle<std::vector<reco::GenJet>> genJets);
@@ -252,22 +253,22 @@ MiniFromPat::~MiniFromPat()
         rle_mu->Write();
     }
     if (ev_.fill_vld){
-        ev_.vld_el_pt_iso_abs->Write();
-        ev_.vld_el_tight_pt_iso_abs->Write();
-        ev_.vld_el_pt_iso_rel->Write();
-        ev_.vld_el_tight_pt_iso_rel->Write();
-        ev_.vld_el_pt_dxy->Write();
-        ev_.vld_el_tight_pt_dxy->Write();
-        ev_.vld_el_pt_dz->Write();
-        ev_.vld_el_tight_pt_dz->Write();
-        ev_.vld_mu_pt_iso_abs->Write();
-        ev_.vld_mu_tight_pt_iso_abs->Write();
-        ev_.vld_mu_pt_iso_rel->Write();
-        ev_.vld_mu_tight_pt_iso_rel->Write();
-        ev_.vld_mu_pt_dxy->Write();
-        ev_.vld_mu_tight_pt_dxy->Write();
-        ev_.vld_mu_pt_dz->Write();
-        ev_.vld_mu_tight_pt_dz->Write();
+        //ev_.vld_el_pt_iso_abs->Write();
+        //ev_.vld_el_tight_pt_iso_abs->Write();
+        //ev_.vld_el_pt_iso_rel->Write();
+        //ev_.vld_el_tight_pt_iso_rel->Write();
+        //ev_.vld_el_pt_dxy->Write();
+        //ev_.vld_el_tight_pt_dxy->Write();
+        //ev_.vld_el_pt_dz->Write();
+        //ev_.vld_el_tight_pt_dz->Write();
+        //ev_.vld_mu_pt_iso_abs->Write();
+        //ev_.vld_mu_tight_pt_iso_abs->Write();
+        //ev_.vld_mu_pt_iso_rel->Write();
+        //ev_.vld_mu_tight_pt_iso_rel->Write();
+        //ev_.vld_mu_pt_dxy->Write();
+        //ev_.vld_mu_tight_pt_dxy->Write();
+        //ev_.vld_mu_pt_dz->Write();
+        //ev_.vld_mu_tight_pt_dz->Write();
 
         ev_.vld_el_hs_pt_eta->Write();
         ev_.vld_el_tight_hs_pt_eta->Write();
@@ -656,14 +657,19 @@ MiniFromPat::recoAnalysis(const edm::Event& iEvent, const edm::EventSetup& iSetu
 
             ev_.vld_el_pt.push_back(pt);
             ev_.vld_el_is_tight.push_back(isTightElec(elecs->at(i), conversions, beamspot));
-            ev_.vld_el_iso_abs.push_back(iso_abs);
-            ev_.vld_el_iso_rel.push_back(iso_rel);
-            ev_.vld_el_dxy.push_back(dxy);
-            ev_.vld_el_dz.push_back(dz);
-            ev_.vld_el_pt_iso_abs->Fill(pt, iso_abs);
-            ev_.vld_el_pt_iso_rel->Fill(pt, iso_rel);
-            ev_.vld_el_pt_dxy->Fill(pt, dxy);
-            ev_.vld_el_pt_dz->Fill(pt, dz);
+            //ev_.vld_el_iso_abs.push_back(iso_abs);
+            //ev_.vld_el_iso_rel.push_back(iso_rel);
+            //ev_.vld_el_dxy.push_back(dxy);
+            //ev_.vld_el_dz.push_back(dz);
+            //ev_.vld_el_pt_iso_abs->Fill(pt, iso_abs);
+            //ev_.vld_el_pt_iso_rel->Fill(pt, iso_rel);
+            //ev_.vld_el_pt_dxy->Fill(pt, dxy);
+            //ev_.vld_el_pt_dz->Fill(pt, dz);
+
+            if (isTightElec(elecs->at(i), conversions, beamspot)){
+                ev_.vld_el_tight_pt.push_back(pt);
+            }
+
             if (isGoodElecSOS(elecs->at(i), conversions, beamspot, vertices)){
 
                 if (matchAny(genParts, elecs->at(i), true)){
@@ -683,15 +689,15 @@ MiniFromPat::recoAnalysis(const edm::Event& iEvent, const edm::EventSetup& iSetu
                     ev_.vld_el_tight_others_pt_eta->Fill(pt, eta);
                 }
 
-                ev_.vld_el_tight_pt.push_back(pt);
-                ev_.vld_el_tight_iso_abs.push_back(iso_abs);
-                ev_.vld_el_tight_iso_rel.push_back(iso_rel);
-                ev_.vld_el_tight_dxy.push_back(dxy);
-                ev_.vld_el_tight_dz.push_back(dz);
-                ev_.vld_el_tight_pt_iso_abs->Fill(pt, iso_abs);
-                ev_.vld_el_tight_pt_iso_rel->Fill(pt, iso_rel);
-                ev_.vld_el_tight_pt_dxy->Fill(pt, dxy);
-                ev_.vld_el_tight_pt_dz->Fill(pt, dz);
+                ev_.vld_el_tight_iso_pt.push_back(pt);
+                //ev_.vld_el_tight_iso_abs.push_back(iso_abs);
+                //ev_.vld_el_tight_iso_rel.push_back(iso_rel);
+                //ev_.vld_el_tight_dxy.push_back(dxy);
+                //ev_.vld_el_tight_dz.push_back(dz);
+                //ev_.vld_el_tight_pt_iso_abs->Fill(pt, iso_abs);
+                //ev_.vld_el_tight_pt_iso_rel->Fill(pt, iso_rel);
+                //ev_.vld_el_tight_pt_dxy->Fill(pt, dxy);
+                //ev_.vld_el_tight_pt_dz->Fill(pt, dz);
             }
         }
 
@@ -723,14 +729,19 @@ MiniFromPat::recoAnalysis(const edm::Event& iEvent, const edm::EventSetup& iSetu
 
             ev_.vld_mu_pt.push_back(pt);
             ev_.vld_mu_is_tight.push_back(muon::isTightMuon(muons->at(i), vertices->at(prVtx)));
-            ev_.vld_mu_iso_abs.push_back(iso_abs);
-            ev_.vld_mu_iso_rel.push_back(iso_rel);
-            ev_.vld_mu_dxy.push_back(dxy);
-            ev_.vld_mu_dz.push_back(dz);
-            ev_.vld_mu_pt_iso_abs->Fill(pt, iso_abs);
-            ev_.vld_mu_pt_iso_rel->Fill(pt, iso_rel);
-            ev_.vld_mu_pt_dxy->Fill(pt, dxy);
-            ev_.vld_mu_pt_dz->Fill(pt, dz);
+            //ev_.vld_mu_iso_abs.push_back(iso_abs);
+            //ev_.vld_mu_iso_rel.push_back(iso_rel);
+            //ev_.vld_mu_dxy.push_back(dxy);
+            //ev_.vld_mu_dz.push_back(dz);
+            //ev_.vld_mu_pt_iso_abs->Fill(pt, iso_abs);
+            //ev_.vld_mu_pt_iso_rel->Fill(pt, iso_rel);
+            //ev_.vld_mu_pt_dxy->Fill(pt, dxy);
+            //ev_.vld_mu_pt_dz->Fill(pt, dz);
+
+            if (isTightMuon(muons->at(i), vertices, prVtx)){
+                ev_.vld_mu_tight_pt.push_back(pt);
+            }
+
             if (isGoodMuonSOS(muons->at(i), vertices, prVtx)){
 
                 if (matchAny(genParts, muons->at(i), true)){
@@ -750,15 +761,15 @@ MiniFromPat::recoAnalysis(const edm::Event& iEvent, const edm::EventSetup& iSetu
                     ev_.vld_mu_tight_others_pt_eta->Fill(pt, eta);
                 }
 
-                ev_.vld_mu_tight_pt.push_back(pt);
-                ev_.vld_mu_tight_iso_abs.push_back(iso_abs);
-                ev_.vld_mu_tight_iso_rel.push_back(iso_rel);
-                ev_.vld_mu_tight_dxy.push_back(dxy);
-                ev_.vld_mu_tight_dz.push_back(dz);
-                ev_.vld_mu_tight_pt_iso_abs->Fill(pt, iso_abs);
-                ev_.vld_mu_tight_pt_iso_rel->Fill(pt, iso_rel);
-                ev_.vld_mu_tight_pt_dxy->Fill(pt, dxy);
-                ev_.vld_mu_tight_pt_dz->Fill(pt, dz);
+                ev_.vld_mu_tight_iso_pt.push_back(pt);
+                //ev_.vld_mu_tight_iso_abs.push_back(iso_abs);
+                //ev_.vld_mu_tight_iso_rel.push_back(iso_rel);
+                //ev_.vld_mu_tight_dxy.push_back(dxy);
+                //ev_.vld_mu_tight_dz.push_back(dz);
+                //ev_.vld_mu_tight_pt_iso_abs->Fill(pt, iso_abs);
+                //ev_.vld_mu_tight_pt_iso_rel->Fill(pt, iso_rel);
+                //ev_.vld_mu_tight_pt_dxy->Fill(pt, dxy);
+                //ev_.vld_mu_tight_pt_dz->Fill(pt, dz);
             }
         }
     }
@@ -1225,26 +1236,28 @@ MiniFromPat::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
     ev_.pt2l.clear();
     ev_.vld_el_pt.clear();
     ev_.vld_el_tight_pt.clear();
+    ev_.vld_el_tight_iso_pt.clear();
     ev_.vld_el_is_tight.clear();
-    ev_.vld_el_iso_abs.clear();
-    ev_.vld_el_tight_iso_abs.clear();
-    ev_.vld_el_iso_rel.clear();
-    ev_.vld_el_tight_iso_rel.clear();
-    ev_.vld_el_dxy.clear();
-    ev_.vld_el_tight_dxy.clear();
-    ev_.vld_el_dz.clear();
-    ev_.vld_el_tight_dz.clear();
+    //ev_.vld_el_iso_abs.clear();
+    //ev_.vld_el_tight_iso_abs.clear();
+    //ev_.vld_el_iso_rel.clear();
+    //ev_.vld_el_tight_iso_rel.clear();
+    //ev_.vld_el_dxy.clear();
+    //ev_.vld_el_tight_dxy.clear();
+    //ev_.vld_el_dz.clear();
+    //ev_.vld_el_tight_dz.clear();
     ev_.vld_mu_pt.clear();
     ev_.vld_mu_tight_pt.clear();
+    ev_.vld_mu_tight_iso_pt.clear();
     ev_.vld_mu_is_tight.clear();
-    ev_.vld_mu_iso_abs.clear();
-    ev_.vld_mu_tight_iso_abs.clear();
-    ev_.vld_mu_iso_rel.clear();
-    ev_.vld_mu_tight_iso_rel.clear();
-    ev_.vld_mu_dxy.clear();
-    ev_.vld_mu_tight_dxy.clear();
-    ev_.vld_mu_dz.clear();
-    ev_.vld_mu_tight_dz.clear();
+    //ev_.vld_mu_iso_abs.clear();
+    //ev_.vld_mu_tight_iso_abs.clear();
+    //ev_.vld_mu_iso_rel.clear();
+    //ev_.vld_mu_tight_iso_rel.clear();
+    //ev_.vld_mu_dxy.clear();
+    //ev_.vld_mu_tight_dxy.clear();
+    //ev_.vld_mu_dz.clear();
+    //ev_.vld_mu_tight_dz.clear();
     ev_.vld_el_hs_pt.clear();
     ev_.vld_el_tight_hs_pt.clear();
     ev_.vld_el_py8_pt.clear();
@@ -1346,7 +1359,7 @@ MiniFromPat::isTightElec(const pat::Electron & patEl, edm::Handle<reco::Conversi
     if (fabs(patEl.deltaEtaSuperClusterTrackAtVtx()) > 0.001322) return false;
     if (fabs(patEl.deltaPhiSuperClusterTrackAtVtx()) > 0.06129) return false;
     if (patEl.hcalOverEcal() > 4.492) return false;
-    if (patEl.pfIsolationVariables().sumChargedHadronPt / patEl.pt() > 1.255) return false;
+    //if (patEl.pfIsolationVariables().sumChargedHadronPt / patEl.pt() > 1.255) return false;
     double Ooemoop = 999.;
     if (patEl.ecalEnergy() == 0) Ooemoop = 0.;
     else if (!std::isfinite(patEl.ecalEnergy())) Ooemoop = 998.;
@@ -1373,9 +1386,7 @@ bool MiniFromPat::isGoodElecSOS(const pat::Electron & patEl, edm::Handle<reco::C
     return true;
 }
 
-bool MiniFromPat::isGoodMuonSOS(const pat::Muon & patMu, edm::Handle<std::vector<reco::Vertex>> vertices, int prVtx){
-
-    // Default cuts
+bool MiniFromPat::isTightMuon(const pat::Muon & patMu, edm::Handle<std::vector<reco::Vertex>> vertices, int prVtx){
     double dPhiCut = std::min(std::max(1.2/patMu.p(),1.2/100),0.032);
     double dPhiBendCut = std::min(std::max(0.2/patMu.p(),0.2/100),0.0041);
     bool ipxy = false, ipz = false, validPxlHit = false, highPurity = false;
@@ -1391,6 +1402,13 @@ bool MiniFromPat::isGoodMuonSOS(const pat::Muon & patMu, edm::Handle<std::vector
             (fabs(patMu.eta()) > 2.4
              && isME0MuonSelNew(patMu, 0.048, dPhiCut, dPhiBendCut)
              && ipxy && ipz && validPxlHit && highPurity)){ return false; }
+    return true;
+}
+
+bool MiniFromPat::isGoodMuonSOS(const pat::Muon & patMu, edm::Handle<std::vector<reco::Vertex>> vertices, int prVtx){
+
+    // Default cuts
+    if (!isTightMuon(patMu, vertices, prVtx)){ return false; }
 
     // Isolation (might be revised)
     double muIsolation = patMu.puppiChargedHadronIso() + patMu.puppiNeutralHadronIso() + patMu.puppiPhotonIso();
