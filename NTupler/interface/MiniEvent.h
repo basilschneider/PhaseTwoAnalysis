@@ -92,6 +92,7 @@ struct MiniEvent_t
     std::vector<double> vld_el_hs_pt, vld_el_tight_hs_pt, vld_el_tight_iso_hs_pt;
     std::vector<double> vld_el_py8_pt, vld_el_tight_py8_pt, vld_el_tight_iso_py8_pt;
     std::vector<double> vld_el_others_pt, vld_el_tight_others_pt, vld_el_tight_iso_others_pt;
+    std::vector<double> vld_el_eta, vld_el_tight_eta, vld_el_tight_iso_eta;
     std::vector<double> vld_el_hs_eta, vld_el_tight_hs_eta, vld_el_tight_iso_hs_eta;
     std::vector<double> vld_el_py8_eta, vld_el_tight_py8_eta, vld_el_tight_iso_py8_eta;
     std::vector<double> vld_el_others_eta, vld_el_tight_others_eta, vld_el_tight_iso_others_eta;
@@ -100,6 +101,7 @@ struct MiniEvent_t
     std::vector<double> vld_mu_hs_pt, vld_mu_tight_hs_pt, vld_mu_tight_iso_hs_pt;
     std::vector<double> vld_mu_py8_pt, vld_mu_tight_py8_pt, vld_mu_tight_iso_py8_pt;
     std::vector<double> vld_mu_others_pt, vld_mu_tight_others_pt, vld_mu_tight_iso_others_pt;
+    std::vector<double> vld_mu_eta, vld_mu_tight_eta, vld_mu_tight_iso_eta;
     std::vector<double> vld_mu_hs_eta, vld_mu_tight_hs_eta, vld_mu_tight_iso_hs_eta;
     std::vector<double> vld_mu_py8_eta, vld_mu_tight_py8_eta, vld_mu_tight_iso_py8_eta;
     std::vector<double> vld_mu_others_eta, vld_mu_tight_others_eta, vld_mu_tight_iso_others_eta;

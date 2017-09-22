@@ -645,6 +645,7 @@ MiniFromPat::recoAnalysis(const edm::Event& iEvent, const edm::EventSetup& iSetu
             //double dz = std::abs(elecs->at(i).gsfTrack()->dz(pv.position()));
 
             ev_.vld_el_pt.push_back(pt);
+            ev_.vld_el_eta.push_back(eta);
             ev_.vld_el_is_tight.push_back(isTightElec(elecs->at(i), conversions, beamspot));
 
             if (matchAny(genParts, elecs->at(i), true)){
@@ -675,6 +676,7 @@ MiniFromPat::recoAnalysis(const edm::Event& iEvent, const edm::EventSetup& iSetu
 
             if (isTightElec(elecs->at(i), conversions, beamspot)){
                 ev_.vld_el_tight_pt.push_back(pt);
+                ev_.vld_el_tight_eta.push_back(eta);
                 if (matchAny(genParts, elecs->at(i), true)){
                     // Hard scattering electrons
                     ev_.vld_el_tight_hs_pt.push_back(pt);
@@ -695,6 +697,7 @@ MiniFromPat::recoAnalysis(const edm::Event& iEvent, const edm::EventSetup& iSetu
 
             if (isGoodElecSOS(elecs->at(i), conversions, beamspot, vertices)){
                 ev_.vld_el_tight_iso_pt.push_back(pt);
+                ev_.vld_el_tight_iso_eta.push_back(eta);
                 if (matchAny(genParts, elecs->at(i), true)){
                     // Hard scattering electrons
                     ev_.vld_el_tight_iso_hs_pt.push_back(pt);
@@ -732,6 +735,7 @@ MiniFromPat::recoAnalysis(const edm::Event& iEvent, const edm::EventSetup& iSetu
             //double dz = std::abs(muons->at(i).muonBestTrack()->dz(vertices->at(prVtx).position()));
 
             ev_.vld_mu_pt.push_back(pt);
+            ev_.vld_mu_eta.push_back(eta);
             ev_.vld_mu_is_tight.push_back(isTightMuon(muons->at(i), vertices, prVtx));
 
             if (matchAny(genParts, muons->at(i), true)){
@@ -762,6 +766,7 @@ MiniFromPat::recoAnalysis(const edm::Event& iEvent, const edm::EventSetup& iSetu
 
             if (isTightMuon(muons->at(i), vertices, prVtx)){
                 ev_.vld_mu_tight_pt.push_back(pt);
+                ev_.vld_mu_tight_eta.push_back(eta);
                 if (matchAny(genParts, muons->at(i), true)){
                     // Hard scattering muons
                     ev_.vld_mu_tight_hs_pt.push_back(pt);
@@ -782,6 +787,7 @@ MiniFromPat::recoAnalysis(const edm::Event& iEvent, const edm::EventSetup& iSetu
 
             if (isGoodMuonSOS(muons->at(i), vertices, prVtx)){
                 ev_.vld_mu_tight_iso_pt.push_back(pt);
+                ev_.vld_mu_tight_iso_eta.push_back(eta);
                 if (matchAny(genParts, muons->at(i), true)){
                     // Hard scattering muons
                     ev_.vld_mu_tight_iso_hs_pt.push_back(pt);
@@ -1302,6 +1308,9 @@ MiniFromPat::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
     ev_.vld_el_others_pt.clear();
     ev_.vld_el_tight_others_pt.clear();
     ev_.vld_el_tight_iso_others_pt.clear();
+    ev_.vld_el_eta.clear();
+    ev_.vld_el_tight_eta.clear();
+    ev_.vld_el_tight_iso_eta.clear();
     ev_.vld_el_hs_eta.clear();
     ev_.vld_el_tight_hs_eta.clear();
     ev_.vld_el_tight_iso_hs_eta.clear();
@@ -1325,6 +1334,9 @@ MiniFromPat::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
     ev_.vld_mu_others_pt.clear();
     ev_.vld_mu_tight_others_pt.clear();
     ev_.vld_mu_tight_iso_others_pt.clear();
+    ev_.vld_mu_eta.clear();
+    ev_.vld_mu_tight_eta.clear();
+    ev_.vld_mu_tight_iso_eta.clear();
     ev_.vld_mu_hs_eta.clear();
     ev_.vld_mu_tight_hs_eta.clear();
     ev_.vld_mu_tight_iso_hs_eta.clear();

@@ -116,6 +116,9 @@ void createMiniEventTree(TTree* t_tree_, MiniEvent_t &ev)
   t_tree_->Branch("vld_el_others_pt", &ev.vld_el_others_pt);
   t_tree_->Branch("vld_el_tight_others_pt", &ev.vld_el_tight_others_pt);
   t_tree_->Branch("vld_el_tight_iso_others_pt", &ev.vld_el_tight_iso_others_pt);
+  t_tree_->Branch("vld_el_eta", &ev.vld_el_eta);
+  t_tree_->Branch("vld_el_tight_eta", &ev.vld_el_tight_eta);
+  t_tree_->Branch("vld_el_tight_iso_eta", &ev.vld_el_tight_iso_eta);
   t_tree_->Branch("vld_el_hs_eta", &ev.vld_el_hs_eta);
   t_tree_->Branch("vld_el_tight_hs_eta", &ev.vld_el_tight_hs_eta);
   t_tree_->Branch("vld_el_tight_iso_hs_eta", &ev.vld_el_tight_iso_hs_eta);
@@ -139,6 +142,9 @@ void createMiniEventTree(TTree* t_tree_, MiniEvent_t &ev)
   t_tree_->Branch("vld_mu_others_pt", &ev.vld_mu_others_pt);
   t_tree_->Branch("vld_mu_tight_others_pt", &ev.vld_mu_tight_others_pt);
   t_tree_->Branch("vld_mu_tight_iso_others_pt", &ev.vld_mu_tight_iso_others_pt);
+  t_tree_->Branch("vld_mu_eta", &ev.vld_mu_eta);
+  t_tree_->Branch("vld_mu_tight_eta", &ev.vld_mu_tight_eta);
+  t_tree_->Branch("vld_mu_tight_iso_eta", &ev.vld_mu_tight_iso_eta);
   t_tree_->Branch("vld_mu_hs_eta", &ev.vld_mu_hs_eta);
   t_tree_->Branch("vld_mu_tight_hs_eta", &ev.vld_mu_tight_hs_eta);
   t_tree_->Branch("vld_mu_tight_iso_hs_eta", &ev.vld_mu_tight_iso_hs_eta);
