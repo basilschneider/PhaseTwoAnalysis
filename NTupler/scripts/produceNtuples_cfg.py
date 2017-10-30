@@ -53,14 +53,13 @@ process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(100) )
 
 process.source = cms.Source("PoolSource",
     fileNames = cms.untracked.vstring(*(
-        '/store/mc/PhaseIITDRSpring17MiniAOD/SMS-TChiWZ_ZToLL_mChargino-300_mLsp-250_TuneCUETP8M1_14TeV-madgraphMLM-pythia8/MINIAODSIM/PU140_91X_upgrade2023_realistic_v3-v1/130000/16150FFA-5465-E711-B170-3417EBE2ED22.root',
-        #'/store/mc/PhaseIITDRSpring17MiniAOD/TTToSemiLepton_TuneCUETP8M1_14TeV-powheg-pythia8/MINIAODSIM/PU200_91X_upgrade2023_realistic_v3-v5/110000/064D2E88-7376-E711-9025-D067E5F91E51.root',
+        '/store/mc/PhaseIITDRFall17MiniAOD/SMS-TChiWZ_ZToLL_mChargino-300_mLsp-292p5_TuneCUETP8M1_14TeV-madgraphMLM-pythia8/MINIAODSIM/noPU_93X_upgrade2023_realistic_v2-v1/00000/30DA76F2-79BA-E711-9068-0025904C6788.root',
     ))
 )
-if (options.inputFormat.lower() == "reco"):
-    process.source.fileNames = cms.untracked.vstring(*(
-        '/store/mc/PhaseIITDRSpring17DR/TTToSemiLepton_TuneCUETP8M1_14TeV-powheg-pythia8/AODSIM/PU200_91X_upgrade2023_realistic_v3-v1/120000/000CD008-7A58-E711-82DB-1CB72C0A3A61.root',
-    ))
+#if (options.inputFormat.lower() == "reco"):
+#    process.source.fileNames = cms.untracked.vstring(*(
+#        '/store/mc/PhaseIITDRSpring17DR/TTToSemiLepton_TuneCUETP8M1_14TeV-powheg-pythia8/AODSIM/PU200_91X_upgrade2023_realistic_v3-v1/120000/000CD008-7A58-E711-82DB-1CB72C0A3A61.root',
+#    ))
 
 # Get new JEC from an SQLite file rather than a GT
 if options.updateJEC:
