@@ -1475,7 +1475,9 @@ bool MiniFromPat::isGoodMuonSOS(const pat::Muon & patMu, edm::Handle<std::vector
     if (!isTightMuon(patMu, vertices, prVtx)){ return false; }
 
     // Isolation (might be revised)
-    double muIsolation = patMu.puppiChargedHadronIso() + patMu.puppiNeutralHadronIso() + patMu.puppiPhotonIso();
+    //double muIsolation = patMu.puppiChargedHadronIso() + patMu.puppiNeutralHadronIso() + patMu.puppiPhotonIso();
+    double muIsolation = patMu.pfIsolationR04().sumChargedHadronPt +
+                             std::max(0., patMu.pfIsolationR04().sumNeutralHadronEt + patMu.pfIsolationR04().sumPhotonEt - 0.5*patMu.pfIsolationR04().sumPUPt);
     if (muIsolation / patMu.pt() > 0.5){ return false; }
     if (muIsolation > 5.){ return false; }
 
