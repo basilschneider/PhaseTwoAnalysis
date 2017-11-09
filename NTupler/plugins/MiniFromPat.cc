@@ -120,8 +120,10 @@ class MiniFromPat : public edm::one::EDAnalyzer<edm::one::SharedResources, edm::
         bool isLooseElec(const pat::Electron & patEl, edm::Handle<reco::ConversionCollection> conversions, const reco::BeamSpot beamspot);
         bool isMediumElec(const pat::Electron & patEl, edm::Handle<reco::ConversionCollection> conversions, const reco::BeamSpot beamspot);
         bool isTightElec(const pat::Electron & patEl, edm::Handle<reco::ConversionCollection> conversions, const reco::BeamSpot beamspot);
+        bool isIsolatedElec(const pat::Electron & patEl);
         bool isGoodElecSOS(const pat::Electron & patEl, edm::Handle<reco::ConversionCollection> conversions, const reco::BeamSpot beamspot, edm::Handle<std::vector<reco::Vertex>> vertices);
         bool isTightMuon(const pat::Muon & patMu, edm::Handle<std::vector<reco::Vertex>> vertices, int prVtx);
+        bool isIsolatedMuon(const pat::Muon & patMu);
         bool isGoodMuonSOS(const pat::Muon & patMu, edm::Handle<std::vector<reco::Vertex>> vertices, int prVtx);
         bool isGoodJetSOS(const pat::Jet & patJet);
         bool isGoodElecTruthSOS(const pat::PackedGenParticle truthEl, const std::vector<size_t> jGenJets, const edm::Handle<std::vector<reco::GenJet>> genJets);
@@ -1481,10 +1483,16 @@ MiniFromPat::isTightElec(const pat::Electron & patEl, edm::Handle<reco::Conversi
     return true;
 }
 
-bool MiniFromPat::isGoodElecSOS(const pat::Electron & patEl, edm::Handle<reco::ConversionCollection> conversions, const reco::BeamSpot beamspot, edm::Handle<std::vector<reco::Vertex>> vertices){
-    // Isolation
+bool MiniFromPat::isIsolatedElec(const pat::Electron & patEl){
+    // Stopgap isolation
     if (patEl.pfIsolationVariables().sumChargedHadronPt / patEl.pt() > 0.5){ return false; }
     if (patEl.pfIsolationVariables().sumChargedHadronPt > 5.){ return false; }
+    return true;
+}
+
+bool MiniFromPat::isGoodElecSOS(const pat::Electron & patEl, edm::Handle<reco::ConversionCollection> conversions, const reco::BeamSpot beamspot, edm::Handle<std::vector<reco::Vertex>> vertices){
+    // Isolation
+    if (!isIsolatedElec(patEl)){ return false; }
 
     // IP3D cuts
     const reco::Vertex &pv = vertices->front();
@@ -1517,14 +1525,22 @@ bool MiniFromPat::isTightMuon(const pat::Muon & patMu, edm::Handle<std::vector<r
     return true;
 }
 
-bool MiniFromPat::isGoodMuonSOS(const pat::Muon & patMu, edm::Handle<std::vector<reco::Vertex>> vertices, int prVtx){
-    // Isolation (might be revised)
+bool MiniFromPat::isIsolatedMuon(const pat::Muon & patMu){
+    // PUPPI isolation (apparently buggy)
     //double muIsolation = patMu.puppiChargedHadronIso() + patMu.puppiNeutralHadronIso() + patMu.puppiPhotonIso();
+    // PF isolation (not recommended for some reason)
     //double muIsolation = patMu.pfIsolationR04().sumChargedHadronPt +
     //                         std::max(0., patMu.pfIsolationR04().sumNeutralHadronEt + patMu.pfIsolationR04().sumPhotonEt - 0.5*patMu.pfIsolationR04().sumPUPt);
+    // Tracker based isolation (best what we have for now)
     double muIsolation = patMu.isolationR03().sumPt;
     if (muIsolation / patMu.pt() > 0.5){ return false; }
     if (muIsolation > 5.){ return false; }
+    return true;
+}
+
+bool MiniFromPat::isGoodMuonSOS(const pat::Muon & patMu, edm::Handle<std::vector<reco::Vertex>> vertices, int prVtx){
+    // Isolation
+    if (!isIsolatedMuon(patMu)){ return false; }
 
     // IP3D cuts
     double dxy = std::abs(patMu.muonBestTrack()->dxy(vertices->at(prVtx).position()));
