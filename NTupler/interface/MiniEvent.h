@@ -83,28 +83,28 @@ struct MiniEvent_t
     std::vector<double> mllMin, mllMax, mt1, mt2, pt2l;
 
     // Isolation variables for validation
-    //std::vector<double> vld_el_iso_abs, vld_el_tight_iso_abs, vld_el_iso_rel, vld_el_tight_iso_rel;
-    //std::vector<double> vld_el_dxy, vld_el_tight_dxy, vld_el_dz, vld_el_tight_dz;
-    //std::vector<double> vld_mu_iso_abs, vld_mu_tight_iso_abs, vld_mu_iso_rel, vld_mu_tight_iso_rel;
-    //std::vector<double> vld_mu_dxy, vld_mu_tight_dxy, vld_mu_dz, vld_mu_tight_dz;
+    //std::vector<double> vld_el_iso_abs, vld_el_good_abs, vld_el_iso_rel, vld_el_good_rel;
+    //std::vector<double> vld_el_dxy, vld_el_iso_dxy, vld_el_dz, vld_el_iso_dz;
+    //std::vector<double> vld_mu_iso_abs, vld_mu_good_abs, vld_mu_iso_rel, vld_mu_good_rel;
+    //std::vector<double> vld_mu_dxy, vld_mu_iso_dxy, vld_mu_dz, vld_mu_iso_dz;
 
-    std::vector<double> vld_el_pt, vld_el_tight_pt, vld_el_tight_iso_pt, vld_el_is_tight;
-    std::vector<double> vld_el_hs_pt, vld_el_tight_hs_pt, vld_el_tight_iso_hs_pt;
-    std::vector<double> vld_el_py8_pt, vld_el_tight_py8_pt, vld_el_tight_iso_py8_pt;
-    std::vector<double> vld_el_others_pt, vld_el_tight_others_pt, vld_el_tight_iso_others_pt;
-    std::vector<double> vld_el_eta, vld_el_tight_eta, vld_el_tight_iso_eta;
-    std::vector<double> vld_el_hs_eta, vld_el_tight_hs_eta, vld_el_tight_iso_hs_eta;
-    std::vector<double> vld_el_py8_eta, vld_el_tight_py8_eta, vld_el_tight_iso_py8_eta;
-    std::vector<double> vld_el_others_eta, vld_el_tight_others_eta, vld_el_tight_iso_others_eta;
+    std::vector<double> vld_el_pt, vld_el_iso_pt, vld_el_good_pt, vld_el_is_tight;
+    std::vector<double> vld_el_hs_pt, vld_el_iso_hs_pt, vld_el_good_hs_pt;
+    std::vector<double> vld_el_py8_pt, vld_el_iso_py8_pt, vld_el_good_py8_pt;
+    std::vector<double> vld_el_others_pt, vld_el_iso_others_pt, vld_el_good_others_pt;
+    std::vector<double> vld_el_eta, vld_el_iso_eta, vld_el_good_eta;
+    std::vector<double> vld_el_hs_eta, vld_el_iso_hs_eta, vld_el_good_hs_eta;
+    std::vector<double> vld_el_py8_eta, vld_el_iso_py8_eta, vld_el_good_py8_eta;
+    std::vector<double> vld_el_others_eta, vld_el_iso_others_eta, vld_el_good_others_eta;
 
-    std::vector<double> vld_mu_pt, vld_mu_tight_pt, vld_mu_tight_iso_pt, vld_mu_is_tight;
-    std::vector<double> vld_mu_hs_pt, vld_mu_tight_hs_pt, vld_mu_tight_iso_hs_pt;
-    std::vector<double> vld_mu_py8_pt, vld_mu_tight_py8_pt, vld_mu_tight_iso_py8_pt;
-    std::vector<double> vld_mu_others_pt, vld_mu_tight_others_pt, vld_mu_tight_iso_others_pt;
-    std::vector<double> vld_mu_eta, vld_mu_tight_eta, vld_mu_tight_iso_eta;
-    std::vector<double> vld_mu_hs_eta, vld_mu_tight_hs_eta, vld_mu_tight_iso_hs_eta;
-    std::vector<double> vld_mu_py8_eta, vld_mu_tight_py8_eta, vld_mu_tight_iso_py8_eta;
-    std::vector<double> vld_mu_others_eta, vld_mu_tight_others_eta, vld_mu_tight_iso_others_eta;
+    std::vector<double> vld_mu_pt, vld_mu_iso_pt, vld_mu_good_pt, vld_mu_is_tight;
+    std::vector<double> vld_mu_hs_pt, vld_mu_iso_hs_pt, vld_mu_good_hs_pt;
+    std::vector<double> vld_mu_py8_pt, vld_mu_iso_py8_pt, vld_mu_good_py8_pt;
+    std::vector<double> vld_mu_others_pt, vld_mu_iso_others_pt, vld_mu_good_others_pt;
+    std::vector<double> vld_mu_eta, vld_mu_iso_eta, vld_mu_good_eta;
+    std::vector<double> vld_mu_hs_eta, vld_mu_iso_hs_eta, vld_mu_good_hs_eta;
+    std::vector<double> vld_mu_py8_eta, vld_mu_iso_py8_eta, vld_mu_good_py8_eta;
+    std::vector<double> vld_mu_others_eta, vld_mu_iso_others_eta, vld_mu_good_others_eta;
 
     std::vector<double> vld_genel_pt, vld_genel_hs_pt, vld_genel_py8_pt;
     std::vector<double> vld_genel_eta, vld_genel_hs_eta, vld_genel_py8_eta;
@@ -112,40 +112,40 @@ struct MiniEvent_t
     std::vector<double> vld_genmu_eta, vld_genmu_hs_eta, vld_genmu_py8_eta;
 
     TH2D* vld_el_hs_pt_eta = new TH2D("vld_el_hs_pt_eta", "vld_el_hs_pt_eta", 36, 0., 90., 40, 0., 4.);
-    TH2D* vld_el_tight_hs_pt_eta = new TH2D("vld_el_tight_hs_pt_eta", "vld_el_tight_hs_pt_eta", 36, 0., 90., 40, 0., 4.);
-    TH2D* vld_el_tight_iso_hs_pt_eta = new TH2D("vld_el_tight_iso_hs_pt_eta", "vld_el_tight_iso_hs_pt_eta", 36, 0., 90., 40, 0., 4.);
+    TH2D* vld_el_iso_hs_pt_eta = new TH2D("vld_el_iso_hs_pt_eta", "vld_el_iso_hs_pt_eta", 36, 0., 90., 40, 0., 4.);
+    TH2D* vld_el_good_hs_pt_eta = new TH2D("vld_el_good_hs_pt_eta", "vld_el_good_hs_pt_eta", 36, 0., 90., 40, 0., 4.);
     TH2D* vld_el_py8_pt_eta = new TH2D("vld_el_py8_pt_eta", "vld_el_py8_pt_eta", 36, 0., 90., 40, 0., 4.);
-    TH2D* vld_el_tight_py8_pt_eta = new TH2D("vld_el_tight_py8_pt_eta", "vld_el_tight_py8_pt_eta", 36, 0., 90., 40, 0., 4.);
-    TH2D* vld_el_tight_iso_py8_pt_eta = new TH2D("vld_el_tight_iso_py8_pt_eta", "vld_el_tight_iso_py8_pt_eta", 36, 0., 90., 40, 0., 4.);
+    TH2D* vld_el_iso_py8_pt_eta = new TH2D("vld_el_iso_py8_pt_eta", "vld_el_iso_py8_pt_eta", 36, 0., 90., 40, 0., 4.);
+    TH2D* vld_el_good_py8_pt_eta = new TH2D("vld_el_good_py8_pt_eta", "vld_el_good_py8_pt_eta", 36, 0., 90., 40, 0., 4.);
     TH2D* vld_el_others_pt_eta = new TH2D("vld_el_others_pt_eta", "vld_el_others_pt_eta", 36, 0., 90., 40, 0., 4.);
-    TH2D* vld_el_tight_others_pt_eta = new TH2D("vld_el_tight_others_pt_eta", "vld_el_tight_others_pt_eta", 36, 0., 90., 40, 0., 4.);
-    TH2D* vld_el_tight_iso_others_pt_eta = new TH2D("vld_el_tight_iso_others_pt_eta", "vld_el_tight_iso_others_pt_eta", 36, 0., 90., 40, 0., 4.);
+    TH2D* vld_el_iso_others_pt_eta = new TH2D("vld_el_iso_others_pt_eta", "vld_el_iso_others_pt_eta", 36, 0., 90., 40, 0., 4.);
+    TH2D* vld_el_good_others_pt_eta = new TH2D("vld_el_good_others_pt_eta", "vld_el_good_others_pt_eta", 36, 0., 90., 40, 0., 4.);
     TH2D* vld_mu_hs_pt_eta = new TH2D("vld_mu_hs_pt_eta", "vld_mu_hs_pt_eta", 36, 0., 90., 40, 0., 4.);
-    TH2D* vld_mu_tight_hs_pt_eta = new TH2D("vld_mu_tight_hs_pt_eta", "vld_mu_tight_hs_pt_eta", 36, 0., 90., 40, 0., 4.);
-    TH2D* vld_mu_tight_iso_hs_pt_eta = new TH2D("vld_mu_tight_iso_hs_pt_eta", "vld_mu_tight_iso_hs_pt_eta", 36, 0., 90., 40, 0., 4.);
+    TH2D* vld_mu_iso_hs_pt_eta = new TH2D("vld_mu_iso_hs_pt_eta", "vld_mu_iso_hs_pt_eta", 36, 0., 90., 40, 0., 4.);
+    TH2D* vld_mu_good_hs_pt_eta = new TH2D("vld_mu_good_hs_pt_eta", "vld_mu_good_hs_pt_eta", 36, 0., 90., 40, 0., 4.);
     TH2D* vld_mu_py8_pt_eta = new TH2D("vld_mu_py8_pt_eta", "vld_mu_py8_pt_eta", 36, 0., 90., 40, 0., 4.);
-    TH2D* vld_mu_tight_py8_pt_eta = new TH2D("vld_mu_tight_py8_pt_eta", "vld_mu_tight_py8_pt_eta", 36, 0., 90., 40, 0., 4.);
-    TH2D* vld_mu_tight_iso_py8_pt_eta = new TH2D("vld_mu_tight_iso_py8_pt_eta", "vld_mu_tight_iso_py8_pt_eta", 36, 0., 90., 40, 0., 4.);
+    TH2D* vld_mu_iso_py8_pt_eta = new TH2D("vld_mu_iso_py8_pt_eta", "vld_mu_iso_py8_pt_eta", 36, 0., 90., 40, 0., 4.);
+    TH2D* vld_mu_good_py8_pt_eta = new TH2D("vld_mu_good_py8_pt_eta", "vld_mu_good_py8_pt_eta", 36, 0., 90., 40, 0., 4.);
     TH2D* vld_mu_others_pt_eta = new TH2D("vld_mu_others_pt_eta", "vld_mu_others_pt_eta", 36, 0., 90., 40, 0., 4.);
-    TH2D* vld_mu_tight_others_pt_eta = new TH2D("vld_mu_tight_others_pt_eta", "vld_mu_tight_others_pt_eta", 36, 0., 90., 40, 0., 4.);
-    TH2D* vld_mu_tight_iso_others_pt_eta = new TH2D("vld_mu_tight_iso_others_pt_eta", "vld_mu_tight_iso_others_pt_eta", 36, 0., 90., 40, 0., 4.);
+    TH2D* vld_mu_iso_others_pt_eta = new TH2D("vld_mu_iso_others_pt_eta", "vld_mu_iso_others_pt_eta", 36, 0., 90., 40, 0., 4.);
+    TH2D* vld_mu_good_others_pt_eta = new TH2D("vld_mu_good_others_pt_eta", "vld_mu_good_others_pt_eta", 36, 0., 90., 40, 0., 4.);
 
     //TH2D* vld_el_pt_iso_abs = new TH2D("vld_el_pt_iso_abs", "vld_el_pt_iso_abs", 12, 0., 30., 40, 0., 20.);
-    //TH2D* vld_el_tight_pt_iso_abs = new TH2D("vld_el_tight_pt_iso_abs", "vld_el_tight_pt_iso_abs", 12, 0., 30., 40, 0., 20.);
+    //TH2D* vld_el_iso_pt_iso_abs = new TH2D("vld_el_iso_pt_iso_abs", "vld_el_iso_pt_iso_abs", 12, 0., 30., 40, 0., 20.);
     //TH2D* vld_el_pt_iso_rel = new TH2D("vld_el_pt_iso_rel", "vld_el_pt_iso_rel", 12, 0., 30., 40, 0., 2.);
-    //TH2D* vld_el_tight_pt_iso_rel = new TH2D("vld_el_tight_pt_iso_rel", "vld_el_tight_pt_iso_rel", 12, 0., 30., 40, 0., 2.);
+    //TH2D* vld_el_iso_pt_iso_rel = new TH2D("vld_el_iso_pt_iso_rel", "vld_el_iso_pt_iso_rel", 12, 0., 30., 40, 0., 2.);
     //TH2D* vld_el_pt_dxy = new TH2D("vld_el_pt_dxy", "vld_el_pt_dxy", 12, 0., 30., 40 ,0., .1);
-    //TH2D* vld_el_tight_pt_dxy = new TH2D("vld_el_tight_pt_dxy", "vld_el_tight_pt_dxy", 12, 0., 30., 40 ,0., .1);
+    //TH2D* vld_el_iso_pt_dxy = new TH2D("vld_el_iso_pt_dxy", "vld_el_iso_pt_dxy", 12, 0., 30., 40 ,0., .1);
     //TH2D* vld_el_pt_dz = new TH2D("vld_el_pt_dz", "vld_el_pt_dz", 12, 0., 30., 40 ,0., .1);
-    //TH2D* vld_el_tight_pt_dz = new TH2D("vld_el_tight_pt_dz", "vld_el_tight_pt_dz", 12, 0., 30., 40 ,0., .1);
+    //TH2D* vld_el_iso_pt_dz = new TH2D("vld_el_iso_pt_dz", "vld_el_iso_pt_dz", 12, 0., 30., 40 ,0., .1);
     //TH2D* vld_mu_pt_iso_abs = new TH2D("vld_mu_pt_iso_abs", "vld_mu_pt_iso_abs", 12, 0., 30., 40, 0., 20.);
-    //TH2D* vld_mu_tight_pt_iso_abs = new TH2D("vld_mu_tight_pt_iso_abs", "vld_mu_tight_pt_iso_abs", 12, 0., 30., 40, 0., 20.);
+    //TH2D* vld_mu_iso_pt_iso_abs = new TH2D("vld_mu_iso_pt_iso_abs", "vld_mu_iso_pt_iso_abs", 12, 0., 30., 40, 0., 20.);
     //TH2D* vld_mu_pt_iso_rel = new TH2D("vld_mu_pt_iso_rel", "vld_mu_pt_iso_rel", 12, 0., 30., 40, 0., 2.);
-    //TH2D* vld_mu_tight_pt_iso_rel = new TH2D("vld_mu_tight_pt_iso_rel", "vld_mu_tight_pt_iso_rel", 12, 0., 30., 40, 0., 2.);
+    //TH2D* vld_mu_iso_pt_iso_rel = new TH2D("vld_mu_iso_pt_iso_rel", "vld_mu_iso_pt_iso_rel", 12, 0., 30., 40, 0., 2.);
     //TH2D* vld_mu_pt_dxy = new TH2D("vld_mu_pt_dxy", "vld_mu_pt_dxy", 12, 0., 30., 40 ,0., .1);
-    //TH2D* vld_mu_tight_pt_dxy = new TH2D("vld_mu_tight_pt_dxy", "vld_mu_tight_pt_dxy", 12, 0., 30., 40 ,0., .1);
+    //TH2D* vld_mu_iso_pt_dxy = new TH2D("vld_mu_iso_pt_dxy", "vld_mu_iso_pt_dxy", 12, 0., 30., 40 ,0., .1);
     //TH2D* vld_mu_pt_dz = new TH2D("vld_mu_pt_dz", "vld_mu_pt_dz", 12, 0., 30., 40 ,0., .1);
-    //TH2D* vld_mu_tight_pt_dz = new TH2D("vld_mu_tight_pt_dz", "vld_mu_tight_pt_dz", 12, 0., 30., 40 ,0., .1);
+    //TH2D* vld_mu_iso_pt_dz = new TH2D("vld_mu_iso_pt_dz", "vld_mu_iso_pt_dz", 12, 0., 30., 40 ,0., .1);
 
     // Real lepton efficiency histograms
     TH2D* rle_el_num = new TH2D("rle_el_num", "rle_el_num", 6, 0., 30., 8, 0., 4.);
