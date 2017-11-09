@@ -119,7 +119,7 @@ class MiniFromPat : public edm::one::EDAnalyzer<edm::one::SharedResources, edm::
 
         bool isLooseElec(const pat::Electron & patEl, edm::Handle<reco::ConversionCollection> conversions, const reco::BeamSpot beamspot);
         bool isMediumElec(const pat::Electron & patEl, edm::Handle<reco::ConversionCollection> conversions, const reco::BeamSpot beamspot);
-        bool isTightElec(const pat::Electron & patEl, edm::Handle<reco::ConversionCollection> conversions, const reco::BeamSpot beamspot);
+        bool isTightElec(const pat::Electron & patEl, edm::Handle<reco::ConversionCollection> conversions, const reco::BeamSpot beamspot, edm::Handle<std::vector<reco::Vertex>> vertices);
         bool isIsolatedElec(const pat::Electron & patEl);
         bool isGoodElecSOS(const pat::Electron & patEl, edm::Handle<reco::ConversionCollection> conversions, const reco::BeamSpot beamspot, edm::Handle<std::vector<reco::Vertex>> vertices);
         bool isTightMuon(const pat::Muon & patMu, edm::Handle<std::vector<reco::Vertex>> vertices, int prVtx);
@@ -648,7 +648,7 @@ MiniFromPat::recoAnalysis(const edm::Event& iEvent, const edm::EventSetup& iSetu
 
             ev_.vld_el_pt.push_back(pt);
             ev_.vld_el_eta.push_back(eta);
-            ev_.vld_el_is_tight.push_back(isTightElec(elecs->at(i), conversions, beamspot));
+            ev_.vld_el_is_tight.push_back(isTightElec(elecs->at(i), conversions, beamspot, vertices));
 
             if (matchAny(genParts, elecs->at(i), true)){
                 // Hard scattering electrons
@@ -676,7 +676,7 @@ MiniFromPat::recoAnalysis(const edm::Event& iEvent, const edm::EventSetup& iSetu
             //ev_.vld_el_pt_dxy->Fill(pt, dxy);
             //ev_.vld_el_pt_dz->Fill(pt, dz);
 
-            if (isTightElec(elecs->at(i), conversions, beamspot)){
+            if (isTightElec(elecs->at(i), conversions, beamspot, vertices)){
                 ev_.vld_el_tight_pt.push_back(pt);
                 ev_.vld_el_tight_eta.push_back(eta);
                 if (matchAny(genParts, elecs->at(i), true)){
@@ -1466,8 +1466,9 @@ MiniFromPat::isMediumElec(const pat::Electron & patEl, edm::Handle<reco::Convers
 
 // ------------ method check that an e passes tight ID ----------------------------------
     bool
-MiniFromPat::isTightElec(const pat::Electron & patEl, edm::Handle<reco::ConversionCollection> conversions, const reco::BeamSpot beamspot)
+MiniFromPat::isTightElec(const pat::Electron & patEl, edm::Handle<reco::ConversionCollection> conversions, const reco::BeamSpot beamspot, edm::Handle<std::vector<reco::Vertex>> vertices)
 {
+    // ID cuts
     if (fabs(patEl.superCluster()->eta()) > 1.479 && fabs(patEl.superCluster()->eta()) < 1.556) return false;
     if (patEl.full5x5_sigmaIetaIeta() > 0.01614) return false;
     if (fabs(patEl.deltaEtaSuperClusterTrackAtVtx()) > 0.001322) return false;
@@ -1480,6 +1481,13 @@ MiniFromPat::isTightElec(const pat::Electron & patEl, edm::Handle<reco::Conversi
     else Ooemoop = fabs(1./patEl.ecalEnergy() - patEl.eSuperClusterOverP()/patEl.ecalEnergy());
     if (Ooemoop > 18.26) return false;
     if (ConversionTools::hasMatchedConversion(patEl, conversions, beamspot.position())) return false;
+
+    // IP3D cuts
+    const reco::Vertex &pv = vertices->front();
+    double dxy = std::abs(patEl.gsfTrack()->dxy(pv.position()));
+    double dz = std::abs(patEl.gsfTrack()->dz(pv.position()));
+    if (sqrt(dxy*dz) > .01){ return false; }
+
     return true;
 }
 
@@ -1494,19 +1502,14 @@ bool MiniFromPat::isGoodElecSOS(const pat::Electron & patEl, edm::Handle<reco::C
     // Isolation
     if (!isIsolatedElec(patEl)){ return false; }
 
-    // IP3D cuts
-    const reco::Vertex &pv = vertices->front();
-    double dxy = std::abs(patEl.gsfTrack()->dxy(pv.position()));
-    double dz = std::abs(patEl.gsfTrack()->dz(pv.position()));
-    if (sqrt(dxy*dz) > .01){ return false; }
-
     // ID cuts
-    if (!isTightElec(patEl, conversions, beamspot)){ return false; }
+    if (!isTightElec(patEl, conversions, beamspot, vertices)){ return false; }
 
     return true;
 }
 
 bool MiniFromPat::isTightMuon(const pat::Muon & patMu, edm::Handle<std::vector<reco::Vertex>> vertices, int prVtx){
+    // ID
     double dPhiCut = std::min(std::max(1.2/patMu.p(),1.2/100),0.032);
     double dPhiBendCut = std::min(std::max(0.2/patMu.p(),0.2/100),0.0041);
     bool ipxy = false, ipz = false, validPxlHit = false, highPurity = false;
@@ -1522,6 +1525,12 @@ bool MiniFromPat::isTightMuon(const pat::Muon & patMu, edm::Handle<std::vector<r
             (fabs(patMu.eta()) > 2.4
              && isME0MuonSelNew(patMu, 0.048, dPhiCut, dPhiBendCut)
              && ipxy && ipz && validPxlHit && highPurity)){ return false; }
+    //
+    // IP3D cuts
+    double dxy = std::abs(patMu.muonBestTrack()->dxy(vertices->at(prVtx).position()));
+    double dz = std::abs(patMu.muonBestTrack()->dz(vertices->at(prVtx).position()));
+    if (sqrt(dxy*dz) > .01){ return false; }
+
     return true;
 }
 
@@ -1541,11 +1550,6 @@ bool MiniFromPat::isIsolatedMuon(const pat::Muon & patMu){
 bool MiniFromPat::isGoodMuonSOS(const pat::Muon & patMu, edm::Handle<std::vector<reco::Vertex>> vertices, int prVtx){
     // Isolation
     if (!isIsolatedMuon(patMu)){ return false; }
-
-    // IP3D cuts
-    double dxy = std::abs(patMu.muonBestTrack()->dxy(vertices->at(prVtx).position()));
-    double dz = std::abs(patMu.muonBestTrack()->dz(vertices->at(prVtx).position()));
-    if (sqrt(dxy*dz) > .01){ return false; }
 
     // ID cuts
     if (!isTightMuon(patMu, vertices, prVtx)){ return false; }
