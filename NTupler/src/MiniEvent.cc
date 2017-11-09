@@ -155,6 +155,19 @@ void createMiniEventTree(TTree* t_tree_, MiniEvent_t &ev)
   t_tree_->Branch("vld_mu_tight_others_eta", &ev.vld_mu_tight_others_eta);
   t_tree_->Branch("vld_mu_tight_iso_others_eta", &ev.vld_mu_tight_iso_others_eta);
 
+  t_tree_->Branch("vld_genel_pt", &ev.vld_genel_pt);
+  t_tree_->Branch("vld_genel_hs_pt", &ev.vld_genel_hs_pt);
+  t_tree_->Branch("vld_genel_py8_pt", &ev.vld_genel_py8_pt);
+  t_tree_->Branch("vld_genel_eta", &ev.vld_genel_eta);
+  t_tree_->Branch("vld_genel_hs_eta", &ev.vld_genel_hs_eta);
+  t_tree_->Branch("vld_genel_py8_eta", &ev.vld_genel_py8_eta);
+  t_tree_->Branch("vld_genmu_pt", &ev.vld_genmu_pt);
+  t_tree_->Branch("vld_genmu_hs_pt", &ev.vld_genmu_hs_pt);
+  t_tree_->Branch("vld_genmu_py8_pt", &ev.vld_genmu_py8_pt);
+  t_tree_->Branch("vld_genmu_eta", &ev.vld_genmu_eta);
+  t_tree_->Branch("vld_genmu_hs_eta", &ev.vld_genmu_hs_eta);
+  t_tree_->Branch("vld_genmu_py8_eta", &ev.vld_genmu_py8_eta);
+
   ////event header
   //t_tree_->Branch("Run",               &ev.run,        "Run/I");
   //t_tree_->Branch("Event",             &ev.event,      "Event/I");

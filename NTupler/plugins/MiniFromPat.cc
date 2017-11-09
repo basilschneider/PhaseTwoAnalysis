@@ -725,6 +725,23 @@ MiniFromPat::recoAnalysis(const edm::Event& iEvent, const edm::EventSetup& iSetu
             }
         }
 
+        // Truth electron validation
+        for (size_t i=0; i<genParts->size(); ++i){
+            if (genParts->at(i).status() != 1){ continue; }
+            if (fabs(genParts->at(i).pdgId()) != 11){ continue; }
+            double pt = genParts->at(i).pt();
+            double eta = fabs(genParts->at(i).eta());
+            ev_.vld_genel_pt.push_back(pt);
+            ev_.vld_genel_eta.push_back(eta);
+            if (isHs(genParts->at(i), genParts->at(i).pdgId())){
+                ev_.vld_genel_hs_pt.push_back(pt);
+                ev_.vld_genel_hs_eta.push_back(eta);
+            }else{
+                ev_.vld_genel_py8_pt.push_back(pt);
+                ev_.vld_genel_py8_eta.push_back(eta);
+            }
+        }
+
         // Muons
         for (size_t i=0; i<muons->size(); ++i){
             double pt = muons->at(i).pt();
@@ -813,6 +830,23 @@ MiniFromPat::recoAnalysis(const edm::Event& iEvent, const edm::EventSetup& iSetu
                 //ev_.vld_mu_tight_pt_iso_rel->Fill(pt, iso_rel);
                 //ev_.vld_mu_tight_pt_dxy->Fill(pt, dxy);
                 //ev_.vld_mu_tight_pt_dz->Fill(pt, dz);
+            }
+        }
+
+        // Truth muon validation
+        for (size_t i=0; i<genParts->size(); ++i){
+            if (genParts->at(i).status() != 1){ continue; }
+            if (fabs(genParts->at(i).pdgId()) != 13){ continue; }
+            double pt = genParts->at(i).pt();
+            double eta = fabs(genParts->at(i).eta());
+            ev_.vld_genmu_pt.push_back(pt);
+            ev_.vld_genmu_eta.push_back(eta);
+            if (isHs(genParts->at(i), genParts->at(i).pdgId())){
+                ev_.vld_genmu_hs_pt.push_back(pt);
+                ev_.vld_genmu_hs_eta.push_back(eta);
+            }else{
+                ev_.vld_genmu_py8_pt.push_back(pt);
+                ev_.vld_genmu_py8_eta.push_back(eta);
             }
         }
     }
@@ -1346,6 +1380,20 @@ MiniFromPat::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
     ev_.vld_mu_others_eta.clear();
     ev_.vld_mu_tight_others_eta.clear();
     ev_.vld_mu_tight_iso_others_eta.clear();
+
+    ev_.vld_genel_pt.clear();
+    ev_.vld_genel_hs_pt.clear();
+    ev_.vld_genel_py8_pt.clear();
+    ev_.vld_genel_eta.clear();
+    ev_.vld_genel_hs_eta.clear();
+    ev_.vld_genel_py8_eta.clear();
+    ev_.vld_genmu_pt.clear();
+    ev_.vld_genmu_hs_pt.clear();
+    ev_.vld_genmu_py8_pt.clear();
+    ev_.vld_genmu_eta.clear();
+    ev_.vld_genmu_hs_eta.clear();
+    ev_.vld_genmu_py8_eta.clear();
+
 
     ev_.nLep = ev_.nEl = ev_.nMu = 0;
     ev_.nSoftLep = ev_.nSoftEl = ev_.nSoftMu = 0;

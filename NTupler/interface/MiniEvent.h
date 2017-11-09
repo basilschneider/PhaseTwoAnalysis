@@ -106,6 +106,11 @@ struct MiniEvent_t
     std::vector<double> vld_mu_py8_eta, vld_mu_tight_py8_eta, vld_mu_tight_iso_py8_eta;
     std::vector<double> vld_mu_others_eta, vld_mu_tight_others_eta, vld_mu_tight_iso_others_eta;
 
+    std::vector<double> vld_genel_pt, vld_genel_hs_pt, vld_genel_py8_pt;
+    std::vector<double> vld_genel_eta, vld_genel_hs_eta, vld_genel_py8_eta;
+    std::vector<double> vld_genmu_pt, vld_genmu_hs_pt, vld_genmu_py8_pt;
+    std::vector<double> vld_genmu_eta, vld_genmu_hs_eta, vld_genmu_py8_eta;
+
     TH2D* vld_el_hs_pt_eta = new TH2D("vld_el_hs_pt_eta", "vld_el_hs_pt_eta", 36, 0., 90., 40, 0., 4.);
     TH2D* vld_el_tight_hs_pt_eta = new TH2D("vld_el_tight_hs_pt_eta", "vld_el_tight_hs_pt_eta", 36, 0., 90., 40, 0., 4.);
     TH2D* vld_el_tight_iso_hs_pt_eta = new TH2D("vld_el_tight_iso_hs_pt_eta", "vld_el_tight_iso_hs_pt_eta", 36, 0., 90., 40, 0., 4.);
