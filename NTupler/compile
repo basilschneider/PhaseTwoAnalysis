@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+
+rm -f MiniEvents.root
+scram b -j 4 2>&1 | tee make.out
+
+if [[ "${PIPESTATUS[*]}" == "0 0" ]]; then
+    cmsRun \
+        scripts/produceNtuples_cfg.py \
+        skim=False \
+        outFilename=MiniEvents.root \
+        inputFormat=RECO/PAT \
+        2>&1 | tee run.out
+fi
