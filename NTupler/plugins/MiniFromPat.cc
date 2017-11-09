@@ -1482,9 +1482,6 @@ MiniFromPat::isTightElec(const pat::Electron & patEl, edm::Handle<reco::Conversi
 }
 
 bool MiniFromPat::isGoodElecSOS(const pat::Electron & patEl, edm::Handle<reco::ConversionCollection> conversions, const reco::BeamSpot beamspot, edm::Handle<std::vector<reco::Vertex>> vertices){
-    // Default cuts
-    if (!isTightElec(patEl, conversions, beamspot)){ return false; }
-
     // Isolation
     if (patEl.pfIsolationVariables().sumChargedHadronPt / patEl.pt() > 0.5){ return false; }
     if (patEl.pfIsolationVariables().sumChargedHadronPt > 5.){ return false; }
@@ -1494,6 +1491,9 @@ bool MiniFromPat::isGoodElecSOS(const pat::Electron & patEl, edm::Handle<reco::C
     double dxy = std::abs(patEl.gsfTrack()->dxy(pv.position()));
     double dz = std::abs(patEl.gsfTrack()->dz(pv.position()));
     if (sqrt(dxy*dz) > .01){ return false; }
+
+    // ID cuts
+    if (!isTightElec(patEl, conversions, beamspot)){ return false; }
 
     return true;
 }
@@ -1518,10 +1518,6 @@ bool MiniFromPat::isTightMuon(const pat::Muon & patMu, edm::Handle<std::vector<r
 }
 
 bool MiniFromPat::isGoodMuonSOS(const pat::Muon & patMu, edm::Handle<std::vector<reco::Vertex>> vertices, int prVtx){
-
-    // Default cuts
-    if (!isTightMuon(patMu, vertices, prVtx)){ return false; }
-
     // Isolation (might be revised)
     //double muIsolation = patMu.puppiChargedHadronIso() + patMu.puppiNeutralHadronIso() + patMu.puppiPhotonIso();
     //double muIsolation = patMu.pfIsolationR04().sumChargedHadronPt +
@@ -1530,10 +1526,13 @@ bool MiniFromPat::isGoodMuonSOS(const pat::Muon & patMu, edm::Handle<std::vector
     if (muIsolation / patMu.pt() > 0.5){ return false; }
     if (muIsolation > 5.){ return false; }
 
-    // IP3D
+    // IP3D cuts
     double dxy = std::abs(patMu.muonBestTrack()->dxy(vertices->at(prVtx).position()));
     double dz = std::abs(patMu.muonBestTrack()->dz(vertices->at(prVtx).position()));
     if (sqrt(dxy*dz) > .01){ return false; }
+
+    // ID cuts
+    if (!isTightMuon(patMu, vertices, prVtx)){ return false; }
 
     return true;
 }
