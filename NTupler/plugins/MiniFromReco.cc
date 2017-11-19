@@ -61,7 +61,7 @@ Implementation:
 #include "FWCore/Framework/interface/ESHandle.h"
 
 #include "DataFormats/MuonReco/interface/MuonSelectors.h"
-//#include "RecoEgamma/Phase2InterimID/interface/HGCalIDTool.h"
+#include "RecoEgamma/Phase2InterimID/interface/HGCalIDTool.h"
 #include "DataFormats/Common/interface/Ptr.h"
 
 #include "PhaseTwoAnalysis/NTupler/interface/MiniEvent.h"
