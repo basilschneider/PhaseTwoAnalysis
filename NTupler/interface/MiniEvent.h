@@ -82,12 +82,6 @@ struct MiniEvent_t
     double met, ht;
     std::vector<double> mllMin, mllMax, mt1, mt2, pt2l;
 
-    // Isolation variables for validation
-    //std::vector<double> vld_el_iso_abs, vld_el_good_abs, vld_el_iso_rel, vld_el_good_rel;
-    //std::vector<double> vld_el_dxy, vld_el_iso_dxy, vld_el_dz, vld_el_iso_dz;
-    //std::vector<double> vld_mu_iso_abs, vld_mu_good_abs, vld_mu_iso_rel, vld_mu_good_rel;
-    //std::vector<double> vld_mu_dxy, vld_mu_iso_dxy, vld_mu_dz, vld_mu_iso_dz;
-
     std::vector<double> vld_el_pt, vld_el_iso_pt, vld_el_good_pt, vld_el_is_tight;
     std::vector<double> vld_el_hs_pt, vld_el_iso_hs_pt, vld_el_good_hs_pt;
     std::vector<double> vld_el_py8_pt, vld_el_iso_py8_pt, vld_el_good_py8_pt;
@@ -110,6 +104,40 @@ struct MiniEvent_t
     std::vector<double> vld_genel_eta, vld_genel_hs_eta, vld_genel_py8_eta;
     std::vector<double> vld_genmu_pt, vld_genmu_hs_pt, vld_genmu_py8_pt;
     std::vector<double> vld_genmu_eta, vld_genmu_hs_eta, vld_genmu_py8_eta;
+
+    std::vector<double> vld_el_absiso, vld_el_iso_absiso, vld_el_good_absiso;
+    std::vector<double> vld_el_hs_absiso, vld_el_iso_hs_absiso, vld_el_good_hs_absiso;
+    std::vector<double> vld_el_py8_absiso, vld_el_iso_py8_absiso, vld_el_good_py8_absiso;
+    std::vector<double> vld_el_others_absiso, vld_el_iso_others_absiso, vld_el_good_others_absiso;
+    std::vector<double> vld_el_reliso, vld_el_iso_reliso, vld_el_good_reliso;
+    std::vector<double> vld_el_hs_reliso, vld_el_iso_hs_reliso, vld_el_good_hs_reliso;
+    std::vector<double> vld_el_py8_reliso, vld_el_iso_py8_reliso, vld_el_good_py8_reliso;
+    std::vector<double> vld_el_others_reliso, vld_el_iso_others_reliso, vld_el_good_others_reliso;
+    std::vector<double> vld_el_dxy, vld_el_iso_dxy, vld_el_good_dxy;
+    std::vector<double> vld_el_hs_dxy, vld_el_iso_hs_dxy, vld_el_good_hs_dxy;
+    std::vector<double> vld_el_py8_dxy, vld_el_iso_py8_dxy, vld_el_good_py8_dxy;
+    std::vector<double> vld_el_others_dxy, vld_el_iso_others_dxy, vld_el_good_others_dxy;
+    std::vector<double> vld_el_dz, vld_el_iso_dz, vld_el_good_dz;
+    std::vector<double> vld_el_hs_dz, vld_el_iso_hs_dz, vld_el_good_hs_dz;
+    std::vector<double> vld_el_py8_dz, vld_el_iso_py8_dz, vld_el_good_py8_dz;
+    std::vector<double> vld_el_others_dz, vld_el_iso_others_dz, vld_el_good_others_dz;
+
+    std::vector<double> vld_mu_absiso, vld_mu_iso_absiso, vld_mu_good_absiso;
+    std::vector<double> vld_mu_hs_absiso, vld_mu_iso_hs_absiso, vld_mu_good_hs_absiso;
+    std::vector<double> vld_mu_py8_absiso, vld_mu_iso_py8_absiso, vld_mu_good_py8_absiso;
+    std::vector<double> vld_mu_others_absiso, vld_mu_iso_others_absiso, vld_mu_good_others_absiso;
+    std::vector<double> vld_mu_reliso, vld_mu_iso_reliso, vld_mu_good_reliso;
+    std::vector<double> vld_mu_hs_reliso, vld_mu_iso_hs_reliso, vld_mu_good_hs_reliso;
+    std::vector<double> vld_mu_py8_reliso, vld_mu_iso_py8_reliso, vld_mu_good_py8_reliso;
+    std::vector<double> vld_mu_others_reliso, vld_mu_iso_others_reliso, vld_mu_good_others_reliso;
+    std::vector<double> vld_mu_dxy, vld_mu_iso_dxy, vld_mu_good_dxy;
+    std::vector<double> vld_mu_hs_dxy, vld_mu_iso_hs_dxy, vld_mu_good_hs_dxy;
+    std::vector<double> vld_mu_py8_dxy, vld_mu_iso_py8_dxy, vld_mu_good_py8_dxy;
+    std::vector<double> vld_mu_others_dxy, vld_mu_iso_others_dxy, vld_mu_good_others_dxy;
+    std::vector<double> vld_mu_dz, vld_mu_iso_dz, vld_mu_good_dz;
+    std::vector<double> vld_mu_hs_dz, vld_mu_iso_hs_dz, vld_mu_good_hs_dz;
+    std::vector<double> vld_mu_py8_dz, vld_mu_iso_py8_dz, vld_mu_good_py8_dz;
+    std::vector<double> vld_mu_others_dz, vld_mu_iso_others_dz, vld_mu_good_others_dz;
 
     TH2D* vld_el_hs_pt_eta = new TH2D("vld_el_hs_pt_eta", "vld_el_hs_pt_eta", 36, 0., 90., 40, 0., 4.);
     TH2D* vld_el_iso_hs_pt_eta = new TH2D("vld_el_iso_hs_pt_eta", "vld_el_iso_hs_pt_eta", 36, 0., 90., 40, 0., 4.);
