@@ -9,14 +9,14 @@ void createMiniEventTree(TTree* t_tree_, MiniEvent_t &ev)
     t_tree_->Branch("genWeight", &ev.genWeight);
     // ntot
     // xs
-    t_tree_->Branch("el1_pt", &ev.el1_pt);
-    t_tree_->Branch("el1_eta", &ev.el1_eta);
-    t_tree_->Branch("el1_phi", &ev.el1_phi);
-    t_tree_->Branch("el1_q", &ev.el1_q);
-    t_tree_->Branch("el2_pt", &ev.el2_pt);
-    t_tree_->Branch("el2_eta", &ev.el2_eta);
-    t_tree_->Branch("el2_phi", &ev.el2_phi);
-    t_tree_->Branch("el2_q", &ev.el2_q);
+    //t_tree_->Branch("el1_pt", &ev.el1_pt);
+    //t_tree_->Branch("el1_eta", &ev.el1_eta);
+    //t_tree_->Branch("el1_phi", &ev.el1_phi);
+    //t_tree_->Branch("el1_q", &ev.el1_q);
+    //t_tree_->Branch("el2_pt", &ev.el2_pt);
+    //t_tree_->Branch("el2_eta", &ev.el2_eta);
+    //t_tree_->Branch("el2_phi", &ev.el2_phi);
+    //t_tree_->Branch("el2_q", &ev.el2_q);
     t_tree_->Branch("mu1_pt", &ev.mu1_pt);
     t_tree_->Branch("mu1_eta", &ev.mu1_eta);
     t_tree_->Branch("mu1_phi", &ev.mu1_phi);
@@ -27,14 +27,14 @@ void createMiniEventTree(TTree* t_tree_, MiniEvent_t &ev)
     t_tree_->Branch("mu2_phi", &ev.mu2_phi);
     t_tree_->Branch("mu2_q", &ev.mu2_q);
     t_tree_->Branch("mu2_mother", &ev.mu2_mother);
-    t_tree_->Branch("lep1_pt", &ev.lep1_pt);
-    t_tree_->Branch("lep1_eta", &ev.lep1_eta);
-    t_tree_->Branch("lep1_phi", &ev.lep1_phi);
-    t_tree_->Branch("lep1_mass", &ev.lep1_mass);
-    t_tree_->Branch("lep2_pt", &ev.lep2_pt);
-    t_tree_->Branch("lep2_eta", &ev.lep2_eta);
-    t_tree_->Branch("lep2_phi", &ev.lep2_phi);
-    t_tree_->Branch("lep2_mass", &ev.lep2_mass);
+    //t_tree_->Branch("lep1_pt", &ev.lep1_pt);
+    //t_tree_->Branch("lep1_eta", &ev.lep1_eta);
+    //t_tree_->Branch("lep1_phi", &ev.lep1_phi);
+    //t_tree_->Branch("lep1_mass", &ev.lep1_mass);
+    //t_tree_->Branch("lep2_pt", &ev.lep2_pt);
+    //t_tree_->Branch("lep2_eta", &ev.lep2_eta);
+    //t_tree_->Branch("lep2_phi", &ev.lep2_phi);
+    //t_tree_->Branch("lep2_mass", &ev.lep2_mass);
 
     //t_tree_->Branch("el1_pt_truth", &ev.el1_pt_truth);
     //t_tree_->Branch("el1_eta_truth", &ev.el1_eta_truth);
@@ -72,10 +72,10 @@ void createMiniEventTree(TTree* t_tree_, MiniEvent_t &ev)
     t_tree_->Branch("jet1_mass_truth", &ev.jet1_mass_truth);
 
     t_tree_->Branch("nLep", &ev.nLep);
-    t_tree_->Branch("nEl", &ev.nEl);
+    //t_tree_->Branch("nEl", &ev.nEl);
     t_tree_->Branch("nMu", &ev.nMu);
     t_tree_->Branch("nSoftLep", &ev.nSoftLep);
-    t_tree_->Branch("nSoftEl", &ev.nSoftEl);
+    //t_tree_->Branch("nSoftEl", &ev.nSoftEl);
     t_tree_->Branch("nSoftMu", &ev.nSoftMu);
     t_tree_->Branch("nJet", &ev.nJet);
     t_tree_->Branch("nBJet", &ev.nBJet);

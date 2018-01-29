@@ -36,16 +36,16 @@ struct MiniEvent_t
     static constexpr double truth_match_diff_dr = .1;
 
     double genWeight;
-    Int_t nLep, nMu, nEl;
-    Int_t nSoftLep, nSoftMu, nSoftEl;
+    Int_t nLep, nMu/*, nEl*/;
+    Int_t nSoftLep, nSoftMu/*, nSoftEl*/;
     Int_t nJet, nBJet;
 
-    std::vector<double> el1_pt, el1_eta, el1_phi, el2_pt, el2_eta, el2_phi;
-    std::vector<int> el1_q, el2_q;
+    //std::vector<double> el1_pt, el1_eta, el1_phi, el2_pt, el2_eta, el2_phi;
+    //std::vector<int> el1_q, el2_q;
     std::vector<double> mu1_pt, mu1_eta, mu1_phi, mu2_pt, mu2_eta, mu2_phi;
     std::vector<int> mu1_q, mu2_q, mu1_mother, mu2_mother;
-    std::vector<double> lep1_pt, lep1_eta, lep1_phi, lep2_pt, lep2_eta, lep2_phi;
-    std::vector<int> lep1_mass, lep2_mass;
+    //std::vector<double> lep1_pt, lep1_eta, lep1_phi, lep2_pt, lep2_eta, lep2_phi;
+    //std::vector<int> lep1_mass, lep2_mass;
 
     //std::vector<double> el1_pt_truth, el1_eta_truth, el1_phi_truth, el2_pt_truth, el2_eta_truth, el2_phi_truth;
     //std::vector<int> el1_q_truth, el2_q_truth;

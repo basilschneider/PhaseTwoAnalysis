@@ -147,7 +147,7 @@ class MiniFromPat : public edm::one::EDAnalyzer<edm::one::SharedResources, edm::
 
         unsigned int pileup_;
         edm::EDGetTokenT<std::vector<reco::Vertex>> verticesToken_;
-        edm::EDGetTokenT<std::vector<pat::Electron>> elecsToken_;
+        //edm::EDGetTokenT<std::vector<pat::Electron>> elecsToken_;
         edm::EDGetTokenT<reco::BeamSpot> bsToken_;
         edm::EDGetTokenT<std::vector<reco::Conversion>> convToken_;
         edm::EDGetTokenT<std::vector<pat::Muon>> muonsToken_;
@@ -159,7 +159,7 @@ class MiniFromPat : public edm::one::EDAnalyzer<edm::one::SharedResources, edm::
         edm::EDGetTokenT<std::vector<pat::PackedGenParticle>> genPartsToken_;
         edm::EDGetTokenT<GenEventInfoProduct> generatorToken_;
         edm::EDGetTokenT<LHEEventProduct> generatorlheToken_;
-        edm::EDGetTokenT<std::vector<pat::Photon>> photonsToken_;
+        //edm::EDGetTokenT<std::vector<pat::Photon>> photonsToken_;
         const ME0Geometry* ME0Geometry_;
         double mvaThres_[3];
         double deepThres_[3];
@@ -184,7 +184,7 @@ class MiniFromPat : public edm::one::EDAnalyzer<edm::one::SharedResources, edm::
 MiniFromPat::MiniFromPat(const edm::ParameterSet& iConfig):
     pileup_(iConfig.getParameter<unsigned int>("pileup")),
     verticesToken_(consumes<std::vector<reco::Vertex>>(iConfig.getParameter<edm::InputTag>("vertices"))),
-    elecsToken_(consumes<std::vector<pat::Electron>>(iConfig.getParameter<edm::InputTag>("electrons"))),
+    //elecsToken_(consumes<std::vector<pat::Electron>>(iConfig.getParameter<edm::InputTag>("electrons"))),
     bsToken_(consumes<reco::BeamSpot>(iConfig.getParameter<edm::InputTag>("beamspot"))),
     convToken_(consumes<std::vector<reco::Conversion>>(iConfig.getParameter<edm::InputTag>("conversions"))),
     muonsToken_(consumes<std::vector<pat::Muon>>(iConfig.getParameter<edm::InputTag>("muons"))),
@@ -195,8 +195,8 @@ MiniFromPat::MiniFromPat(const edm::ParameterSet& iConfig):
     genJetsToken_(consumes<std::vector<reco::GenJet>>(iConfig.getParameter<edm::InputTag>("genJets"))),
     genPartsToken_(consumes<std::vector<pat::PackedGenParticle>>(iConfig.getParameter<edm::InputTag>("genParts"))),
     generatorToken_(consumes<GenEventInfoProduct>(edm::InputTag("generator"))),
-    generatorlheToken_(consumes<LHEEventProduct>(edm::InputTag("externalLHEProducer",""))),
-    photonsToken_(consumes<std::vector<pat::Photon>>(iConfig.getParameter<edm::InputTag>("photons")))
+    generatorlheToken_(consumes<LHEEventProduct>(edm::InputTag("externalLHEProducer","")))//,
+    //photonsToken_(consumes<std::vector<pat::Photon>>(iConfig.getParameter<edm::InputTag>("photons")))
 {
     ME0Geometry_=0;
     //now do what ever initialization is needed
@@ -399,8 +399,8 @@ MiniFromPat::recoAnalysis(const edm::Event& iEvent, const edm::EventSetup& iSetu
     Handle<std::vector<reco::Vertex>> vertices;
     iEvent.getByToken(verticesToken_, vertices);
 
-    Handle<std::vector<pat::Electron>> elecs;
-    iEvent.getByToken(elecsToken_, elecs);
+    //Handle<std::vector<pat::Electron>> elecs;
+    //iEvent.getByToken(elecsToken_, elecs);
     Handle<reco::ConversionCollection> conversions;
     iEvent.getByToken(convToken_, conversions);
     Handle<reco::BeamSpot> bsHandle;
@@ -416,8 +416,8 @@ MiniFromPat::recoAnalysis(const edm::Event& iEvent, const edm::EventSetup& iSetu
     Handle<std::vector<pat::Jet>> jets;
     iEvent.getByToken(jetsToken_, jets);
 
-    Handle<std::vector<pat::Photon>> photons;
-    iEvent.getByToken(photonsToken_, photons);
+    //Handle<std::vector<pat::Photon>> photons;
+    //iEvent.getByToken(photonsToken_, photons);
 
     // Vertices
     int prVtx = -1;
@@ -760,34 +760,34 @@ MiniFromPat::recoAnalysis(const edm::Event& iEvent, const edm::EventSetup& iSetu
     }
 
     // Electrons
-    for (size_t i=0; i<elecs->size(); ++i) {
+    //for (size_t i=0; i<elecs->size(); ++i) {
 
-        // Only select good electrons
-        if (!isGoodElecSOS(elecs->at(i), primaryVertex)){ continue; }
+    //    // Only select good electrons
+    //    if (!isGoodElecSOS(elecs->at(i), primaryVertex)){ continue; }
 
-        // Only select electrons above certain pT
-        if (elecs->at(i).pt() < ev_.el_pt_lo){ continue; }
+    //    // Only select electrons above certain pT
+    //    if (elecs->at(i).pt() < ev_.el_pt_lo){ continue; }
 
-        ev_.nLep++;
-        ev_.nEl++;
-        if (elecs->at(i).pt() < ev_.el_pt_hi){
-            ev_.nSoftLep++;
-            ev_.nSoftEl++;
-        }
+    //    ev_.nLep++;
+    //    ev_.nEl++;
+    //    if (elecs->at(i).pt() < ev_.el_pt_hi){
+    //        ev_.nSoftLep++;
+    //        ev_.nSoftEl++;
+    //    }
 
-        // Fill electron variables
-        if (ev_.el1_pt.size() == 0){
-            ev_.el1_pt.push_back(elecs->at(i).pt());
-            ev_.el1_eta.push_back(elecs->at(i).eta());
-            ev_.el1_phi.push_back(elecs->at(i).phi());
-            ev_.el1_q.push_back(elecs->at(i).charge());
-        }else if (ev_.el2_pt.size() == 0){
-            ev_.el2_pt.push_back(elecs->at(i).pt());
-            ev_.el2_eta.push_back(elecs->at(i).eta());
-            ev_.el2_phi.push_back(elecs->at(i).phi());
-            ev_.el2_q.push_back(elecs->at(i).charge());
-        }
-    }
+    //    // Fill electron variables
+    //    if (ev_.el1_pt.size() == 0){
+    //        ev_.el1_pt.push_back(elecs->at(i).pt());
+    //        ev_.el1_eta.push_back(elecs->at(i).eta());
+    //        ev_.el1_phi.push_back(elecs->at(i).phi());
+    //        ev_.el1_q.push_back(elecs->at(i).charge());
+    //    }else if (ev_.el2_pt.size() == 0){
+    //        ev_.el2_pt.push_back(elecs->at(i).pt());
+    //        ev_.el2_eta.push_back(elecs->at(i).eta());
+    //        ev_.el2_phi.push_back(elecs->at(i).phi());
+    //        ev_.el2_q.push_back(elecs->at(i).charge());
+    //    }
+    //}
 
     // Muons
     for (size_t i=0; i<muons->size(); ++i) {
@@ -850,47 +850,47 @@ MiniFromPat::recoAnalysis(const edm::Event& iEvent, const edm::EventSetup& iSetu
 
     }
 
-    // Fill leptons
-    // Put pT and eta into vector of vector for sorting
-    std::vector<std::vector<double>> lepvec;
-    if (ev_.el1_pt.size() != 0){
-        lepvec.push_back({ev_.el1_pt.at(0), ev_.el1_eta.at(0), ev_.el1_phi.at(0), ev_.mass_el});
-    }
-    if (ev_.el2_pt.size() != 0){
-        lepvec.push_back({ev_.el2_pt.at(0), ev_.el2_eta.at(0), ev_.el2_phi.at(0), ev_.mass_el});
-    }
-    if (ev_.mu1_pt.size() != 0){
-        lepvec.push_back({ev_.mu1_pt.at(0), ev_.mu1_eta.at(0), ev_.mu1_phi.at(0), ev_.mass_mu});
-    }
-    if (ev_.mu2_pt.size() != 0){
-        lepvec.push_back({ev_.mu2_pt.at(0), ev_.mu2_eta.at(0), ev_.mu2_phi.at(0), ev_.mass_mu});
-    }
-    // By definition, this sorts by the first element of the vector (in this case pT)
-    if (lepvec.size() > 1){
-        std::sort(begin(lepvec), end(lepvec));
-        std::reverse(begin(lepvec), end(lepvec));
-    }
-    if (lepvec.size() >= 1){
-        ev_.lep1_pt.push_back(lepvec[0][0]);
-        ev_.lep1_eta.push_back(lepvec[0][1]);
-        ev_.lep1_phi.push_back(lepvec[0][2]);
-        ev_.lep1_mass.push_back(lepvec[0][3]);
-    }
-    if (lepvec.size() >= 2){
-        ev_.lep2_pt.push_back(lepvec[1][0]);
-        ev_.lep2_eta.push_back(lepvec[1][1]);
-        ev_.lep2_phi.push_back(lepvec[1][2]);
-        ev_.lep2_mass.push_back(lepvec[1][3]);
-    }
-    lepvec.clear();
+    //// Fill leptons
+    //// Put pT and eta into vector of vector for sorting
+    //std::vector<std::vector<double>> lepvec;
+    //if (ev_.el1_pt.size() != 0){
+    //    lepvec.push_back({ev_.el1_pt.at(0), ev_.el1_eta.at(0), ev_.el1_phi.at(0), ev_.mass_el});
+    //}
+    //if (ev_.el2_pt.size() != 0){
+    //    lepvec.push_back({ev_.el2_pt.at(0), ev_.el2_eta.at(0), ev_.el2_phi.at(0), ev_.mass_el});
+    //}
+    //if (ev_.mu1_pt.size() != 0){
+    //    lepvec.push_back({ev_.mu1_pt.at(0), ev_.mu1_eta.at(0), ev_.mu1_phi.at(0), ev_.mass_mu});
+    //}
+    //if (ev_.mu2_pt.size() != 0){
+    //    lepvec.push_back({ev_.mu2_pt.at(0), ev_.mu2_eta.at(0), ev_.mu2_phi.at(0), ev_.mass_mu});
+    //}
+    //// By definition, this sorts by the first element of the vector (in this case pT)
+    //if (lepvec.size() > 1){
+    //    std::sort(begin(lepvec), end(lepvec));
+    //    std::reverse(begin(lepvec), end(lepvec));
+    //}
+    //if (lepvec.size() >= 1){
+    //    ev_.lep1_pt.push_back(lepvec[0][0]);
+    //    ev_.lep1_eta.push_back(lepvec[0][1]);
+    //    ev_.lep1_phi.push_back(lepvec[0][2]);
+    //    ev_.lep1_mass.push_back(lepvec[0][3]);
+    //}
+    //if (lepvec.size() >= 2){
+    //    ev_.lep2_pt.push_back(lepvec[1][0]);
+    //    ev_.lep2_eta.push_back(lepvec[1][1]);
+    //    ev_.lep2_phi.push_back(lepvec[1][2]);
+    //    ev_.lep2_mass.push_back(lepvec[1][3]);
+    //}
+    //lepvec.clear();
 
-    // Fill pt of two leptons
-    if (ev_.lep2_pt.size() != 0){
-        TLorentzVector l1, l2;
-        l1.SetPtEtaPhiM(ev_.lep1_pt[0], ev_.lep1_eta[0], ev_.lep1_phi[0], ev_.lep1_mass[0]);
-        l2.SetPtEtaPhiM(ev_.lep2_pt[0], ev_.lep2_eta[0], ev_.lep2_phi[0], ev_.lep2_mass[0]);
-        ev_.pt2l.push_back((l1 + l2).Pt());
-    }
+    //// Fill pt of two leptons
+    //if (ev_.lep2_pt.size() != 0){
+    //    TLorentzVector l1, l2;
+    //    l1.SetPtEtaPhiM(ev_.lep1_pt[0], ev_.lep1_eta[0], ev_.lep1_phi[0], ev_.lep1_mass[0]);
+    //    l2.SetPtEtaPhiM(ev_.lep2_pt[0], ev_.lep2_eta[0], ev_.lep2_phi[0], ev_.lep2_mass[0]);
+    //    ev_.pt2l.push_back((l1 + l2).Pt());
+    //}
 
     // MET
     if (mets->size() > 0) {
@@ -898,54 +898,54 @@ MiniFromPat::recoAnalysis(const edm::Event& iEvent, const edm::EventSetup& iSetu
         ev_.genmet = mets->at(0).genMET()->pt();
     }
 
-    // Transverse mass
-    if (ev_.lep1_pt.size() != 0){
-        ev_.mt1.push_back(std::sqrt(2*ev_.lep1_pt.at(0)*ev_.met*(1-std::cos(ev_.lep1_phi.at(0)-mets->at(0).phi()))));
-    }
-    if (ev_.lep2_pt.size() != 0){
-        ev_.mt2.push_back(std::sqrt(2*ev_.lep2_pt.at(0)*ev_.met*(1-std::cos(ev_.lep2_phi.at(0)-mets->at(0).phi()))));
-    }
+    //// Transverse mass
+    //if (ev_.lep1_pt.size() != 0){
+    //    ev_.mt1.push_back(std::sqrt(2*ev_.lep1_pt.at(0)*ev_.met*(1-std::cos(ev_.lep1_phi.at(0)-mets->at(0).phi()))));
+    //}
+    //if (ev_.lep2_pt.size() != 0){
+    //    ev_.mt2.push_back(std::sqrt(2*ev_.lep2_pt.at(0)*ev_.met*(1-std::cos(ev_.lep2_phi.at(0)-mets->at(0).phi()))));
+    //}
 
-    // mtautau
-    if (ev_.lep2_pt.size() != 0){
-        ev_.mtautau.push_back(getMTauTau(mets->at(0).pt(), mets->at(0).phi(),
-                    ev_.lep1_pt.at(0), ev_.lep1_eta.at(0), ev_.lep1_phi.at(0),
-                    ev_.lep2_pt.at(0), ev_.lep2_eta.at(0), ev_.lep2_phi.at(0)));
-    }
+    //// mtautau
+    //if (ev_.lep2_pt.size() != 0){
+    //    ev_.mtautau.push_back(getMTauTau(mets->at(0).pt(), mets->at(0).phi(),
+    //                ev_.lep1_pt.at(0), ev_.lep1_eta.at(0), ev_.lep1_phi.at(0),
+    //                ev_.lep2_pt.at(0), ev_.lep2_eta.at(0), ev_.lep2_phi.at(0)));
+    //}
 
-    // Is a same flavour opposite sign lepton pair present?
-    for (size_t i=0; i<elecs->size(); ++i){
-        // Only select good electrons
-        if (!isGoodElecSOS(elecs->at(i), primaryVertex)){ continue; }
+    //// Is a same flavour opposite sign lepton pair present?
+    //for (size_t i=0; i<elecs->size(); ++i){
+    //    // Only select good electrons
+    //    if (!isGoodElecSOS(elecs->at(i), primaryVertex)){ continue; }
 
-        for (size_t j=i+1; j<elecs->size(); ++j){
-            // Only select good electrons
-            if (!isGoodElecSOS(elecs->at(j), primaryVertex)){ continue; }
+    //    for (size_t j=i+1; j<elecs->size(); ++j){
+    //        // Only select good electrons
+    //        if (!isGoodElecSOS(elecs->at(j), primaryVertex)){ continue; }
 
-            // is SFOS?
-            if (elecs->at(i).charge()*elecs->at(j).charge() > 0){ continue; }
+    //        // is SFOS?
+    //        if (elecs->at(i).charge()*elecs->at(j).charge() > 0){ continue; }
 
-            // Are electrons soft?
-            if (elecs->at(i).pt() > ev_.el_pt_hi || elecs->at(i).pt() < ev_.el_pt_lo){ continue; }
-            if (elecs->at(j).pt() > ev_.el_pt_hi || elecs->at(j).pt() < ev_.el_pt_lo){ continue; }
+    //        // Are electrons soft?
+    //        if (elecs->at(i).pt() > ev_.el_pt_hi || elecs->at(i).pt() < ev_.el_pt_lo){ continue; }
+    //        if (elecs->at(j).pt() > ev_.el_pt_hi || elecs->at(j).pt() < ev_.el_pt_lo){ continue; }
 
-            // Mll for soft SFOS
-            TLorentzVector l1, l2;
-            l1.SetPtEtaPhiM(elecs->at(i).pt(), elecs->at(i).eta(), elecs->at(i).phi(), ev_.mass_el);
-            l2.SetPtEtaPhiM(elecs->at(j).pt(), elecs->at(j).eta(), elecs->at(j).phi(), ev_.mass_el);
-            double mll = (l1+l2).M();
-            if (ev_.mllMin.size() == 0){
-                ev_.mllMin.push_back(mll);
-            }else if (ev_.mllMin.at(0) > mll){
-                ev_.mllMin.at(0) = mll;
-            }
-            if (ev_.mllMax.size() == 0){
-                ev_.mllMax.push_back(mll);
-            }else if (ev_.mllMax.at(0) < mll){
-                ev_.mllMax.at(0) = mll;
-            }
-        }
-    }
+    //        // Mll for soft SFOS
+    //        TLorentzVector l1, l2;
+    //        l1.SetPtEtaPhiM(elecs->at(i).pt(), elecs->at(i).eta(), elecs->at(i).phi(), ev_.mass_el);
+    //        l2.SetPtEtaPhiM(elecs->at(j).pt(), elecs->at(j).eta(), elecs->at(j).phi(), ev_.mass_el);
+    //        double mll = (l1+l2).M();
+    //        if (ev_.mllMin.size() == 0){
+    //            ev_.mllMin.push_back(mll);
+    //        }else if (ev_.mllMin.at(0) > mll){
+    //            ev_.mllMin.at(0) = mll;
+    //        }
+    //        if (ev_.mllMax.size() == 0){
+    //            ev_.mllMax.push_back(mll);
+    //        }else if (ev_.mllMax.at(0) < mll){
+    //            ev_.mllMax.at(0) = mll;
+    //        }
+    //    }
+    //}
 
     for (size_t i=0; i<muons->size(); ++i){
         // Only select good muons
@@ -986,12 +986,12 @@ MiniFromPat::recoAnalysis(const edm::Event& iEvent, const edm::EventSetup& iSetu
         //if (fabs(jets->at(i).eta()) > 5) continue;
 
         bool overlaps = false;
-        for (size_t j = 0; j < elecs->size(); j++) {
-            if (fabs(jets->at(i).pt()-elecs->at(j).pt()) < 0.01*elecs->at(j).pt() && ROOT::Math::VectorUtil::DeltaR(elecs->at(j).p4(),jets->at(i).p4()) < 0.01) {
-                overlaps = true;
-                break;
-            }
-        }
+        //for (size_t j = 0; j < elecs->size(); j++) {
+        //    if (fabs(jets->at(i).pt()-elecs->at(j).pt()) < 0.01*elecs->at(j).pt() && ROOT::Math::VectorUtil::DeltaR(elecs->at(j).p4(),jets->at(i).p4()) < 0.01) {
+        //        overlaps = true;
+        //        break;
+        //    }
+        //}
         if (overlaps) continue;
         for (size_t j = 0; j < muons->size(); j++) {
             if (fabs(jets->at(i).pt()-muons->at(j).pt()) < 0.01*muons->at(j).pt() && ROOT::Math::VectorUtil::DeltaR(muons->at(j).p4(),jets->at(i).p4()) < 0.01) {
@@ -1260,14 +1260,14 @@ MiniFromPat::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 {
 
     // Clear vectors
-    ev_.el1_pt.clear();
-    ev_.el1_eta.clear();
-    ev_.el1_phi.clear();
-    ev_.el1_q.clear();
-    ev_.el2_pt.clear();
-    ev_.el2_eta.clear();
-    ev_.el2_phi.clear();
-    ev_.el2_q.clear();
+    //ev_.el1_pt.clear();
+    //ev_.el1_eta.clear();
+    //ev_.el1_phi.clear();
+    //ev_.el1_q.clear();
+    //ev_.el2_pt.clear();
+    //ev_.el2_eta.clear();
+    //ev_.el2_phi.clear();
+    //ev_.el2_q.clear();
     ev_.mu1_pt.clear();
     ev_.mu1_eta.clear();
     ev_.mu1_phi.clear();
@@ -1278,14 +1278,14 @@ MiniFromPat::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
     ev_.mu2_phi.clear();
     ev_.mu2_q.clear();
     ev_.mu2_mother.clear();
-    ev_.lep1_pt.clear();
-    ev_.lep1_eta.clear();
-    ev_.lep1_phi.clear();
-    ev_.lep1_mass.clear();
-    ev_.lep2_pt.clear();
-    ev_.lep2_eta.clear();
-    ev_.lep2_phi.clear();
-    ev_.lep2_mass.clear();
+    //ev_.lep1_pt.clear();
+    //ev_.lep1_eta.clear();
+    //ev_.lep1_phi.clear();
+    //ev_.lep1_mass.clear();
+    //ev_.lep2_pt.clear();
+    //ev_.lep2_eta.clear();
+    //ev_.lep2_phi.clear();
+    //ev_.lep2_mass.clear();
     //ev_.el1_pt_truth.clear();
     //ev_.el1_eta_truth.clear();
     //ev_.el1_phi_truth.clear();
@@ -1505,8 +1505,8 @@ MiniFromPat::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
     //ev_.vld_mu_iso_others_dz.clear();
     //ev_.vld_mu_good_others_dz.clear();
 
-    ev_.nLep = ev_.nEl = ev_.nMu = 0;
-    ev_.nSoftLep = ev_.nSoftEl = ev_.nSoftMu = 0;
+    ev_.nLep = /*ev_.nEl =*/ ev_.nMu = 0;
+    ev_.nSoftLep = /*ev_.nSoftEl =*/ ev_.nSoftMu = 0;
     ev_.nJet = ev_.nBJet = 0;
     ev_.met = ev_.ht = 0.;
 
