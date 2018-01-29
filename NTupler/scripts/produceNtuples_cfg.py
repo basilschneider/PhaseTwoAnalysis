@@ -29,7 +29,7 @@ if len(options.updateJEC)==0:
     standardjec='PhaseTwoAnalysis/NTupler/data/PhaseIIFall17_V3_MC.db'
     standardjec_tag='PhaseIIFall17_V3_MC'
     options.updateJEC=[standardjec,standardjec_tag]
-    
+
 
 process = cms.Process("MiniAnalysis")
 
@@ -56,7 +56,7 @@ process.MessageLogger.cerr.INFO = cms.untracked.PSet(
 )
 
 # Input
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) ) 
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
 
 process.source = cms.Source("PoolSource",
     fileNames = cms.untracked.vstring(
@@ -2487,13 +2487,13 @@ if (options.inputFormat.lower() == "reco"):
     elecLabel = "eleForYield"
 if options.updateJEC:
     jetLabel = "updatedPatJetsUpdatedJECAK4PFPuppi"
-else:    
+else:
     jetLabel = "slimmedJets"
 if (options.inputFormat.lower() == "reco"):
     muonLabel = "muons"
     if options.updateJEC:
         jetLabel = "ak4PUPPIJetsL1FastL2L3"
-    else:    
+    else:
         jetLabel = "ak4PUPPIJets"
 process.selectedMuons = cms.EDFilter("CandPtrSelector",
                                      src = cms.InputTag(muonLabel),
@@ -2532,7 +2532,7 @@ process.countJets = cms.EDFilter("CandViewCountFilter",
 process.preYieldFilter = cms.Sequence(process.selectedMuons+process.selectedElectrons+process.allLeps+process.countLeps+process.selectedPhotons+process.countPhotons+process.selectedJets+process.countJets)
 
 
-# run Puppi 
+# run Puppi
 process.load('CommonTools/PileupAlgos/Puppi_cff')
 process.load('CommonTools/PileupAlgos/PhotonPuppi_cff')
 process.load('CommonTools/PileupAlgos/softKiller_cfi')
@@ -2540,7 +2540,7 @@ from CommonTools.PileupAlgos.PhotonPuppi_cff        import setupPuppiPhoton
 from PhysicsTools.PatAlgos.slimming.puppiForMET_cff import makePuppies
 makePuppies(process)
 process.particleFlowNoLep = cms.EDFilter("PdgIdCandViewSelector",
-                                    src = cms.InputTag("particleFlow"), 
+                                    src = cms.InputTag("particleFlow"),
                                     pdgId = cms.vint32( 1,2,22,111,130,310,2112,211,-211,321,-321,999211,2212,-2212 )
                                     )
 process.puppiNoLep = process.puppi.clone(candName = cms.InputTag('particleFlowNoLep'))
@@ -2558,7 +2558,7 @@ process.puppiMet = process.pfMet.clone()
 process.puppiMet.src = cms.InputTag('puppi')
 
 # analysis
-moduleName = "MiniFromPat"    
+moduleName = "MiniFromPat"
 if (options.inputFormat.lower() == "reco"):
     moduleName = "MiniFromReco"
 process.ntuple = cms.EDAnalyzer(moduleName)
@@ -2616,5 +2616,5 @@ else:
     else:
         if options.updateJEC:
             process.p = cms.Path(process.weightCounter*process.patJetCorrFactorsUpdatedJECAK4PFPuppi * process.updatedPatJetsUpdatedJECAK4PFPuppi * process.phase2Egamma * process.ntuple)
-	else:    
+	else:
             process.p = cms.Path(process.weightCounter*process.phase2Egamma*process.ntuple)
