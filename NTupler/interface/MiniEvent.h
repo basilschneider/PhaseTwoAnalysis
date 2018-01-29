@@ -7,69 +7,170 @@
 // Description: Define the structure of ntuples
 
 #include "TTree.h"
+#include "TH2D.h"
 
 struct MiniEvent_t
 {
-  MiniEvent_t()
-  {
-    ngl=0; ngj=0; ngp=0;
-    g_nw=0;ng=0;
-    nle=0; nme=0; nte = 0; nlm=0; ntm=0; nj=0; nmet=0; nlp=0; ntp=0;
-    lumi=0;
-    nvtx=0;
-    run=0;
-    event=0;
-    for(int i=0;i<maxpart;i++){
-    	le_sf[i]=1;
-    	me_sf[i]=1;
-    	te_sf[i]=1;
-    	lm_sf[i]=1;
-    	tm_sf[i]=1;
-    	lp_sf[i]=1;
-    	tp_sf[i]=1;
+    MiniEvent_t()
+    {
+        ;
     }
-    for(int i=0;i<maxjets;i++)
-    	j_sf[i]=1;
-  }
-  static constexpr int maxpart=50;
-  static constexpr int maxjets=200;
-  static constexpr int maxweights=500;
 
-  Int_t run,event,lumi;
+    Int_t run, event, lumi;
 
-  //gen level event
-  Int_t ng,ngj,ngl,ngp,g_nw;
-  Float_t g_w[maxweights];
-  Float_t gl_p[maxpart], gl_px[maxpart], gl_py[maxpart], gl_pz[maxpart], gl_nrj[maxpart], gl_pt[maxpart], gl_eta[maxpart], gl_phi[maxpart], gl_mass[maxpart], gl_relIso[maxpart];
-  Int_t gl_pid[maxpart], gl_ch[maxpart], gl_st[maxpart];
-  Float_t gj_pt[maxjets], gj_eta[maxjets], gj_phi[maxjets], gj_mass[maxjets];
-  Float_t gp_p[maxpart], gp_px[maxpart], gp_py[maxpart], gp_pz[maxpart], gp_nrj[maxpart], gp_pt[maxpart], gp_eta[maxpart], gp_phi[maxpart];
-  Int_t gp_st[maxpart];
+    // Cutflow control
+    //static constexpr bool fill_rle = false;
+    static constexpr bool fill_vld = true;
 
-  //reco level event
-  Int_t nvtx;
-  Float_t v_pt2[maxjets];
-  Int_t nle, nme, nte, nlm, ntm, nj, nmet, nlp, ntp;
-  Int_t le_ch[maxpart], le_g[maxpart];
-  Float_t le_pt[maxpart], le_eta[maxpart], le_phi[maxpart], le_mass[maxpart], le_relIso[maxpart],le_relTkIso[maxpart], le_bdt[maxpart], le_dz[maxpart], le_dxy[maxpart], le_sf[maxpart];
-  Int_t me_ch[maxpart], me_g[maxpart];
-  Float_t me_pt[maxpart], me_eta[maxpart], me_phi[maxpart], me_mass[maxpart], me_relIso[maxpart],me_relTkIso[maxpart], me_bdt[maxpart], me_dz[maxpart], me_dxy[maxpart], me_sf[maxpart];
-  Int_t te_ch[maxpart], te_g[maxpart];
-  Float_t te_pt[maxpart], te_eta[maxpart], te_phi[maxpart], te_mass[maxpart], te_relIso[maxpart],te_relTkIso[maxpart], te_bdt[maxpart], te_dz[maxpart], te_dxy[maxpart], te_sf[maxpart];
-  Int_t lm_ch[maxpart], lm_g[maxpart];
-  Float_t lm_pt[maxpart], lm_eta[maxpart], lm_phi[maxpart], lm_mass[maxpart], lm_relIso[maxpart], lm_dz[maxpart], lm_dxy[maxpart], lm_sf[maxpart];
-  Int_t tm_ch[maxpart], tm_g[maxpart];
-  Float_t tm_pt[maxpart], tm_eta[maxpart], tm_phi[maxpart], tm_mass[maxpart], tm_relIso[maxpart], tm_dz[maxpart], tm_dxy[maxpart], tm_sf[maxpart];
-  Int_t j_id[maxjets], j_g[maxjets], j_mvav2[maxjets], j_deepcsv[maxjets], j_flav[maxjets], j_hadflav[maxjets], j_pid[maxjets], j_sf[maxjets];
-  Float_t j_pt[maxjets], j_eta[maxjets], j_phi[maxjets], j_mass[maxjets];
-  Float_t met_pt[maxpart], met_eta[maxpart], met_phi[maxpart], met_sf[maxpart];
-  Int_t lp_g[maxpart], tp_g[maxpart], lp_isEB[maxpart], tp_isEB[maxpart];
-  Float_t lp_pt[maxpart], lp_eta[maxpart], lp_phi[maxpart], lp_nrj[maxpart], lp_pt_multi[maxpart], lp_eta_multi[maxpart], lp_phi_multi[maxpart], lp_nrj_multi[maxpart], lp_bdt[maxpart], lp_sf[maxpart];
-  Float_t tp_pt[maxpart], tp_eta[maxpart], tp_phi[maxpart], tp_nrj[maxpart], tp_pt_multi[maxpart], tp_eta_multi[maxpart], tp_phi_multi[maxpart], tp_nrj_multi[maxpart], tp_bdt[maxpart], tp_sf[maxpart];
+    // Cut variables
+    static constexpr double el_pt_lo = 5.;
+    static constexpr double el_pt_hi = 30.;
+    static constexpr double mu_pt_lo = 5.;
+    static constexpr double mu_pt_hi = 30.;
+    static constexpr double jet_pt_lo = 25.;
+    static constexpr double mass_el = .000511;
+    static constexpr double mass_mu = .105658;
+    static constexpr double iso_cut_rel = .5;
+    static constexpr double iso_cut_abs = 5.;
+    static constexpr double truth_match_diff_pt_rel = .5;
+    static constexpr double truth_match_diff_dr = .1;
 
+    double genWeight;
+    Int_t nLep, nMu, nEl;
+    Int_t nSoftLep, nSoftMu, nSoftEl;
+    Int_t nJet, nBJet;
+
+    std::vector<double> el1_pt, el1_eta, el1_phi, el2_pt, el2_eta, el2_phi;
+    std::vector<int> el1_q, el2_q;
+    std::vector<double> mu1_pt, mu1_eta, mu1_phi, mu2_pt, mu2_eta, mu2_phi;
+    std::vector<int> mu1_q, mu2_q, mu1_mother, mu2_mother;
+    std::vector<double> lep1_pt, lep1_eta, lep1_phi, lep2_pt, lep2_eta, lep2_phi;
+    std::vector<int> lep1_mass, lep2_mass;
+
+    //std::vector<double> el1_pt_truth, el1_eta_truth, el1_phi_truth, el2_pt_truth, el2_eta_truth, el2_phi_truth;
+    //std::vector<int> el1_q_truth, el2_q_truth;
+    //std::vector<double> mu1_pt_truth, mu1_eta_truth, mu1_phi_truth, mu2_pt_truth, mu2_eta_truth, mu2_phi_truth;
+    //std::vector<int> mu1_q_truth, mu2_q_truth;
+    //std::vector<double> lep1_pt_truth, lep1_eta_truth, lep1_phi_truth, lep2_pt_truth, lep2_eta_truth, lep2_phi_truth, lep1_mass_truth, lep2_mass_truth;
+
+    std::vector<double> jet1_pt, jet1_eta, jet1_phi, jet1_mass;
+    std::vector<double> jet1_pt_truth, jet1_eta_truth, jet1_phi_truth, jet1_mass_truth;
+
+    double met, genmet, ht;
+    std::vector<double> mllMin, mllMax, mt1, mt2, pt2l, mtautau;
+
+    //std::vector<double> vld_el_pt, vld_el_iso_pt, vld_el_good_pt, vld_el_is_tight;
+    //std::vector<double> vld_el_hs_pt, vld_el_iso_hs_pt, vld_el_good_hs_pt;
+    //std::vector<double> vld_el_py8_pt, vld_el_iso_py8_pt, vld_el_good_py8_pt;
+    //std::vector<double> vld_el_others_pt, vld_el_iso_others_pt, vld_el_good_others_pt;
+    //std::vector<double> vld_el_eta, vld_el_iso_eta, vld_el_good_eta;
+    //std::vector<double> vld_el_hs_eta, vld_el_iso_hs_eta, vld_el_good_hs_eta;
+    //std::vector<double> vld_el_py8_eta, vld_el_iso_py8_eta, vld_el_good_py8_eta;
+    //std::vector<double> vld_el_others_eta, vld_el_iso_others_eta, vld_el_good_others_eta;
+
+    //std::vector<double> vld_mu_pt, vld_mu_iso_pt, vld_mu_good_pt, vld_mu_is_tight;
+    //std::vector<double> vld_mu_hs_pt, vld_mu_iso_hs_pt, vld_mu_good_hs_pt;
+    //std::vector<double> vld_mu_py8_pt, vld_mu_iso_py8_pt, vld_mu_good_py8_pt;
+    //std::vector<double> vld_mu_others_pt, vld_mu_iso_others_pt, vld_mu_good_others_pt;
+    //std::vector<double> vld_mu_eta, vld_mu_iso_eta, vld_mu_good_eta;
+    //std::vector<double> vld_mu_hs_eta, vld_mu_iso_hs_eta, vld_mu_good_hs_eta;
+    //std::vector<double> vld_mu_py8_eta, vld_mu_iso_py8_eta, vld_mu_good_py8_eta;
+    //std::vector<double> vld_mu_others_eta, vld_mu_iso_others_eta, vld_mu_good_others_eta;
+    std::vector<double> vld_mu_hs_pt, vld_mu_py8_pt, vld_mu_others_pt;
+    std::vector<double> vld_mu_iso_hs_pt, vld_mu_iso_py8_pt, vld_mu_iso_others_pt;
+    std::vector<double> vld_mu_good_hs_pt, vld_mu_good_py8_pt, vld_mu_good_others_pt;
+    std::vector<double> vld_mu_hs_eta, vld_mu_py8_eta, vld_mu_others_eta;
+    std::vector<double> vld_mu_iso_hs_eta, vld_mu_iso_py8_eta, vld_mu_iso_others_eta;
+    std::vector<double> vld_mu_good_hs_eta, vld_mu_good_py8_eta, vld_mu_good_others_eta;
+
+    //std::vector<double> vld_genel_pt, vld_genel_hs_pt, vld_genel_py8_pt;
+    //std::vector<double> vld_genel_eta, vld_genel_hs_eta, vld_genel_py8_eta;
+    //std::vector<double> vld_genmu_pt, vld_genmu_hs_pt, vld_genmu_py8_pt;
+    //std::vector<double> vld_genmu_eta, vld_genmu_hs_eta, vld_genmu_py8_eta;
+    std::vector<double> vld_genmu_hs_pt, vld_genmu_py8_pt;
+    std::vector<double> vld_genmu_hs_eta, vld_genmu_py8_eta;
+
+    //std::vector<double> vld_el_absiso, vld_el_iso_absiso, vld_el_good_absiso;
+    //std::vector<double> vld_el_hs_absiso, vld_el_iso_hs_absiso, vld_el_good_hs_absiso;
+    //std::vector<double> vld_el_py8_absiso, vld_el_iso_py8_absiso, vld_el_good_py8_absiso;
+    //std::vector<double> vld_el_others_absiso, vld_el_iso_others_absiso, vld_el_good_others_absiso;
+    //std::vector<double> vld_el_reliso, vld_el_iso_reliso, vld_el_good_reliso;
+    //std::vector<double> vld_el_hs_reliso, vld_el_iso_hs_reliso, vld_el_good_hs_reliso;
+    //std::vector<double> vld_el_py8_reliso, vld_el_iso_py8_reliso, vld_el_good_py8_reliso;
+    //std::vector<double> vld_el_others_reliso, vld_el_iso_others_reliso, vld_el_good_others_reliso;
+    //std::vector<double> vld_el_dxy, vld_el_iso_dxy, vld_el_good_dxy;
+    //std::vector<double> vld_el_hs_dxy, vld_el_iso_hs_dxy, vld_el_good_hs_dxy;
+    //std::vector<double> vld_el_py8_dxy, vld_el_iso_py8_dxy, vld_el_good_py8_dxy;
+    //std::vector<double> vld_el_others_dxy, vld_el_iso_others_dxy, vld_el_good_others_dxy;
+    //std::vector<double> vld_el_dz, vld_el_iso_dz, vld_el_good_dz;
+    //std::vector<double> vld_el_hs_dz, vld_el_iso_hs_dz, vld_el_good_hs_dz;
+    //std::vector<double> vld_el_py8_dz, vld_el_iso_py8_dz, vld_el_good_py8_dz;
+    //std::vector<double> vld_el_others_dz, vld_el_iso_others_dz, vld_el_good_others_dz;
+
+    //std::vector<double> vld_mu_absiso, vld_mu_iso_absiso, vld_mu_good_absiso;
+    //std::vector<double> vld_mu_hs_absiso, vld_mu_iso_hs_absiso, vld_mu_good_hs_absiso;
+    //std::vector<double> vld_mu_py8_absiso, vld_mu_iso_py8_absiso, vld_mu_good_py8_absiso;
+    //std::vector<double> vld_mu_others_absiso, vld_mu_iso_others_absiso, vld_mu_good_others_absiso;
+    //std::vector<double> vld_mu_reliso, vld_mu_iso_reliso, vld_mu_good_reliso;
+    //std::vector<double> vld_mu_hs_reliso, vld_mu_iso_hs_reliso, vld_mu_good_hs_reliso;
+    //std::vector<double> vld_mu_py8_reliso, vld_mu_iso_py8_reliso, vld_mu_good_py8_reliso;
+    //std::vector<double> vld_mu_others_reliso, vld_mu_iso_others_reliso, vld_mu_good_others_reliso;
+    //std::vector<double> vld_mu_dxy, vld_mu_iso_dxy, vld_mu_good_dxy;
+    //std::vector<double> vld_mu_hs_dxy, vld_mu_iso_hs_dxy, vld_mu_good_hs_dxy;
+    //std::vector<double> vld_mu_py8_dxy, vld_mu_iso_py8_dxy, vld_mu_good_py8_dxy;
+    //std::vector<double> vld_mu_others_dxy, vld_mu_iso_others_dxy, vld_mu_good_others_dxy;
+    //std::vector<double> vld_mu_dz, vld_mu_iso_dz, vld_mu_good_dz;
+    //std::vector<double> vld_mu_hs_dz, vld_mu_iso_hs_dz, vld_mu_good_hs_dz;
+    //std::vector<double> vld_mu_py8_dz, vld_mu_iso_py8_dz, vld_mu_good_py8_dz;
+    //std::vector<double> vld_mu_others_dz, vld_mu_iso_others_dz, vld_mu_good_others_dz;
+    std::vector<double> vld_mu_hs_reliso, vld_mu_py8_reliso, vld_mu_others_reliso;
+    std::vector<double> vld_mu_iso_hs_reliso, vld_mu_iso_py8_reliso, vld_mu_iso_others_reliso;
+    std::vector<double> vld_mu_good_hs_reliso, vld_mu_good_py8_reliso, vld_mu_good_others_reliso;
+
+    //TH2D* vld_el_hs_pt_eta = new TH2D("vld_el_hs_pt_eta", "vld_el_hs_pt_eta", 36, 0., 90., 40, 0., 4.);
+    //TH2D* vld_el_iso_hs_pt_eta = new TH2D("vld_el_iso_hs_pt_eta", "vld_el_iso_hs_pt_eta", 36, 0., 90., 40, 0., 4.);
+    //TH2D* vld_el_good_hs_pt_eta = new TH2D("vld_el_good_hs_pt_eta", "vld_el_good_hs_pt_eta", 36, 0., 90., 40, 0., 4.);
+    //TH2D* vld_el_py8_pt_eta = new TH2D("vld_el_py8_pt_eta", "vld_el_py8_pt_eta", 36, 0., 90., 40, 0., 4.);
+    //TH2D* vld_el_iso_py8_pt_eta = new TH2D("vld_el_iso_py8_pt_eta", "vld_el_iso_py8_pt_eta", 36, 0., 90., 40, 0., 4.);
+    //TH2D* vld_el_good_py8_pt_eta = new TH2D("vld_el_good_py8_pt_eta", "vld_el_good_py8_pt_eta", 36, 0., 90., 40, 0., 4.);
+    //TH2D* vld_el_others_pt_eta = new TH2D("vld_el_others_pt_eta", "vld_el_others_pt_eta", 36, 0., 90., 40, 0., 4.);
+    //TH2D* vld_el_iso_others_pt_eta = new TH2D("vld_el_iso_others_pt_eta", "vld_el_iso_others_pt_eta", 36, 0., 90., 40, 0., 4.);
+    //TH2D* vld_el_good_others_pt_eta = new TH2D("vld_el_good_others_pt_eta", "vld_el_good_others_pt_eta", 36, 0., 90., 40, 0., 4.);
+    //TH2D* vld_mu_hs_pt_eta = new TH2D("vld_mu_hs_pt_eta", "vld_mu_hs_pt_eta", 36, 0., 90., 40, 0., 4.);
+    //TH2D* vld_mu_iso_hs_pt_eta = new TH2D("vld_mu_iso_hs_pt_eta", "vld_mu_iso_hs_pt_eta", 36, 0., 90., 40, 0., 4.);
+    //TH2D* vld_mu_good_hs_pt_eta = new TH2D("vld_mu_good_hs_pt_eta", "vld_mu_good_hs_pt_eta", 36, 0., 90., 40, 0., 4.);
+    //TH2D* vld_mu_py8_pt_eta = new TH2D("vld_mu_py8_pt_eta", "vld_mu_py8_pt_eta", 36, 0., 90., 40, 0., 4.);
+    //TH2D* vld_mu_iso_py8_pt_eta = new TH2D("vld_mu_iso_py8_pt_eta", "vld_mu_iso_py8_pt_eta", 36, 0., 90., 40, 0., 4.);
+    //TH2D* vld_mu_good_py8_pt_eta = new TH2D("vld_mu_good_py8_pt_eta", "vld_mu_good_py8_pt_eta", 36, 0., 90., 40, 0., 4.);
+    //TH2D* vld_mu_others_pt_eta = new TH2D("vld_mu_others_pt_eta", "vld_mu_others_pt_eta", 36, 0., 90., 40, 0., 4.);
+    //TH2D* vld_mu_iso_others_pt_eta = new TH2D("vld_mu_iso_others_pt_eta", "vld_mu_iso_others_pt_eta", 36, 0., 90., 40, 0., 4.);
+    //TH2D* vld_mu_good_others_pt_eta = new TH2D("vld_mu_good_others_pt_eta", "vld_mu_good_others_pt_eta", 36, 0., 90., 40, 0., 4.);
+
+    ////TH2D* vld_el_pt_iso_abs = new TH2D("vld_el_pt_iso_abs", "vld_el_pt_iso_abs", 12, 0., 30., 40, 0., 20.);
+    ////TH2D* vld_el_iso_pt_iso_abs = new TH2D("vld_el_iso_pt_iso_abs", "vld_el_iso_pt_iso_abs", 12, 0., 30., 40, 0., 20.);
+    ////TH2D* vld_el_pt_iso_rel = new TH2D("vld_el_pt_iso_rel", "vld_el_pt_iso_rel", 12, 0., 30., 40, 0., 2.);
+    ////TH2D* vld_el_iso_pt_iso_rel = new TH2D("vld_el_iso_pt_iso_rel", "vld_el_iso_pt_iso_rel", 12, 0., 30., 40, 0., 2.);
+    ////TH2D* vld_el_pt_dxy = new TH2D("vld_el_pt_dxy", "vld_el_pt_dxy", 12, 0., 30., 40 ,0., .1);
+    ////TH2D* vld_el_iso_pt_dxy = new TH2D("vld_el_iso_pt_dxy", "vld_el_iso_pt_dxy", 12, 0., 30., 40 ,0., .1);
+    ////TH2D* vld_el_pt_dz = new TH2D("vld_el_pt_dz", "vld_el_pt_dz", 12, 0., 30., 40 ,0., .1);
+    ////TH2D* vld_el_iso_pt_dz = new TH2D("vld_el_iso_pt_dz", "vld_el_iso_pt_dz", 12, 0., 30., 40 ,0., .1);
+    ////TH2D* vld_mu_pt_iso_abs = new TH2D("vld_mu_pt_iso_abs", "vld_mu_pt_iso_abs", 12, 0., 30., 40, 0., 20.);
+    ////TH2D* vld_mu_iso_pt_iso_abs = new TH2D("vld_mu_iso_pt_iso_abs", "vld_mu_iso_pt_iso_abs", 12, 0., 30., 40, 0., 20.);
+    ////TH2D* vld_mu_pt_iso_rel = new TH2D("vld_mu_pt_iso_rel", "vld_mu_pt_iso_rel", 12, 0., 30., 40, 0., 2.);
+    ////TH2D* vld_mu_iso_pt_iso_rel = new TH2D("vld_mu_iso_pt_iso_rel", "vld_mu_iso_pt_iso_rel", 12, 0., 30., 40, 0., 2.);
+    ////TH2D* vld_mu_pt_dxy = new TH2D("vld_mu_pt_dxy", "vld_mu_pt_dxy", 12, 0., 30., 40 ,0., .1);
+    ////TH2D* vld_mu_iso_pt_dxy = new TH2D("vld_mu_iso_pt_dxy", "vld_mu_iso_pt_dxy", 12, 0., 30., 40 ,0., .1);
+    ////TH2D* vld_mu_pt_dz = new TH2D("vld_mu_pt_dz", "vld_mu_pt_dz", 12, 0., 30., 40 ,0., .1);
+    ////TH2D* vld_mu_iso_pt_dz = new TH2D("vld_mu_iso_pt_dz", "vld_mu_iso_pt_dz", 12, 0., 30., 40 ,0., .1);
+
+    // Real lepton efficiency histograms
+    //TH2D* rle_el_num = new TH2D("rle_el_num", "rle_el_num", 6, 0., 30., 8, 0., 4.);
+    //TH2D* rle_el_den = new TH2D("rle_el_den", "rle_el_den", 6, 0., 30., 8, 0., 4.);
+    //TH2D* rle_mu_num = new TH2D("rle_mu_num", "rle_mu_num", 6, 0., 30., 8, 0., 4.);
+    //TH2D* rle_mu_den = new TH2D("rle_mu_den", "rle_mu_den", 6, 0., 30., 8, 0., 4.);
 };
 
-void createMiniEventTree(TTree *t_event_, TTree *t_genParts_, TTree *t_vertices_, TTree *t_genJets_, TTree *t_genPhotons_, TTree *t_looseElecs_, TTree *t_mediumElecs_, TTree *t_tightElecs_, TTree *t_looseMuons_, TTree *t_tightMuons_, TTree *t_puppiJets_, TTree *t_puppiMET_, TTree *t_loosePhotons_, TTree *t_tightPhotons_, MiniEvent_t &ev);
-void attachToMiniEventTree(TTree *t_event_, TTree *t_genParts_, TTree *t_vertices_, TTree *t_genJets_, TTree *t_genPhotons_, TTree *t_looseElecs_, TTree *t_mediumElecs_, TTree *t_tightElecs_, TTree *t_looseMuons_, TTree *t_tightMuons_, TTree *t_puppiJets_, TTree *t_puppiMET_, TTree *t_loosePhotons_, TTree *t_tightPhotons_, MiniEvent_t &ev);
+//void createMiniEventTree(TTree *t_event_, TTree *t_genParts_, TTree *t_vertices_, TTree *t_genJets_, TTree *t_looseElecs_, TTree *t_tightElecs_, TTree *t_looseMuons_, TTree *t_tightMuons_, TTree *t_puppiJets_, TTree *t_puppiMET_,MiniEvent_t &ev);
+void createMiniEventTree(TTree *t_tree_, MiniEvent_t &ev);
 
 #endif
