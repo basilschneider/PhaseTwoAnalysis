@@ -56,7 +56,7 @@ struct MiniEvent_t
     std::vector<double> jet1_pt, jet1_eta, jet1_phi, jet1_mass;
     std::vector<double> jet1_pt_truth, jet1_eta_truth, jet1_phi_truth, jet1_mass_truth;
 
-    double met, genmet, ht;
+    double met, genmet, ht25, ht40, ht60, ht100, ht150;
     std::vector<double> mllMin, mllMax, mt1, mt2, pt2l, mtautau;
 
     //std::vector<double> vld_el_pt, vld_el_iso_pt, vld_el_good_pt, vld_el_is_tight;
