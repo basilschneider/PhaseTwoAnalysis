@@ -77,7 +77,11 @@ void createMiniEventTree(TTree* t_tree_, MiniEvent_t &ev)
     t_tree_->Branch("nSoftLep", &ev.nSoftLep);
     //t_tree_->Branch("nSoftEl", &ev.nSoftEl);
     t_tree_->Branch("nSoftMu", &ev.nSoftMu);
-    t_tree_->Branch("nJet", &ev.nJet);
+    t_tree_->Branch("nJet25", &ev.nJet25);
+    t_tree_->Branch("nJet40", &ev.nJet40);
+    t_tree_->Branch("nJet60", &ev.nJet60);
+    t_tree_->Branch("nJet100", &ev.nJet100);
+    t_tree_->Branch("nJet150", &ev.nJet150);
     t_tree_->Branch("nBJet", &ev.nBJet);
 
     t_tree_->Branch("met", &ev.met);

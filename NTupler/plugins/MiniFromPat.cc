@@ -1004,18 +1004,32 @@ MiniFromPat::recoAnalysis(const edm::Event& iEvent, const edm::EventSetup& iSetu
         // Only select good jets
         if (!isGoodJetSOS(jets->at(i))){ continue; }
 
-        ev_.nJet++;
         if (ev_.jet1_pt.size() == 0){
             ev_.jet1_pt.push_back(jets->at(i).pt());
             ev_.jet1_eta.push_back(jets->at(i).eta());
             ev_.jet1_phi.push_back(jets->at(i).phi());
             ev_.jet1_mass.push_back(jets->at(i).mass());
         }
-        if (jets->at(i).pt() > 25.){ ev_.ht25 += jets->at(i).pt(); }
-        if (jets->at(i).pt() > 40.){ ev_.ht40 += jets->at(i).pt(); }
-        if (jets->at(i).pt() > 60.){ ev_.ht60 += jets->at(i).pt(); }
-        if (jets->at(i).pt() > 100.){ ev_.ht100 += jets->at(i).pt(); }
-        if (jets->at(i).pt() > 150.){ ev_.ht150 += jets->at(i).pt(); }
+        if (jets->at(i).pt() > 25.){
+            ev_.ht25 += jets->at(i).pt();
+            ev_.nJet25++;
+        }
+        if (jets->at(i).pt() > 40.){
+            ev_.ht40 += jets->at(i).pt();
+            ev_.nJet40++;
+        }
+        if (jets->at(i).pt() > 60.){
+            ev_.ht60 += jets->at(i).pt();
+            ev_.nJet60++;
+        }
+        if (jets->at(i).pt() > 100.){
+            ev_.ht100 += jets->at(i).pt();
+            ev_.nJet100++;
+        }
+        if (jets->at(i).pt() > 150.){
+            ev_.ht150 += jets->at(i).pt();
+            ev_.nJet150++;
+        }
 
         double deepcsv = jets->at(i).bDiscriminator("pfDeepCSVJetTags:probb") +
             jets->at(i).bDiscriminator("pfDeepCSVJetTags:probbb");
@@ -1511,7 +1525,7 @@ MiniFromPat::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 
     ev_.nLep = /*ev_.nEl =*/ ev_.nMu = 0;
     ev_.nSoftLep = /*ev_.nSoftEl =*/ ev_.nSoftMu = 0;
-    ev_.nJet = ev_.nBJet = 0;
+    ev_.nJet25 = ev_.nJet40 = ev_.nJet60 = ev_.nJet100 = ev_.nJet150 = ev_.nBJet = 0;
     ev_.met = ev_.ht25 = ev_.ht40 = ev_.ht60 = ev_.ht100 = ev_.ht150 = 0.;
 
     //analyze the event

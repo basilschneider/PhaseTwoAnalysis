@@ -38,7 +38,7 @@ struct MiniEvent_t
     double genWeight;
     Int_t nLep, nMu/*, nEl*/;
     Int_t nSoftLep, nSoftMu/*, nSoftEl*/;
-    Int_t nJet, nBJet;
+    Int_t nJet25, nJet40, nJet60, nJet100, nJet150, nBJet;
 
     //std::vector<double> el1_pt, el1_eta, el1_phi, el2_pt, el2_eta, el2_phi;
     //std::vector<int> el1_q, el2_q;
