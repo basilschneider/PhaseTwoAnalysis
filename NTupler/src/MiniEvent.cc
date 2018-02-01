@@ -91,6 +91,8 @@ void createMiniEventTree(TTree* t_tree_, MiniEvent_t &ev)
     t_tree_->Branch("ht60", &ev.ht60);
     t_tree_->Branch("ht100", &ev.ht100);
     t_tree_->Branch("ht150", &ev.ht150);
+    t_tree_->Branch("genht25", &ev.genht25);
+    t_tree_->Branch("genht40", &ev.genht40);
     t_tree_->Branch("mllMin", &ev.mllMin);
     t_tree_->Branch("mllMax", &ev.mllMax);
     t_tree_->Branch("mt1", &ev.mt1);

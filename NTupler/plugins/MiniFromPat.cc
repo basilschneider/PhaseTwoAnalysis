@@ -395,6 +395,8 @@ MiniFromPat::recoAnalysis(const edm::Event& iEvent, const edm::EventSetup& iSetu
 
     Handle<std::vector<pat::PackedGenParticle>> genParts;
     iEvent.getByToken(genPartsToken_, genParts);
+    Handle<std::vector<reco::GenJet>> genJets;
+    iEvent.getByToken(genJetsToken_, genJets);
 
     Handle<std::vector<reco::Vertex>> vertices;
     iEvent.getByToken(verticesToken_, vertices);
@@ -981,7 +983,7 @@ MiniFromPat::recoAnalysis(const edm::Event& iEvent, const edm::EventSetup& iSetu
     }
 
     // Jets
-    for (size_t i=0; i<jets->size(); ++i) {
+    for (size_t i=0; i<jets->size(); ++i){
         if (jets->at(i).pt() < ev_.jet_pt_lo) continue;
         //if (fabs(jets->at(i).eta()) > 5) continue;
 
@@ -1037,6 +1039,16 @@ MiniFromPat::recoAnalysis(const edm::Event& iEvent, const edm::EventSetup& iSetu
         if (!isMediumDeepCSV){ continue; }
 
         ev_.nBJet++;
+    }
+
+    // GenJets
+    for (size_t i=0; i<genJets->size(); ++i){
+        if (genJets->at(i).pt() > 25.){
+            ev_.genht25 += genJets->at(i).pt();
+        }
+        if (genJets->at(i).pt() > 40.){
+            ev_.genht40 += genJets->at(i).pt();
+        }
     }
 
     //// Muons
@@ -1527,6 +1539,7 @@ MiniFromPat::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
     ev_.nSoftLep = /*ev_.nSoftEl =*/ ev_.nSoftMu = 0;
     ev_.nJet25 = ev_.nJet40 = ev_.nJet60 = ev_.nJet100 = ev_.nJet150 = ev_.nBJet = 0;
     ev_.met = ev_.ht25 = ev_.ht40 = ev_.ht60 = ev_.ht100 = ev_.ht150 = 0.;
+    ev_.genht25 = ev_.genht40 = 0.;
 
     //analyze the event
     if(!iEvent.isRealData()) genAnalysis(iEvent, iSetup);
