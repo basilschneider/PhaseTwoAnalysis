@@ -61,7 +61,7 @@ process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
 process.source = cms.Source("PoolSource",
     fileNames = cms.untracked.vstring(
 
-    # DYJetsToLL_M10to50
+    # DYJetsToLL_M-10to50_FS
     #'/store/mc/PhaseIITDRFall17MiniAOD/DYJetsToLL_M-10to50_TuneCUETP8M1_14TeV-madgraphMLM-pythia8/MINIAODSIM/PU200_93X_upgrade2023_realistic_v2-v2/150000/02D196DB-60C0-E711-8C46-24BE05CE2D41.root',
     #'/store/mc/PhaseIITDRFall17MiniAOD/DYJetsToLL_M-10to50_TuneCUETP8M1_14TeV-madgraphMLM-pythia8/MINIAODSIM/PU200_93X_upgrade2023_realistic_v2-v2/150000/02DBF645-50C0-E711-89C8-D8D385AE8466.root',
     #'/store/mc/PhaseIITDRFall17MiniAOD/DYJetsToLL_M-10to50_TuneCUETP8M1_14TeV-madgraphMLM-pythia8/MINIAODSIM/PU200_93X_upgrade2023_realistic_v2-v2/150000/04C2D53F-7AC0-E711-8E52-24BE05CECB71.root',
@@ -162,7 +162,7 @@ process.source = cms.Source("PoolSource",
     #'/store/mc/PhaseIITDRFall17MiniAOD/DYJetsToLL_M-10to50_TuneCUETP8M1_14TeV-madgraphMLM-pythia8/MINIAODSIM/PU200_93X_upgrade2023_realistic_v2_ext1-v1/20000/E6D0FF0F-54CE-E711-B580-0CC47AC08908.root',
     #'/store/mc/PhaseIITDRFall17MiniAOD/DYJetsToLL_M-10to50_TuneCUETP8M1_14TeV-madgraphMLM-pythia8/MINIAODSIM/PU200_93X_upgrade2023_realistic_v2_ext1-v1/20000/F4235EF6-53CE-E711-A41E-0CC47A1E047C.root',
 
-    # DYJetsToLL_0J
+    # DYToLL-M-50_0J_FS
     #'/store/mc/PhaseIITDRFall17MiniAOD/DYToLL-M-50_0J_14TeV-madgraphMLM-pythia8/MINIAODSIM/PU200_93X_upgrade2023_realistic_v2-v2/40000/000488ED-8AC1-E711-AC57-0242AC1C0503.root',
     #'/store/mc/PhaseIITDRFall17MiniAOD/DYToLL-M-50_0J_14TeV-madgraphMLM-pythia8/MINIAODSIM/PU200_93X_upgrade2023_realistic_v2-v2/40000/000A3299-D5C0-E711-8593-B083FECFF6AA.root',
     #'/store/mc/PhaseIITDRFall17MiniAOD/DYToLL-M-50_0J_14TeV-madgraphMLM-pythia8/MINIAODSIM/PU200_93X_upgrade2023_realistic_v2-v2/40000/00284B24-BEC0-E711-B01A-E0071B73C640.root',
@@ -495,7 +495,7 @@ process.source = cms.Source("PoolSource",
     #'/store/mc/PhaseIITDRFall17MiniAOD/DYToLL-M-50_0J_14TeV-madgraphMLM-pythia8/MINIAODSIM/PU200_93X_upgrade2023_realistic_v2_ext1-v1/40000/FAC3EAC0-79C9-E711-A769-A0369FC51AE0.root',
     #'/store/mc/PhaseIITDRFall17MiniAOD/DYToLL-M-50_0J_14TeV-madgraphMLM-pythia8/MINIAODSIM/PU200_93X_upgrade2023_realistic_v2_ext1-v1/40000/FE2EA6EA-46C6-E711-A6AC-FA163E9C96F1.root',
 
-    # DYJetsToLL_1J
+    # DYToLL-M-50_1J_FS
     #'/store/mc/PhaseIITDRFall17MiniAOD/DYToLL-M-50_1J_14TeV-madgraphMLM-pythia8/MINIAODSIM/PU200_93X_upgrade2023_realistic_v2-v2/150000/049134FA-19C0-E711-B78C-0242AC1C0500.root',
     #'/store/mc/PhaseIITDRFall17MiniAOD/DYToLL-M-50_1J_14TeV-madgraphMLM-pythia8/MINIAODSIM/PU200_93X_upgrade2023_realistic_v2-v2/150000/067E9BE6-13C0-E711-ABA2-0242AC1C0500.root',
     #'/store/mc/PhaseIITDRFall17MiniAOD/DYToLL-M-50_1J_14TeV-madgraphMLM-pythia8/MINIAODSIM/PU200_93X_upgrade2023_realistic_v2-v2/150000/08509EDE-3AC0-E711-B506-0CC47A78A3F4.root',
@@ -767,7 +767,7 @@ process.source = cms.Source("PoolSource",
     #'/store/mc/PhaseIITDRFall17MiniAOD/DYToLL-M-50_1J_14TeV-madgraphMLM-pythia8/MINIAODSIM/PU200_93X_upgrade2023_realistic_v2_ext1-v1/40000/F4DA32DB-29C4-E711-B293-0242AC1C0500.root',
     #'/store/mc/PhaseIITDRFall17MiniAOD/DYToLL-M-50_1J_14TeV-madgraphMLM-pythia8/MINIAODSIM/PU200_93X_upgrade2023_realistic_v2_ext1-v1/40000/FC8D1E0E-E6C9-E711-994B-20CF300E9EC8.root',
 
-    # DYJetsToLL_2J
+    # DYToLL-M-50_2J_FS
     #'/store/mc/PhaseIITDRFall17MiniAOD/DYToLL-M-50_2J_14TeV-madgraphMLM-pythia8/MINIAODSIM/PU200_93X_upgrade2023_realistic_v2-v2/150000/00F2969D-34C0-E711-B95E-0CC47A6C115A.root',
     #'/store/mc/PhaseIITDRFall17MiniAOD/DYToLL-M-50_2J_14TeV-madgraphMLM-pythia8/MINIAODSIM/PU200_93X_upgrade2023_realistic_v2-v2/150000/063995A1-21C0-E711-AF69-24BE05C618F1.root',
     #'/store/mc/PhaseIITDRFall17MiniAOD/DYToLL-M-50_2J_14TeV-madgraphMLM-pythia8/MINIAODSIM/PU200_93X_upgrade2023_realistic_v2-v2/150000/087AD623-2EC1-E711-925C-001E67E33C01.root',
@@ -1050,7 +1050,7 @@ process.source = cms.Source("PoolSource",
     #'/store/mc/PhaseIITDRFall17MiniAOD/DYToLL-M-50_2J_14TeV-madgraphMLM-pythia8/MINIAODSIM/PU200_93X_upgrade2023_realistic_v2_ext1-v1/40000/EE25BA3D-4BC4-E711-BF64-24BE05C4D821.root',
     #'/store/mc/PhaseIITDRFall17MiniAOD/DYToLL-M-50_2J_14TeV-madgraphMLM-pythia8/MINIAODSIM/PU200_93X_upgrade2023_realistic_v2_ext1-v1/40000/FCD1F223-4BC3-E711-92DE-0CC47A7C356A.root',
 
-    # DYJetsToLL_3J
+    # DYToLL-M-50_3J_FS
     #'/store/mc/PhaseIITDRFall17MiniAOD/DYToLL-M-50_3J_14TeV-madgraphMLM-pythia8/MINIAODSIM/PU200_93X_upgrade2023_realistic_v2-v1/00000/26165B85-DCB8-E711-9FEE-B8CA3A709028.root',
     #'/store/mc/PhaseIITDRFall17MiniAOD/DYToLL-M-50_3J_14TeV-madgraphMLM-pythia8/MINIAODSIM/PU200_93X_upgrade2023_realistic_v2-v1/00000/32162074-35B4-E711-B08D-0CC47A6C186E.root',
     #'/store/mc/PhaseIITDRFall17MiniAOD/DYToLL-M-50_3J_14TeV-madgraphMLM-pythia8/MINIAODSIM/PU200_93X_upgrade2023_realistic_v2-v1/00000/48E38E01-34B8-E711-8D53-24BE05C6E7C1.root',
@@ -1985,7 +1985,7 @@ process.source = cms.Source("PoolSource",
     #'/store/mc/PhaseIITDRFall17MiniAOD/WWJJTo2L2NuJJ_SS_14TeV-madgraphMLM-pythia8/MINIAODSIM/PU200_93X_upgrade2023_realistic_v2-v1/70000/DE178BC6-43F4-E711-8C73-008CFA56D870.root',
     #'/store/mc/PhaseIITDRFall17MiniAOD/WWJJTo2L2NuJJ_SS_14TeV-madgraphMLM-pythia8/MINIAODSIM/PU200_93X_upgrade2023_realistic_v2-v1/70000/EE316C20-62F3-E711-BC1A-FA163EF47716.root',
 
-    # W+jets 0J
+    # W_Jets_0J
     #'/store/mc/PhaseIITDRFall17MiniAOD/WToLNu_0J_14TeV-madgraphMLM-pythia8/MINIAODSIM/PU200_93X_upgrade2023_realistic_v2-v2/150000/00D2AAE3-2AC2-E711-AAF0-0242AC1C0501.root',
     #'/store/mc/PhaseIITDRFall17MiniAOD/WToLNu_0J_14TeV-madgraphMLM-pythia8/MINIAODSIM/PU200_93X_upgrade2023_realistic_v2-v2/150000/0A9DD5EA-8CC2-E711-9B6F-0025905C53D8.root',
     #'/store/mc/PhaseIITDRFall17MiniAOD/WToLNu_0J_14TeV-madgraphMLM-pythia8/MINIAODSIM/PU200_93X_upgrade2023_realistic_v2-v2/150000/16F6DEB1-0BC3-E711-AC8C-0025905A60B2.root',
@@ -2097,7 +2097,7 @@ process.source = cms.Source("PoolSource",
     #'/store/mc/PhaseIITDRFall17MiniAOD/WToLNu_0J_14TeV-madgraphMLM-pythia8/MINIAODSIM/PU200_93X_upgrade2023_realistic_v2_ext1-v1/40000/F4C16172-D6CE-E711-8225-0242AC130002.root',
     #'/store/mc/PhaseIITDRFall17MiniAOD/WToLNu_0J_14TeV-madgraphMLM-pythia8/MINIAODSIM/PU200_93X_upgrade2023_realistic_v2_ext1-v1/40000/FEB491F0-97C6-E711-9E16-7845C4FC373A.root',
 
-    # W+jets 1J
+    # W_Jets_1J
     #'/store/mc/PhaseIITDRFall17MiniAOD/WToLNu_1J_14TeV-madgraphMLM-pythia8/MINIAODSIM/PU200_93X_upgrade2023_realistic_v2-v2/00000/0E0AD4E1-0EC1-E711-B638-20CF30725234.root',
     #'/store/mc/PhaseIITDRFall17MiniAOD/WToLNu_1J_14TeV-madgraphMLM-pythia8/MINIAODSIM/PU200_93X_upgrade2023_realistic_v2-v2/00000/1C777C87-77C1-E711-BCBF-0CC47A1DF620.root',
     #'/store/mc/PhaseIITDRFall17MiniAOD/WToLNu_1J_14TeV-madgraphMLM-pythia8/MINIAODSIM/PU200_93X_upgrade2023_realistic_v2-v2/00000/1E958387-E0C2-E711-B2C5-0CC47A78A3F8.root',
@@ -2224,7 +2224,7 @@ process.source = cms.Source("PoolSource",
     #'/store/mc/PhaseIITDRFall17MiniAOD/WToLNu_1J_14TeV-madgraphMLM-pythia8/MINIAODSIM/PU200_93X_upgrade2023_realistic_v2_ext1-v3/50000/FE963F35-DAEB-E711-BDEE-B8CA3A70A5E8.root',
     #'/store/mc/PhaseIITDRFall17MiniAOD/WToLNu_1J_14TeV-madgraphMLM-pythia8/MINIAODSIM/PU200_93X_upgrade2023_realistic_v2_ext1-v3/50000/FEC684E6-BDEB-E711-8976-A4BF0112BE12.root',
 
-    # W+jets 2J
+    # W_Jets_2J
     #'/store/mc/PhaseIITDRFall17MiniAOD/WToLNu_2J_14TeV-madgraphMLM-pythia8/MINIAODSIM/PU200_93X_upgrade2023_realistic_v2-v2/150000/002888F4-9FC2-E711-8BA5-0CC47A4C8F08.root',
     #'/store/mc/PhaseIITDRFall17MiniAOD/WToLNu_2J_14TeV-madgraphMLM-pythia8/MINIAODSIM/PU200_93X_upgrade2023_realistic_v2-v2/150000/047096D0-69C2-E711-9A5B-002590A80DF0.root',
     #'/store/mc/PhaseIITDRFall17MiniAOD/WToLNu_2J_14TeV-madgraphMLM-pythia8/MINIAODSIM/PU200_93X_upgrade2023_realistic_v2-v2/150000/1A493648-B8C2-E711-B6ED-0CC47A4C8F10.root',
@@ -2305,7 +2305,7 @@ process.source = cms.Source("PoolSource",
     #'/store/mc/PhaseIITDRFall17MiniAOD/WToLNu_2J_14TeV-madgraphMLM-pythia8/MINIAODSIM/PU200_93X_upgrade2023_realistic_v2_ext1-v1/30000/E6B35BA0-71D7-E711-AF13-B083FED0FFCF.root',
     #'/store/mc/PhaseIITDRFall17MiniAOD/WToLNu_2J_14TeV-madgraphMLM-pythia8/MINIAODSIM/PU200_93X_upgrade2023_realistic_v2_ext1-v1/30000/F6488DA5-B4D6-E711-AD02-D4AE5269F656.root',
 
-    # W+jets 3J
+    # W_Jets_3J
     #'/store/mc/PhaseIITDRFall17MiniAOD/WToLNu_3J_14TeV-madgraphMLM-pythia8/MINIAODSIM/PU200_93X_upgrade2023_realistic_v2-v2/20000/00C23058-4EC3-E711-97F3-FA163E09FA27.root',
     #'/store/mc/PhaseIITDRFall17MiniAOD/WToLNu_3J_14TeV-madgraphMLM-pythia8/MINIAODSIM/PU200_93X_upgrade2023_realistic_v2-v2/20000/06B4CB8C-0AC2-E711-90CD-0025907B50E4.root',
     #'/store/mc/PhaseIITDRFall17MiniAOD/WToLNu_3J_14TeV-madgraphMLM-pythia8/MINIAODSIM/PU200_93X_upgrade2023_realistic_v2-v2/20000/4AC2F37C-8AC3-E711-A969-FA163E47A792.root',
@@ -2405,14 +2405,14 @@ process.source = cms.Source("PoolSource",
     #'/store/mc/PhaseIITDRFall17MiniAOD/WToLNu_3J_14TeV-madgraphMLM-pythia8/MINIAODSIM/PU200_93X_upgrade2023_realistic_v2_ext1-v1/30000/F079E54D-B6C2-E711-B66A-0025905B85D8.root',
     #'/store/mc/PhaseIITDRFall17MiniAOD/WToLNu_3J_14TeV-madgraphMLM-pythia8/MINIAODSIM/PU200_93X_upgrade2023_realistic_v2_ext1-v1/30000/F64D81BD-B7C2-E711-9C7A-0CC47A6C186C.root',
 
-    # TChiWZ_300_250
+    # TChiWZ_300_250_FS
     #'/store/mc/PhaseIITDRFall17MiniAOD/SMS-TChiWZ_ZToLL_mChargino-300_mLsp-250_TuneCUETP8M1_14TeV-madgraphMLM-pythia8/MINIAODSIM/noPU_93X_upgrade2023_realistic_v2-v1/00000/1C03277A-BFBE-E711-8550-44A84224053C.root',
     #'/store/mc/PhaseIITDRFall17MiniAOD/SMS-TChiWZ_ZToLL_mChargino-300_mLsp-250_TuneCUETP8M1_14TeV-madgraphMLM-pythia8/MINIAODSIM/noPU_93X_upgrade2023_realistic_v2-v1/150000/60C6FD18-84B4-E711-9F96-E0071B73C630.root',
     #'/store/mc/PhaseIITDRFall17MiniAOD/SMS-TChiWZ_ZToLL_mChargino-300_mLsp-250_TuneCUETP8M1_14TeV-madgraphMLM-pythia8/MINIAODSIM/noPU_93X_upgrade2023_realistic_v2-v1/150000/84F6701B-F7B3-E711-9AC3-0CC47A4D769E.root',
     #'/store/mc/PhaseIITDRFall17MiniAOD/SMS-TChiWZ_ZToLL_mChargino-300_mLsp-250_TuneCUETP8M1_14TeV-madgraphMLM-pythia8/MINIAODSIM/noPU_93X_upgrade2023_realistic_v2-v1/150000/9434D516-90BD-E711-BE67-002590D0B05C.root',
     #'/store/mc/PhaseIITDRFall17MiniAOD/SMS-TChiWZ_ZToLL_mChargino-300_mLsp-250_TuneCUETP8M1_14TeV-madgraphMLM-pythia8/MINIAODSIM/noPU_93X_upgrade2023_realistic_v2-v1/150000/D42D482E-99B9-E711-A8F2-0CC47AF9B1AE.root',
 
-    # TChiWZ_300_293
+    # TChiWZ_300_293_FS
     #'/store/mc/PhaseIITDRFall17MiniAOD/SMS-TChiWZ_ZToLL_mChargino-300_mLsp-292p5_TuneCUETP8M1_14TeV-madgraphMLM-pythia8/MINIAODSIM/noPU_93X_upgrade2023_realistic_v2-v1/00000/30DA76F2-79BA-E711-9068-0025904C6788.root',
     #'/store/mc/PhaseIITDRFall17MiniAOD/SMS-TChiWZ_ZToLL_mChargino-300_mLsp-292p5_TuneCUETP8M1_14TeV-madgraphMLM-pythia8/MINIAODSIM/noPU_93X_upgrade2023_realistic_v2-v1/00000/4A6ECBD9-76BA-E711-8368-24BE05C3CBE1.root',
     #'/store/mc/PhaseIITDRFall17MiniAOD/SMS-TChiWZ_ZToLL_mChargino-300_mLsp-292p5_TuneCUETP8M1_14TeV-madgraphMLM-pythia8/MINIAODSIM/noPU_93X_upgrade2023_realistic_v2-v1/00000/96A61D8C-1EBC-E711-A658-008CFAF7174A.root',
@@ -2421,14 +2421,14 @@ process.source = cms.Source("PoolSource",
     #'/store/mc/PhaseIITDRFall17MiniAOD/SMS-TChiWZ_ZToLL_mChargino-300_mLsp-292p5_TuneCUETP8M1_14TeV-madgraphMLM-pythia8/MINIAODSIM/noPU_93X_upgrade2023_realistic_v2-v1/150000/6C45708A-B1BD-E711-A28D-48D539F38852.root',
     #'/store/mc/PhaseIITDRFall17MiniAOD/SMS-TChiWZ_ZToLL_mChargino-300_mLsp-292p5_TuneCUETP8M1_14TeV-madgraphMLM-pythia8/MINIAODSIM/noPU_93X_upgrade2023_realistic_v2-v1/150000/A607B698-B1BD-E711-BB4F-A4BF0112BC84.root',
 
-    # TChiWZ_400_375
+    # TChiWZ_400_375_FS
     #'/store/mc/PhaseIITDRFall17MiniAOD/SMS-TChiWZ_ZToLL_mChargino-400_mLsp-375_TuneCUETP8M1_14TeV-madgraphMLM-pythia8/MINIAODSIM/noPU_93X_upgrade2023_realistic_v2-v1/30000/426D80AB-B1BB-E711-B69A-0242AC1C0501.root',
     #'/store/mc/PhaseIITDRFall17MiniAOD/SMS-TChiWZ_ZToLL_mChargino-400_mLsp-375_TuneCUETP8M1_14TeV-madgraphMLM-pythia8/MINIAODSIM/noPU_93X_upgrade2023_realistic_v2-v1/30000/6090C36E-B0BB-E711-B4E8-48FD8EE73989.root',
     #'/store/mc/PhaseIITDRFall17MiniAOD/SMS-TChiWZ_ZToLL_mChargino-400_mLsp-375_TuneCUETP8M1_14TeV-madgraphMLM-pythia8/MINIAODSIM/noPU_93X_upgrade2023_realistic_v2-v1/30000/66FB8437-B0BB-E711-8E85-24BE05CEDC71.root',
     #'/store/mc/PhaseIITDRFall17MiniAOD/SMS-TChiWZ_ZToLL_mChargino-400_mLsp-375_TuneCUETP8M1_14TeV-madgraphMLM-pythia8/MINIAODSIM/noPU_93X_upgrade2023_realistic_v2-v1/30000/6C9535A9-B1BB-E711-BC95-0025905C54FC.root',
     #'/store/mc/PhaseIITDRFall17MiniAOD/SMS-TChiWZ_ZToLL_mChargino-400_mLsp-375_TuneCUETP8M1_14TeV-madgraphMLM-pythia8/MINIAODSIM/noPU_93X_upgrade2023_realistic_v2-v1/30000/E297F94A-B0BB-E711-92CB-002590725380.root',
 
-    # ttbar inclusive
+    # TTbar_incl
     #'/store/mc/PhaseIITDRFall17MiniAOD/TT_TuneCUETP8M2T4_14TeV-powheg-pythia8/MINIAODSIM/PU200_93X_upgrade2023_realistic_v2-v3/00000/D88E3367-58C1-E711-BA11-0CC47A5450FA.root',
     #'/store/mc/PhaseIITDRFall17MiniAOD/TT_TuneCUETP8M2T4_14TeV-powheg-pythia8/MINIAODSIM/PU200_93X_upgrade2023_realistic_v2-v3/00000/F6795ED9-57C1-E711-AEDF-0242AC1C0503.root',
     #'/store/mc/PhaseIITDRFall17MiniAOD/TT_TuneCUETP8M2T4_14TeV-powheg-pythia8/MINIAODSIM/PU200_93X_upgrade2023_realistic_v2-v3/00000/A22B7C8F-CCC0-E711-813F-0025905C54FE.root',
