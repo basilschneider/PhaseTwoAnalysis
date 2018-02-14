@@ -791,16 +791,18 @@ MiniFromPat::recoAnalysis(const edm::Event& iEvent, const edm::EventSetup& iSetu
     }
     // If there's at least one tau neutrino from hard scattering, it's a
     // Z --> tautau event
-    // If there are exactly two electrons from hard scattering, it's a
+    // If there are at least two electrons from hard scattering or if there is
+    // exactly one electron and zero muons, it's a
     // Z --> ee event
-    // If there are exactly two muons from hard scattering, it's a
+    // If there are at least two muons from hard scattering or if there is
+    // exactly one muon and zero electrons, it's a
     // Z --> mumu event
     // All other events are unknown;
     if (n16From1to4 >= 1){
         ev_.ZtoLL = 15;
-    }else if (n11From1to4 == 2){
+    }else if (n11From1to4 >= 2 || (n11From1to4 == 1 && n13From1to4 == 0)){
         ev_.ZtoLL = 11;
-    }else if (n13From1to4 == 2){
+    }else if (n13From1to4 >= 2 || (n13From1to4 == 1 && n11From1to4 == 0)){
         ev_.ZtoLL = 13;
     }else{
         ev_.ZtoLL = 999;
