@@ -58,6 +58,7 @@ struct MiniEvent_t
 
     double met, genmet, ht25, ht40, ht60, ht100, ht150;
     double genht25, genht40;
+    double mlt, mht25, mht40, mhlt25, mhlt40;
     std::vector<double> mllMin, mllMax, mt1, mt2, pt2l, mtautau;
 
     double ZtoLL;

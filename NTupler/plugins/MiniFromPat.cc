@@ -1098,6 +1098,55 @@ MiniFromPat::recoAnalysis(const edm::Event& iEvent, const edm::EventSetup& iSetu
         }
     }
 
+    // Fill poor man's MET
+    TLorentzVector mlt4, mht4v25, mht4v40, mhlt4v25, mhlt4v40;
+    for (size_t i=0; i<muons->size(); ++i) {
+        if (!isGoodMuonSOS(muons->at(i), primaryVertex, iSetup)){ continue; }
+        if (muons->at(i).pt() < ev_.mu_pt_lo){ continue; }
+        TLorentzVector m4;
+        m4.SetPtEtaPhiM(muons->at(i).pt(), muons->at(i).eta(), muons->at(i).phi(), ev_.mass_mu);
+        mlt4 += m4;
+        mhlt4v25 += m4;
+        mhlt4v40 += m4;
+    }
+    //for (size_t i=0; i<elecs->size(); ++i) {
+    //    if (!isGoodElecSOS(elecs->at(i), primaryVertex)){ continue; }
+    //    if (elecs->at(i).pt() < ev_.el_pt_lo){ continue; }
+    //    TLorentzVector e4;
+    //    e4.SetPtEtaPhiM(elecs->at(i).pt(), elecs->at(i).eta(), elecs->at(i).phi(), ev_.mass_el);
+    //    mlt4 += e4;
+    //    mhlt4v25 += e4;
+    //    mhlt4v40 += e4;
+    //}
+    for (size_t i=0; i<jets->size(); ++i){
+        if (!isGoodJetSOS(jets->at(i))){ continue; }
+        if (jets->at(i).pt() < ev_.jet_pt_lo) { continue; }
+        bool overlaps = false;
+        //for (size_t j = 0; j < elecs->size(); j++) {
+        //    if (fabs(jets->at(i).pt()-elecs->at(j).pt()) < 0.01*elecs->at(j).pt() && ROOT::Math::VectorUtil::DeltaR(elecs->at(j).p4(),jets->at(i).p4()) < 0.01) {
+        //        overlaps = true;
+        //        break;
+        //    }
+        //}
+        if (overlaps) continue;
+        for (size_t j = 0; j < muons->size(); j++) {
+            if (fabs(jets->at(i).pt()-muons->at(j).pt()) < 0.01*muons->at(j).pt() && ROOT::Math::VectorUtil::DeltaR(muons->at(j).p4(),jets->at(i).p4()) < 0.01) {
+                overlaps = true;
+                break;
+            }
+        }
+        if (overlaps) continue;
+        TLorentzVector j4;
+        j4.SetPtEtaPhiM(jets->at(i).pt(), jets->at(i).eta(), jets->at(i).phi(), jets->at(i).mass());
+        if (jets->at(i).pt() > 25.){ mht4v25 +=j4; mhlt4v25 += j4; }
+        if (jets->at(i).pt() > 40.){ mht4v40 +=j4; mhlt4v40 += j4; }
+    }
+    ev_.mlt = mlt4.Pt();
+    ev_.mht25 = mht4v25.Pt();
+    ev_.mht40 = mht4v40.Pt();
+    ev_.mhlt25 = mhlt4v25.Pt();
+    ev_.mhlt40 = mhlt4v40.Pt();
+
     //// Muons
     //ev_.nlm = 0;
     //ev_.ntm = 0;
