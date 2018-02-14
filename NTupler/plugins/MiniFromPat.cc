@@ -761,6 +761,51 @@ MiniFromPat::recoAnalysis(const edm::Event& iEvent, const edm::EventSetup& iSetu
         }
     }
 
+    // In DYtoLL events, figure out what LL is
+    unsigned int n11From1to4 = 0;
+    unsigned int n13From1to4 = 0;
+    unsigned int n16From1to4 = 0;
+    for (size_t i=0; i<genParts->size(); ++i){
+        // Count e's (11), mu's (13) and tau neutrinos (16); these are all
+        // status one particles
+        if (fabs(genParts->at(i).pdgId()) != 11 && fabs(genParts->at(i).pdgId()) != 13 && fabs(genParts->at(i).pdgId()) != 16){ continue; }
+        // Check what the mother ID of that particle is, to figure out if it is
+        // from the hard scattering event
+        const reco::Candidate* mom = genParts->at(i).mother(0);
+        int momId = mom->pdgId();
+        while (mom->numberOfMothers() != 0){
+            momId = mom->pdgId();
+            mom = mom->mother(0);
+        }
+        // If second to last mother is between 1 to 4, then it is from the hard
+        // scattering (at least that's my empiric assumption)
+        if (fabs(momId) >= 1 && fabs(momId) <= 4){
+            if (fabs(genParts->at(i).pdgId()) == 11){
+                n11From1to4++;
+            }else if (fabs(genParts->at(i).pdgId()) == 13){
+                n13From1to4++;
+            }else if (fabs(genParts->at(i).pdgId()) == 16){
+                n16From1to4++;
+            }
+        }
+    }
+    // If there's at least one tau neutrino from hard scattering, it's a
+    // Z --> tautau event
+    // If there are exactly two electrons from hard scattering, it's a
+    // Z --> ee event
+    // If there are exactly two muons from hard scattering, it's a
+    // Z --> mumu event
+    // All other events are unknown;
+    if (n16From1to4 >= 1){
+        ev_.ZtoLL = 15;
+    }else if (n11From1to4 == 2){
+        ev_.ZtoLL = 11;
+    }else if (n13From1to4 == 2){
+        ev_.ZtoLL = 13;
+    }else{
+        ev_.ZtoLL = 999;
+    }
+
     // Electrons
     //for (size_t i=0; i<elecs->size(); ++i) {
 
