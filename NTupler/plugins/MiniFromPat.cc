@@ -769,6 +769,8 @@ MiniFromPat::recoAnalysis(const edm::Event& iEvent, const edm::EventSetup& iSetu
         // Count e's (11), mu's (13) and tau neutrinos (16); these are all
         // status one particles
         if (fabs(genParts->at(i).pdgId()) != 11 && fabs(genParts->at(i).pdgId()) != 13 && fabs(genParts->at(i).pdgId()) != 16){ continue; }
+        // Only consider particles with a pT of at least 2 GeV
+        if (genParts->at(i).pt() < 2){ continue; }
         // Check what the mother ID of that particle is, to figure out if it is
         // from the hard scattering event
         const reco::Candidate* mom = genParts->at(i).mother(0);
