@@ -61,7 +61,7 @@ struct MiniEvent_t
     double mlt, mht25, mht40, mhlt25, mhlt40;
     std::vector<double> mllMin, mllMax, mt1, mt2, pt2l, mtautau;
 
-    double ZtoLL;
+    unsigned int ZtoLL;
 
     //std::vector<double> vld_el_pt, vld_el_iso_pt, vld_el_good_pt, vld_el_is_tight;
     //std::vector<double> vld_el_hs_pt, vld_el_iso_hs_pt, vld_el_good_hs_pt;
