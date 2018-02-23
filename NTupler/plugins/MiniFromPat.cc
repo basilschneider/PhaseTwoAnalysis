@@ -810,6 +810,23 @@ MiniFromPat::recoAnalysis(const edm::Event& iEvent, const edm::EventSetup& iSetu
         ev_.ZtoLL = 999;
     }
 
+    // Check if there is a "crazy muon"
+    // Definition of a "crazy muon":
+    // pT above x, but not passing tight requirement
+    ev_.crazyMuon50 = ev_.crazyMuon200 = ev_.crazyMuon500 = false;
+    for (size_t i=0; i<muons->size(); ++i){
+        if (isTightMuon(muons->at(i), primaryVertex, iSetup)){ continue; }
+        if (muons->at(i).pt() > 50){
+            ev_.crazyMuon50 = true;
+        }
+        if (muons->at(i).pt() > 200){
+            ev_.crazyMuon200 = true;
+        }
+        if (muons->at(i).pt() > 500){
+            ev_.crazyMuon500 = true;
+        }
+    }
+
     // Electrons
     //for (size_t i=0; i<elecs->size(); ++i) {
 

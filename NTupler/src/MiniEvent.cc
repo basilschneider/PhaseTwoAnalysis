@@ -106,6 +106,9 @@ void createMiniEventTree(TTree* t_tree_, MiniEvent_t &ev)
     t_tree_->Branch("mtautau", &ev.mtautau);
 
     t_tree_->Branch("ZtoLL", &ev.ZtoLL);
+    t_tree_->Branch("crazyMuon50", &ev.crazyMuon50);
+    t_tree_->Branch("crazyMuon200", &ev.crazyMuon200);
+    t_tree_->Branch("crazyMuon500", &ev.crazyMuon500);
 
     if (ev.fill_vld){
         //t_tree_->Branch("vld_el_pt", &ev.vld_el_pt);
