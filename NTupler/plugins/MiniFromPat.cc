@@ -897,8 +897,8 @@ MiniFromPat::recoAnalysis(const edm::Event& iEvent, const edm::EventSetup& iSetu
                 mom = mom->mother(0);
             }
 
-            //printf("Foo01: GEN  Muon: pt: %f, eta: %f, mother: %d\n", genParts->at(j).pt(), genParts->at(j).eta(), mother);
-            //printf("Foo02: RECO Muon: pt: %f, eta: %f, mother: %d\n", muons->at(i).pt(), muons->at(i).eta(), mother);
+            //printf("GEN  Muon: pt: %f, eta: %f, mother: %d\n", genParts->at(j).pt(), genParts->at(j).eta(), mother);
+            //printf("RECO Muon: pt: %f, eta: %f, mother: %d\n", muons->at(i).pt(), muons->at(i).eta(), mother);
         }
         // Fill muon variables
         if (ev_.mu1_pt.size() == 0){
