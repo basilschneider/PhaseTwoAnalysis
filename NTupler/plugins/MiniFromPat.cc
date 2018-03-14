@@ -139,6 +139,8 @@ class MiniFromPat : public edm::one::EDAnalyzer<edm::one::SharedResources, edm::
         template <typename T> bool isMatched(const pat::PackedGenParticle truthEl, T particle);
         template <typename T> bool matchAny(const edm::Handle<std::vector<pat::PackedGenParticle>> genParts, T particle, bool hs);
         bool isHs(const pat::PackedGenParticle truthParticle, int pdgId);
+        template <typename T> void printParticlePropsWpidWstatus(const char* text, const size_t idx, const size_t noParticles, const T particle, const char* addText="") const ;
+        template <typename T> void printParticleProps(const char* text, const size_t idx, const size_t noParticles, const T particle, const int pid, const int status, const char* addText="") const ;
 
         bool isME0MuonSelNew(const reco::Muon&, double, double, double, edm::EventSetup const& );
 
@@ -1166,6 +1168,92 @@ MiniFromPat::recoAnalysis(const edm::Event& iEvent, const edm::EventSetup& iSetu
     ev_.mhlt25 = mhlt4v25.Pt();
     ev_.mhlt40 = mhlt4v40.Pt();
 
+    // Event by event comparison
+    if (ev_.event_by_event_comparison){
+
+        //printf("NEWEVENT\n");
+        //printf("Foo01: run: %d; lumi: %d; e: %lld\n", iEvent.id().run(), iEvent.luminosityBlock(), iEvent.id().event());
+        //for (size_t i=0; i<genParts->size(); ++i){
+        //    if (fabs(genParts->at(i).pdgId()) != 11 && fabs(genParts->at(i).pdgId()) != 13){ continue; }
+        //    if (genParts->at(i).pt() < 2.){ continue; }
+        //    printf("Foo02: ID: %d; Status: %d; pt: %f; eta: %f\n",
+        //            genParts->at(i).pdgId(),
+        //            genParts->at(i).status(),
+        //            genParts->at(i).pt(),
+        //            genParts->at(i).eta());
+        //}
+
+        if (iEvent.id().run() == 1 && iEvent.luminosityBlock() == 680){
+            unsigned long long int e = iEvent.id().event();
+            if (e==964815 || e==965098 || e==965115 || e==965602){
+
+                // Found event
+                printf("Event by event comparison. Compare event:\n");
+                printf("Run Number: %d; Lumi Section: %d; Event Number: %lld\n",
+                        iEvent.id().run(), iEvent.luminosityBlock(), iEvent.id().event());
+
+                // Truth objects
+                printf("%20s\n", "Truth objects");
+                // Truth electrons
+                for (size_t i=0; i<genParts->size(); ++i){
+                    if (fabs(genParts->at(i).pdgId()) != 11){ continue; }
+                    printParticlePropsWpidWstatus("Truth electrons", i, genParts->size(), genParts->at(i));
+                }
+                // Truth muons
+                for (size_t i=0; i<genParts->size(); ++i){
+                    if (fabs(genParts->at(i).pdgId()) != 13){ continue; }
+                    printParticlePropsWpidWstatus("Truth muons", i, genParts->size(), genParts->at(i));
+                }
+                // Truth particles (all)
+                for (size_t i=0; i<genParts->size(); ++i){
+                    printParticlePropsWpidWstatus("Truth particles", i, genParts->size(), genParts->at(i));
+                }
+                // Truth jets
+                for (size_t i=0; i<genJets->size(); ++i){
+                    printParticleProps("Truth jets", i, genJets->size(), genJets->at(i), -1, -1);
+                }
+                // Truth MET
+                printf("%20s: Idx: %3d/%3d; ID: %8s; Status: %3s; pt: %8.3f; eta: %6.3f; phi: %6.3f\n",
+                        "Truth MET", 1, 1, "-", "-", mets->at(0).genMET()->pt(), mets->at(0).genMET()->eta(), mets->at(0).genMET()->phi());
+
+                // Reco objects
+                printf("%20s\n", "Reco objects");
+                //// Reco electrons
+                //for (size_t i=0; i<elecs->size(); ++i){
+                //    //// Additionally print SumPt
+                //    //char SumPt[20];
+                //    //snprintf(SumPt, sizeof SumPt, "%f", elecs->at(i)->SumPt);
+                //    char addText[60] = "sumPt: XXXXX";
+                //    //strcat(addText, SumPt);
+                //    printParticleProps("Reco electrons", i, elecs->size(), elecs->at(i), elecs->at(i).charge()>0 ? -11: 11, 1, addText);
+                //}
+                // Reco muons
+                for (size_t i=0; i<muons->size(); ++i){
+                    printParticleProps("Reco muons", i, muons->size(), muons->at(i), muons->at(i).charge()>0 ? -13: 13, 1);
+                }
+                // Reco jets
+                for (size_t i=0; i<jets->size(); ++i){
+                    printParticleProps("Reco jets", i, jets->size(), jets->at(i), -1, -1);
+                }
+                // Reco MET
+                printf("%20s: Idx: %3d/%3d; ID: %8s; Status: %3s; pt: %8.3f; eta: %6.3f; phi: %6.3f\n",
+                        "Reco MET", 1, 1, "-", "-", mets->at(0).pt(), mets->at(0).eta(), mets->at(0).phi());
+
+
+                ///// MAYBE YOU WANT TO ADD IF THE PARTICLES PASS ID SELECTION
+
+                //for (size_t i=0; i<muons->size(); ++i) {
+                //    const pat::Muon& m = muons->at(i);
+                //    printf("Foo02: pT: %f; eta: %f; phi: %f; goodMuon: %d; loose: %d; medium: %d; tight: %d\n",
+                //            m.pt(), m.eta(), m.phi(), isGoodMuonSOS(m, primaryVertex, iSetup), isLooseMuon(m, iSetup),
+                //            isMediumMuon(m, primaryVertex), isTightMuon(m, primaryVertex, iSetup));
+                //}
+            }
+        }
+    }
+
+
+
     //// Muons
     //ev_.nlm = 0;
     //ev_.ntm = 0;
@@ -2016,10 +2104,19 @@ bool MiniFromPat::isHs(const pat::PackedGenParticle truthParticle, int pdgId){
 }
 
 
+// Print properties of particle
+template <typename T> void MiniFromPat::printParticlePropsWpidWstatus(const char* text, const size_t idx, const size_t noParticles, const T particle, const char* addText) const {
+    printParticleProps(text, idx, noParticles, particle, particle.pdgId(), particle.status(), addText);
+}
 
-    bool
-MiniFromPat::isME0MuonSelNew(const reco::Muon& muon, double dEtaCut, double dPhiCut, double dPhiBendCut, edm::EventSetup const& iSetup)
-{
+template <typename T> void MiniFromPat::printParticleProps(const char* text, const size_t idx, const size_t noParticles, const T particle, const int pid, const int status, const char* addText) const {
+    printf("%20s: Idx: %3lu/%3lu; ID: %8d; Status: %3d; pt: %8.3f; eta: %6.3f; phi: %6.3f; %s\n",
+            text, idx, noParticles, pid, status, particle.pt(), particle.eta(), particle.phi(), addText);
+    fflush(stdout);
+}
+
+
+bool MiniFromPat::isME0MuonSelNew(const reco::Muon& muon, double dEtaCut, double dPhiCut, double dPhiBendCut, edm::EventSetup const& iSetup){
 
     bool result = false;
     bool isME0 = muon.isME0Muon();
