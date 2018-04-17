@@ -860,7 +860,14 @@ MiniFromPat::recoAnalysis(const edm::Event& iEvent, const edm::EventSetup& iSetu
     //}
 
     // Muons
-    for (size_t i=0; i<muons->size(); ++i) {
+    for (size_t i=0; i<muons->size(); ++i){
+
+        // Fill muon without isolation, if not yet done so
+        if ((ev_.mu1_woIso_pt.size() == 0) && (isTightMuon(muons->at(i), primaryVertex, iSetup))){
+            ev_.mu1_woIso_pt.push_back(muons->at(i).pt());
+            ev_.mu1_woIso_eta.push_back(muons->at(i).eta());
+            ev_.mu1_woIso_phi.push_back(muons->at(i).phi());
+        }
 
         // Only select good muons
         if (!isGoodMuonSOS(muons->at(i), primaryVertex, iSetup)){ continue; }
@@ -916,8 +923,6 @@ MiniFromPat::recoAnalysis(const edm::Event& iEvent, const edm::EventSetup& iSetu
             ev_.mu2_q.push_back(muons->at(i).charge());
             ev_.mu2_mother.push_back(mother);
         }
-
-
     }
 
     //// Fill leptons
@@ -1511,6 +1516,9 @@ MiniFromPat::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
     ev_.mu2_phi.clear();
     ev_.mu2_q.clear();
     ev_.mu2_mother.clear();
+    ev_.mu1_woIso_pt.clear();
+    ev_.mu1_woIso_eta.clear();
+    ev_.mu1_woIso_phi.clear();
     //ev_.lep1_pt.clear();
     //ev_.lep1_eta.clear();
     //ev_.lep1_phi.clear();

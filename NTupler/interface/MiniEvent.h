@@ -45,6 +45,7 @@ struct MiniEvent_t
     //std::vector<int> el1_q, el2_q;
     std::vector<double> mu1_pt, mu1_eta, mu1_phi, mu2_pt, mu2_eta, mu2_phi;
     std::vector<int> mu1_q, mu2_q, mu1_mother, mu2_mother;
+    std::vector<double> mu1_woIso_pt, mu1_woIso_eta, mu1_woIso_phi;
     //std::vector<double> lep1_pt, lep1_eta, lep1_phi, lep2_pt, lep2_eta, lep2_phi;
     //std::vector<int> lep1_mass, lep2_mass;
 
