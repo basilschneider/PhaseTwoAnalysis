@@ -970,7 +970,11 @@ MiniFromPat::recoAnalysis(const edm::Event& iEvent, const edm::EventSetup& iSetu
     // MET
     if (mets->size() > 0) {
         ev_.met = mets->at(0).pt();
+        ev_.met_eta = mets->at(0).eta();
+        ev_.met_phi = mets->at(0).phi();
         ev_.genmet = mets->at(0).genMET()->pt();
+        ev_.genmet_eta = mets->at(0).genMET()->eta();
+        ev_.genmet_phi = mets->at(0).genMET()->phi();
     }
 
     //// Transverse mass
@@ -1749,7 +1753,8 @@ MiniFromPat::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
     ev_.nLep = /*ev_.nEl =*/ ev_.nMu = 0;
     ev_.nSoftLep = /*ev_.nSoftEl =*/ ev_.nSoftMu = 0;
     ev_.nJet25 = ev_.nJet40 = ev_.nJet60 = ev_.nJet100 = ev_.nJet150 = ev_.nBJet = 0;
-    ev_.met = ev_.ht25 = ev_.ht40 = ev_.ht60 = ev_.ht100 = ev_.ht150 = 0.;
+    ev_.met = ev_.met_eta = ev_.met_phi = ev_.genmet = ev_.genmet_eta = ev_.genmet_phi = 0.;
+    ev_.ht25 = ev_.ht40 = ev_.ht60 = ev_.ht100 = ev_.ht150 = 0.;
     ev_.genht25 = ev_.genht40 = 0.;
 
     //analyze the event

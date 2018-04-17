@@ -88,7 +88,11 @@ void createMiniEventTree(TTree* t_tree_, MiniEvent_t &ev)
     t_tree_->Branch("nBJet", &ev.nBJet);
 
     t_tree_->Branch("met", &ev.met);
+    t_tree_->Branch("met_eta", &ev.met_eta);
+    t_tree_->Branch("met_phi", &ev.met_phi);
     t_tree_->Branch("genmet", &ev.genmet);
+    t_tree_->Branch("genmet_eta", &ev.genmet_eta);
+    t_tree_->Branch("genmet_phi", &ev.genmet_phi);
     t_tree_->Branch("ht25", &ev.ht25);
     t_tree_->Branch("ht40", &ev.ht40);
     t_tree_->Branch("ht60", &ev.ht60);
