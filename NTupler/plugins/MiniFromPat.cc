@@ -930,6 +930,16 @@ MiniFromPat::recoAnalysis(const edm::Event& iEvent, const edm::EventSetup& iSetu
         }
     }
 
+    // Truth muons
+    for (size_t i=0; i<genParts->size(); ++i){
+        if (genParts->at(i).status() != 1){ continue; }
+        if (fabs(genParts->at(i).pdgId()) != 13){ continue; }
+        if (genParts->at(i).pt() < 10.){ continue; }
+        ev_.mu_pt_truth.push_back(genParts->at(i).pt());
+        ev_.mu_eta_truth.push_back(genParts->at(i).eta());
+        ev_.mu_phi_truth.push_back(genParts->at(i).phi());
+    }
+
     //// Fill leptons
     //// Put pT and eta into vector of vector for sorting
     //std::vector<std::vector<double>> lepvec;
@@ -1533,6 +1543,9 @@ MiniFromPat::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
     ev_.mu_phi.clear();
     ev_.mu_q.clear();
     ev_.mu_mother.clear();
+    ev_.mu_pt_truth.clear();
+    ev_.mu_eta_truth.clear();
+    ev_.mu_phi_truth.clear();
     //ev_.lep1_pt.clear();
     //ev_.lep1_eta.clear();
     //ev_.lep1_phi.clear();
