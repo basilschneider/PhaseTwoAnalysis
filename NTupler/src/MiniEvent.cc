@@ -30,6 +30,11 @@ void createMiniEventTree(TTree* t_tree_, MiniEvent_t &ev)
     t_tree_->Branch("mu1_woIso_pt", &ev.mu1_woIso_pt);
     t_tree_->Branch("mu1_woIso_eta", &ev.mu1_woIso_eta);
     t_tree_->Branch("mu1_woIso_phi", &ev.mu1_woIso_phi);
+    t_tree_->Branch("mu_pt", &ev.mu_pt);
+    t_tree_->Branch("mu_eta", &ev.mu_eta);
+    t_tree_->Branch("mu_phi", &ev.mu_phi);
+    t_tree_->Branch("mu_q", &ev.mu_q);
+    t_tree_->Branch("mu_mother", &ev.mu_mother);
     //t_tree_->Branch("lep1_pt", &ev.lep1_pt);
     //t_tree_->Branch("lep1_eta", &ev.lep1_eta);
     //t_tree_->Branch("lep1_phi", &ev.lep1_phi);

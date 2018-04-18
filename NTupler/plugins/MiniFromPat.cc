@@ -883,7 +883,7 @@ MiniFromPat::recoAnalysis(const edm::Event& iEvent, const edm::EventSetup& iSetu
         }
 
         // Skip the rest if we already have two good muons
-        if (ev_.mu2_pt.size() != 0){ continue; }
+        //if (ev_.mu2_pt.size() != 0){ continue; }
 
         // Check where the muon comes from
         int mother = -1;
@@ -910,6 +910,11 @@ MiniFromPat::recoAnalysis(const edm::Event& iEvent, const edm::EventSetup& iSetu
             //printf("RECO Muon: pt: %f, eta: %f, mother: %d\n", muons->at(i).pt(), muons->at(i).eta(), mother);
         }
         // Fill muon variables
+        ev_.mu_pt.push_back(muons->at(i).pt());
+        ev_.mu_eta.push_back(muons->at(i).eta());
+        ev_.mu_phi.push_back(muons->at(i).phi());
+        ev_.mu_q.push_back(muons->at(i).charge());
+        ev_.mu_mother.push_back(mother);
         if (ev_.mu1_pt.size() == 0){
             ev_.mu1_pt.push_back(muons->at(i).pt());
             ev_.mu1_eta.push_back(muons->at(i).eta());
@@ -1523,6 +1528,11 @@ MiniFromPat::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
     ev_.mu1_woIso_pt.clear();
     ev_.mu1_woIso_eta.clear();
     ev_.mu1_woIso_phi.clear();
+    ev_.mu_pt.clear();
+    ev_.mu_eta.clear();
+    ev_.mu_phi.clear();
+    ev_.mu_q.clear();
+    ev_.mu_mother.clear();
     //ev_.lep1_pt.clear();
     //ev_.lep1_eta.clear();
     //ev_.lep1_phi.clear();
