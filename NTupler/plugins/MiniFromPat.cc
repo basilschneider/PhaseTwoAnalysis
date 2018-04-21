@@ -862,18 +862,18 @@ MiniFromPat::recoAnalysis(const edm::Event& iEvent, const edm::EventSetup& iSetu
     // Muons
     for (size_t i=0; i<muons->size(); ++i){
 
+        // Only select muons above certain pT
+        if (muons->at(i).pt() < ev_.mu_pt_lo){ continue; }
+
         // Fill muon without isolation, if not yet done so
-        if ((ev_.mu1_woIso_pt.size() == 0) && (isTightMuon(muons->at(i), primaryVertex, iSetup))){
-            ev_.mu1_woIso_pt.push_back(muons->at(i).pt());
-            ev_.mu1_woIso_eta.push_back(muons->at(i).eta());
-            ev_.mu1_woIso_phi.push_back(muons->at(i).phi());
+        if (isTightMuon(muons->at(i), primaryVertex, iSetup)){
+            ev_.mu_woIso_pt.push_back(muons->at(i).pt());
+            ev_.mu_woIso_eta.push_back(muons->at(i).eta());
+            ev_.mu_woIso_phi.push_back(muons->at(i).phi());
         }
 
         // Only select good muons
         if (!isGoodMuonSOS(muons->at(i), primaryVertex, iSetup)){ continue; }
-
-        // Only select muons above certain pT
-        if (muons->at(i).pt() < ev_.mu_pt_lo){ continue; }
 
         ev_.nLep++;
         ev_.nMu++;
@@ -915,19 +915,6 @@ MiniFromPat::recoAnalysis(const edm::Event& iEvent, const edm::EventSetup& iSetu
         ev_.mu_phi.push_back(muons->at(i).phi());
         ev_.mu_q.push_back(muons->at(i).charge());
         ev_.mu_mother.push_back(mother);
-        if (ev_.mu1_pt.size() == 0){
-            ev_.mu1_pt.push_back(muons->at(i).pt());
-            ev_.mu1_eta.push_back(muons->at(i).eta());
-            ev_.mu1_phi.push_back(muons->at(i).phi());
-            ev_.mu1_q.push_back(muons->at(i).charge());
-            ev_.mu1_mother.push_back(mother);
-        }else if (ev_.mu2_pt.size() == 0){
-            ev_.mu2_pt.push_back(muons->at(i).pt());
-            ev_.mu2_eta.push_back(muons->at(i).eta());
-            ev_.mu2_phi.push_back(muons->at(i).phi());
-            ev_.mu2_q.push_back(muons->at(i).charge());
-            ev_.mu2_mother.push_back(mother);
-        }
     }
 
     // Truth muons
@@ -1098,12 +1085,11 @@ MiniFromPat::recoAnalysis(const edm::Event& iEvent, const edm::EventSetup& iSetu
         // Only select good jets
         if (!isGoodJetSOS(jets->at(i))){ continue; }
 
-        if (ev_.jet1_pt.size() == 0){
-            ev_.jet1_pt.push_back(jets->at(i).pt());
-            ev_.jet1_eta.push_back(jets->at(i).eta());
-            ev_.jet1_phi.push_back(jets->at(i).phi());
-            ev_.jet1_mass.push_back(jets->at(i).mass());
-        }
+        ev_.jet_pt.push_back(jets->at(i).pt());
+        ev_.jet_eta.push_back(jets->at(i).eta());
+        ev_.jet_phi.push_back(jets->at(i).phi());
+        ev_.jet_mass.push_back(jets->at(i).mass());
+
         if (jets->at(i).pt() > 25.){
             ev_.ht25 += jets->at(i).pt();
             ev_.nJet25++;
@@ -1525,24 +1511,14 @@ MiniFromPat::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
     //ev_.el2_eta.clear();
     //ev_.el2_phi.clear();
     //ev_.el2_q.clear();
-    ev_.mu1_pt.clear();
-    ev_.mu1_eta.clear();
-    ev_.mu1_phi.clear();
-    ev_.mu1_q.clear();
-    ev_.mu1_mother.clear();
-    ev_.mu2_pt.clear();
-    ev_.mu2_eta.clear();
-    ev_.mu2_phi.clear();
-    ev_.mu2_q.clear();
-    ev_.mu2_mother.clear();
-    ev_.mu1_woIso_pt.clear();
-    ev_.mu1_woIso_eta.clear();
-    ev_.mu1_woIso_phi.clear();
     ev_.mu_pt.clear();
     ev_.mu_eta.clear();
     ev_.mu_phi.clear();
     ev_.mu_q.clear();
     ev_.mu_mother.clear();
+    ev_.mu_woIso_pt.clear();
+    ev_.mu_woIso_eta.clear();
+    ev_.mu_woIso_phi.clear();
     ev_.mu_pt_truth.clear();
     ev_.mu_eta_truth.clear();
     ev_.mu_phi_truth.clear();
@@ -1578,14 +1554,14 @@ MiniFromPat::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
     //ev_.lep2_eta_truth.clear();
     //ev_.lep2_phi_truth.clear();
     //ev_.lep2_mass_truth.clear();
-    ev_.jet1_pt.clear();
-    ev_.jet1_eta.clear();
-    ev_.jet1_phi.clear();
-    ev_.jet1_mass.clear();
-    ev_.jet1_pt_truth.clear();
-    ev_.jet1_eta_truth.clear();
-    ev_.jet1_phi_truth.clear();
-    ev_.jet1_mass_truth.clear();
+    ev_.jet_pt.clear();
+    ev_.jet_eta.clear();
+    ev_.jet_phi.clear();
+    ev_.jet_mass.clear();
+    //ev_.jet_pt_truth.clear();
+    //ev_.jet_eta_truth.clear();
+    //ev_.jet_phi_truth.clear();
+    //ev_.jet_mass_truth.clear();
     ev_.mllMin.clear();
     ev_.mllMax.clear();
     ev_.mt1.clear();

@@ -17,24 +17,14 @@ void createMiniEventTree(TTree* t_tree_, MiniEvent_t &ev)
     //t_tree_->Branch("el2_eta", &ev.el2_eta);
     //t_tree_->Branch("el2_phi", &ev.el2_phi);
     //t_tree_->Branch("el2_q", &ev.el2_q);
-    t_tree_->Branch("mu1_pt", &ev.mu1_pt);
-    t_tree_->Branch("mu1_eta", &ev.mu1_eta);
-    t_tree_->Branch("mu1_phi", &ev.mu1_phi);
-    t_tree_->Branch("mu1_q", &ev.mu1_q);
-    t_tree_->Branch("mu1_mother", &ev.mu1_mother);
-    t_tree_->Branch("mu2_pt", &ev.mu2_pt);
-    t_tree_->Branch("mu2_eta", &ev.mu2_eta);
-    t_tree_->Branch("mu2_phi", &ev.mu2_phi);
-    t_tree_->Branch("mu2_q", &ev.mu2_q);
-    t_tree_->Branch("mu2_mother", &ev.mu2_mother);
-    t_tree_->Branch("mu1_woIso_pt", &ev.mu1_woIso_pt);
-    t_tree_->Branch("mu1_woIso_eta", &ev.mu1_woIso_eta);
-    t_tree_->Branch("mu1_woIso_phi", &ev.mu1_woIso_phi);
     t_tree_->Branch("mu_pt", &ev.mu_pt);
     t_tree_->Branch("mu_eta", &ev.mu_eta);
     t_tree_->Branch("mu_phi", &ev.mu_phi);
     t_tree_->Branch("mu_q", &ev.mu_q);
     t_tree_->Branch("mu_mother", &ev.mu_mother);
+    t_tree_->Branch("mu_woIso_pt", &ev.mu_woIso_pt);
+    t_tree_->Branch("mu_woIso_eta", &ev.mu_woIso_eta);
+    t_tree_->Branch("mu_woIso_phi", &ev.mu_woIso_phi);
     t_tree_->Branch("mu_pt_truth", &ev.mu_pt_truth);
     t_tree_->Branch("mu_eta_truth", &ev.mu_eta_truth);
     t_tree_->Branch("mu_phi_truth", &ev.mu_phi_truth);
@@ -72,15 +62,15 @@ void createMiniEventTree(TTree* t_tree_, MiniEvent_t &ev)
     //t_tree_->Branch("lep2_phi_truth", &ev.lep2_phi_truth);
     //t_tree_->Branch("lep2_mass_truth", &ev.lep2_mass_truth);
 
-    t_tree_->Branch("jet1_pt", &ev.jet1_pt);
-    t_tree_->Branch("jet1_eta", &ev.jet1_eta);
-    t_tree_->Branch("jet1_phi", &ev.jet1_phi);
-    t_tree_->Branch("jet1_mass", &ev.jet1_mass);
+    t_tree_->Branch("jet_pt", &ev.jet_pt);
+    t_tree_->Branch("jet_eta", &ev.jet_eta);
+    t_tree_->Branch("jet_phi", &ev.jet_phi);
+    t_tree_->Branch("jet_mass", &ev.jet_mass);
 
-    t_tree_->Branch("jet1_pt_truth", &ev.jet1_pt_truth);
-    t_tree_->Branch("jet1_eta_truth", &ev.jet1_eta_truth);
-    t_tree_->Branch("jet1_phi_truth", &ev.jet1_phi_truth);
-    t_tree_->Branch("jet1_mass_truth", &ev.jet1_mass_truth);
+    //t_tree_->Branch("jet_pt_truth", &ev.jet_pt_truth);
+    //t_tree_->Branch("jet_eta_truth", &ev.jet_eta_truth);
+    //t_tree_->Branch("jet_phi_truth", &ev.jet_phi_truth);
+    //t_tree_->Branch("jet_mass_truth", &ev.jet_mass_truth);
 
     t_tree_->Branch("nLep", &ev.nLep);
     //t_tree_->Branch("nEl", &ev.nEl);

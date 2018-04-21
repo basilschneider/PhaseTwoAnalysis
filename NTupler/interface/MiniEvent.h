@@ -43,11 +43,9 @@ struct MiniEvent_t
 
     //std::vector<double> el1_pt, el1_eta, el1_phi, el2_pt, el2_eta, el2_phi;
     //std::vector<int> el1_q, el2_q;
-    std::vector<double> mu1_pt, mu1_eta, mu1_phi, mu2_pt, mu2_eta, mu2_phi;
-    std::vector<int> mu1_q, mu2_q, mu1_mother, mu2_mother;
-    std::vector<double> mu1_woIso_pt, mu1_woIso_eta, mu1_woIso_phi;
     std::vector<double> mu_pt, mu_eta, mu_phi;
     std::vector<int> mu_q, mu_mother;
+    std::vector<double> mu_woIso_pt, mu_woIso_eta, mu_woIso_phi;
     std::vector<double> mu_pt_truth, mu_eta_truth, mu_phi_truth;
     //std::vector<double> lep1_pt, lep1_eta, lep1_phi, lep2_pt, lep2_eta, lep2_phi;
     //std::vector<int> lep1_mass, lep2_mass;
@@ -58,8 +56,8 @@ struct MiniEvent_t
     //std::vector<int> mu1_q_truth, mu2_q_truth;
     //std::vector<double> lep1_pt_truth, lep1_eta_truth, lep1_phi_truth, lep2_pt_truth, lep2_eta_truth, lep2_phi_truth, lep1_mass_truth, lep2_mass_truth;
 
-    std::vector<double> jet1_pt, jet1_eta, jet1_phi, jet1_mass;
-    std::vector<double> jet1_pt_truth, jet1_eta_truth, jet1_phi_truth, jet1_mass_truth;
+    std::vector<double> jet_pt, jet_eta, jet_phi, jet_mass;
+    //std::vector<double> jet_pt_truth, jet_eta_truth, jet_phi_truth, jet_mass_truth;
 
     double met, met_eta, met_phi, genmet, genmet_eta, genmet_phi;
     double ht25, ht40, ht60, ht100, ht150;
