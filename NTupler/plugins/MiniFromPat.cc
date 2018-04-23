@@ -1181,85 +1181,78 @@ MiniFromPat::recoAnalysis(const edm::Event& iEvent, const edm::EventSetup& iSetu
     // Event by event comparison
     if (ev_.event_by_event_comparison){
 
-        //printf("NEWEVENT\n");
-        //printf("Foo01: run: %d; lumi: %d; e: %lld\n", iEvent.id().run(), iEvent.luminosityBlock(), iEvent.id().event());
-        //for (size_t i=0; i<genParts->size(); ++i){
-        //    if (fabs(genParts->at(i).pdgId()) != 11 && fabs(genParts->at(i).pdgId()) != 13){ continue; }
-        //    if (genParts->at(i).pt() < 2.){ continue; }
-        //    printf("Foo02: ID: %d; Status: %d; pt: %f; eta: %f\n",
-        //            genParts->at(i).pdgId(),
-        //            genParts->at(i).status(),
-        //            genParts->at(i).pt(),
-        //            genParts->at(i).eta());
-        //}
+        //// Find specific events to compare with Delphes ...
+        //if (iEvent.id().run() != 1 || iEvent.luminosityBlock() != 680){ return; }
+        //unsigned long long int e = iEvent.id().event();
+        //if (e!=964815 && e!=965098 && e!=965115 && e!=965602){ return; }
 
-        if (iEvent.id().run() == 1 && iEvent.luminosityBlock() == 680){
-            unsigned long long int e = iEvent.id().event();
-            if (e==964815 || e==965098 || e==965115 || e==965602){
+        // ... or find event with kinematic cuts
+        if (mets->at(0).pt() < 300.){ return; }
 
-                // Found event
-                printf("Event by event comparison. Compare event:\n");
-                printf("Run Number: %d; Lumi Section: %d; Event Number: %lld\n",
-                        iEvent.id().run(), iEvent.luminosityBlock(), iEvent.id().event());
+        // Found event
+        printf("Event by event comparison. Compare event:\n");
+        printf("Run Number: %d; Lumi Section: %d; Event Number: %lld\n",
+                iEvent.id().run(), iEvent.luminosityBlock(), iEvent.id().event());
+        printf("Has crazy muon: %d\n", ev_.crazyMuon200);
 
-                // Truth objects
-                printf("%20s\n", "Truth objects");
-                // Truth electrons
-                for (size_t i=0; i<genParts->size(); ++i){
-                    if (fabs(genParts->at(i).pdgId()) != 11){ continue; }
-                    printParticlePropsWpidWstatus("Truth electrons", i, genParts->size(), genParts->at(i));
-                }
-                // Truth muons
-                for (size_t i=0; i<genParts->size(); ++i){
-                    if (fabs(genParts->at(i).pdgId()) != 13){ continue; }
-                    printParticlePropsWpidWstatus("Truth muons", i, genParts->size(), genParts->at(i));
-                }
-                // Truth particles (all)
-                for (size_t i=0; i<genParts->size(); ++i){
-                    printParticlePropsWpidWstatus("Truth particles", i, genParts->size(), genParts->at(i));
-                }
-                // Truth jets
-                for (size_t i=0; i<genJets->size(); ++i){
-                    printParticleProps("Truth jets", i, genJets->size(), genJets->at(i), -1, -1);
-                }
-                // Truth MET
-                printf("%20s: Idx: %3d/%3d; ID: %8s; Status: %3s; pt: %8.3f; eta: %6.3f; phi: %6.3f\n",
-                        "Truth MET", 1, 1, "-", "-", mets->at(0).genMET()->pt(), mets->at(0).genMET()->eta(), mets->at(0).genMET()->phi());
-
-                // Reco objects
-                printf("%20s\n", "Reco objects");
-                //// Reco electrons
-                //for (size_t i=0; i<elecs->size(); ++i){
-                //    //// Additionally print SumPt
-                //    //char SumPt[20];
-                //    //snprintf(SumPt, sizeof SumPt, "%f", elecs->at(i)->SumPt);
-                //    char addText[60] = "sumPt: XXXXX";
-                //    //strcat(addText, SumPt);
-                //    printParticleProps("Reco electrons", i, elecs->size(), elecs->at(i), elecs->at(i).charge()>0 ? -11: 11, 1, addText);
-                //}
-                // Reco muons
-                for (size_t i=0; i<muons->size(); ++i){
-                    printParticleProps("Reco muons", i, muons->size(), muons->at(i), muons->at(i).charge()>0 ? -13: 13, 1);
-                }
-                // Reco jets
-                for (size_t i=0; i<jets->size(); ++i){
-                    printParticleProps("Reco jets", i, jets->size(), jets->at(i), -1, -1);
-                }
-                // Reco MET
-                printf("%20s: Idx: %3d/%3d; ID: %8s; Status: %3s; pt: %8.3f; eta: %6.3f; phi: %6.3f\n",
-                        "Reco MET", 1, 1, "-", "-", mets->at(0).pt(), mets->at(0).eta(), mets->at(0).phi());
-
-
-                ///// MAYBE YOU WANT TO ADD IF THE PARTICLES PASS ID SELECTION
-
-                //for (size_t i=0; i<muons->size(); ++i) {
-                //    const pat::Muon& m = muons->at(i);
-                //    printf("Foo02: pT: %f; eta: %f; phi: %f; goodMuon: %d; loose: %d; medium: %d; tight: %d\n",
-                //            m.pt(), m.eta(), m.phi(), isGoodMuonSOS(m, primaryVertex, iSetup), isLooseMuon(m, iSetup),
-                //            isMediumMuon(m, primaryVertex), isTightMuon(m, primaryVertex, iSetup));
-                //}
-            }
+        // Truth objects
+        printf("\n%20s\n", "Truth objects");
+        // Truth electrons
+        for (size_t i=0; i<genParts->size(); ++i){
+            if (fabs(genParts->at(i).pdgId()) != 11){ continue; }
+            printParticlePropsWpidWstatus("Truth electrons", i, genParts->size(), genParts->at(i));
         }
+        // Truth muons
+        for (size_t i=0; i<genParts->size(); ++i){
+            if (fabs(genParts->at(i).pdgId()) != 13){ continue; }
+            printParticlePropsWpidWstatus("Truth muons", i, genParts->size(), genParts->at(i));
+        }
+        // Truth particles (all)
+        for (size_t i=0; i<genParts->size(); ++i){
+            printParticlePropsWpidWstatus("Truth particles", i, genParts->size(), genParts->at(i));
+        }
+        // Truth jets
+        for (size_t i=0; i<genJets->size(); ++i){
+            printParticleProps("Truth jets", i, genJets->size(), genJets->at(i), -1, -1);
+        }
+        // Truth MET
+        printf("%20s: Idx: %3d/%3d; ID: %8s; Status: %3s; pt: %8.3f; eta: %6.3f; phi: %6.3f\n",
+                "Truth MET", 1, 1, "-1", "-1", mets->at(0).genMET()->pt(), mets->at(0).genMET()->eta(), mets->at(0).genMET()->phi());
+
+        // Reco objects
+        printf("\n%20s\n", "Reco objects");
+        //// Reco electrons
+        //for (size_t i=0; i<elecs->size(); ++i){
+        //    //// Additionally print SumPt
+        //    //char SumPt[20];
+        //    //snprintf(SumPt, sizeof SumPt, "%f", elecs->at(i)->SumPt);
+        //    char addText[60] = "sumPt: XXXXX";
+        //    //strcat(addText, SumPt);
+        //    printParticleProps("Reco electrons", i, elecs->size(), elecs->at(i), elecs->at(i).charge()>0 ? -11: 11, 1, addText);
+        //}
+        // Reco muons
+        for (size_t i=0; i<muons->size(); ++i){
+            // Additionally print isolation variable
+            std::string addText = "sumPt: " + std::to_string(muons->at(i).trackIso());
+            printParticleProps("Reco muons", i, muons->size(), muons->at(i), muons->at(i).charge()>0 ? -13: 13, 1, addText.c_str());
+        }
+        // Reco jets
+        for (size_t i=0; i<jets->size(); ++i){
+            printParticleProps("Reco jets", i, jets->size(), jets->at(i), -1, -1);
+        }
+        // Reco MET
+        printf("%20s: Idx: %3d/%3d; ID: %8s; Status: %3s; pt: %8.3f; eta: %6.3f; phi: %6.3f\n",
+                "Reco MET", 1, 1, "-", "-", mets->at(0).pt(), mets->at(0).eta(), mets->at(0).phi());
+
+
+        ///// MAYBE YOU WANT TO ADD IF THE PARTICLES PASS ID SELECTION
+
+        //for (size_t i=0; i<muons->size(); ++i) {
+        //    const pat::Muon& m = muons->at(i);
+        //    printf("Foo02: pT: %f; eta: %f; phi: %f; goodMuon: %d; loose: %d; medium: %d; tight: %d\n",
+        //            m.pt(), m.eta(), m.phi(), isGoodMuonSOS(m, primaryVertex, iSetup), isLooseMuon(m, iSetup),
+        //            isMediumMuon(m, primaryVertex), isTightMuon(m, primaryVertex, iSetup));
+        //}
     }
 
 
