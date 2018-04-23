@@ -139,8 +139,8 @@ class MiniFromPat : public edm::one::EDAnalyzer<edm::one::SharedResources, edm::
         template <typename T> bool isMatched(const pat::PackedGenParticle truthEl, T particle);
         template <typename T> bool matchAny(const edm::Handle<std::vector<pat::PackedGenParticle>> genParts, T particle, bool hs);
         bool isHs(const pat::PackedGenParticle truthParticle, int pdgId);
-        template <typename T> void printParticlePropsWpidWstatus(const char* text, const size_t idx, const size_t noParticles, const T particle, const char* addText="") const ;
-        template <typename T> void printParticleProps(const char* text, const size_t idx, const size_t noParticles, const T particle, const int pid=-1, const int status=-1, const char* addText="") const ;
+        template <typename T> void pppWpidWstatus(const char* text, const size_t idx, const size_t noParticles, const T particle, const char* addText="") const ;
+        template <typename T> void ppp(const char* text, const size_t idx, const size_t noParticles, const T particle, const int pid=-1, const int status=-1, const char* addText="") const ;
 
         bool isME0MuonSelNew(const reco::Muon&, double, double, double, edm::EventSetup const& );
 
@@ -1200,20 +1200,20 @@ MiniFromPat::recoAnalysis(const edm::Event& iEvent, const edm::EventSetup& iSetu
         // Truth electrons
         for (size_t i=0; i<genParts->size(); ++i){
             if (fabs(genParts->at(i).pdgId()) != 11){ continue; }
-            printParticlePropsWpidWstatus("Truth electrons", i, genParts->size(), genParts->at(i));
+            pppWpidWstatus("Truth electrons", i, genParts->size(), genParts->at(i));
         }
         // Truth muons
         for (size_t i=0; i<genParts->size(); ++i){
             if (fabs(genParts->at(i).pdgId()) != 13){ continue; }
-            printParticlePropsWpidWstatus("Truth muons", i, genParts->size(), genParts->at(i));
+            pppWpidWstatus("Truth muons", i, genParts->size(), genParts->at(i));
         }
         // Truth particles (all)
         for (size_t i=0; i<genParts->size(); ++i){
-            printParticlePropsWpidWstatus("Truth particles", i, genParts->size(), genParts->at(i));
+            pppWpidWstatus("Truth particles", i, genParts->size(), genParts->at(i));
         }
         // Truth jets
         for (size_t i=0; i<genJets->size(); ++i){
-            printParticleProps("Truth jets", i, genJets->size(), genJets->at(i));
+            ppp("Truth jets", i, genJets->size(), genJets->at(i));
         }
         // Truth MET
         printf("%20s: Idx: %3d/%3d; ID: %8s; Status: %3s; pt: %8.3f; eta: %6.3f; phi: %6.3f\n",
@@ -1228,17 +1228,17 @@ MiniFromPat::recoAnalysis(const edm::Event& iEvent, const edm::EventSetup& iSetu
         //    //snprintf(SumPt, sizeof SumPt, "%f", elecs->at(i)->SumPt);
         //    char addText[60] = "sumPt: XXXXX";
         //    //strcat(addText, SumPt);
-        //    printParticleProps("Reco electrons", i, elecs->size(), elecs->at(i), elecs->at(i).charge()>0 ? -11: 11, 1, addText);
+        //    ppp("Reco electrons", i, elecs->size(), elecs->at(i), elecs->at(i).charge()>0 ? -11: 11, 1, addText);
         //}
         // Reco muons
         for (size_t i=0; i<muons->size(); ++i){
             // Additionally print isolation variable
             std::string addText = "sumPt: " + std::to_string(muons->at(i).trackIso());
-            printParticleProps("Reco muons", i, muons->size(), muons->at(i), muons->at(i).charge()>0 ? -13: 13, 1, addText.c_str());
+            ppp("Reco muons", i, muons->size(), muons->at(i), muons->at(i).charge()>0 ? -13: 13, 1, addText.c_str());
         }
         // Reco jets
         for (size_t i=0; i<jets->size(); ++i){
-            printParticleProps("Reco jets", i, jets->size(), jets->at(i));
+            ppp("Reco jets", i, jets->size(), jets->at(i));
         }
         // Reco MET
         printf("%20s: Idx: %3d/%3d; ID: %8s; Status: %3s; pt: %8.3f; eta: %6.3f; phi: %6.3f\n",
@@ -2109,12 +2109,14 @@ bool MiniFromPat::isHs(const pat::PackedGenParticle truthParticle, int pdgId){
 }
 
 
-// Print properties of particle
-template <typename T> void MiniFromPat::printParticlePropsWpidWstatus(const char* text, const size_t idx, const size_t noParticles, const T particle, const char* addText) const {
-    printParticleProps(text, idx, noParticles, particle, particle.pdgId(), particle.status(), addText);
+// Print properties of particle (ppp = print particle properties)
+template <typename T> void MiniFromPat::pppWpidWstatus(const char* text, const size_t idx, const size_t noParticles, const T particle, const char* addText) const {
+    ppp(text, idx, noParticles, particle, particle.pdgId(), particle.status(), addText);
 }
 
-template <typename T> void MiniFromPat::printParticleProps(const char* text, const size_t idx, const size_t noParticles, const T particle, const int pid, const int status, const char* addText) const {
+//void MiniFromPat::ppp
+
+template <typename T> void MiniFromPat::ppp(const char* text, const size_t idx, const size_t noParticles, const T particle, const int pid, const int status, const char* addText) const {
     printf("%20s: Idx: %3lu/%3lu; ID: %8d; Status: %3d; pt: %8.3f; eta: %6.3f; phi: %6.3f; %s\n",
             text, idx, noParticles, pid, status, particle.pt(), particle.eta(), particle.phi(), addText);
     fflush(stdout);
