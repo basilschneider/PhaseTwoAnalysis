@@ -140,7 +140,8 @@ class MiniFromPat : public edm::one::EDAnalyzer<edm::one::SharedResources, edm::
         template <typename T> bool matchAny(const edm::Handle<std::vector<pat::PackedGenParticle>> genParts, T particle, bool hs);
         bool isHs(const pat::PackedGenParticle truthParticle, int pdgId);
         template <typename T> void pppWpidWstatus(const char* text, const size_t idx, const size_t noParticles, const T particle, const char* addText="") const ;
-        template <typename T> void ppp(const char* text, const size_t idx, const size_t noParticles, const T particle, const int pid=-1, const int status=-1, const char* addText="") const ;
+        template <typename T> void pppWisoWpassid(const char* text, const size_t idx, const size_t noParticles, const T particle, const int pid, const int status, const char* addText) const ;
+        template <typename T> void ppp(const char* text, const size_t idx, const size_t noParticles, const T particle, const int pid=-1, const int status=-1, const double iso=-1., const char* addText="") const ;
 
         bool isME0MuonSelNew(const reco::Muon&, double, double, double, edm::EventSetup const& );
 
@@ -1234,7 +1235,7 @@ MiniFromPat::recoAnalysis(const edm::Event& iEvent, const edm::EventSetup& iSetu
         for (size_t i=0; i<muons->size(); ++i){
             // Additionally print isolation variable
             std::string addText = "sumPt: " + std::to_string(muons->at(i).trackIso());
-            ppp("Reco muons", i, muons->size(), muons->at(i), muons->at(i).charge()>0 ? -13: 13, 1, addText.c_str());
+            pppWisoWpassid("Reco muons", i, muons->size(), muons->at(i), muons->at(i).charge()>0 ? -13: 13, 1, addText.c_str());
         }
         // Reco jets
         for (size_t i=0; i<jets->size(); ++i){
@@ -2110,15 +2111,25 @@ bool MiniFromPat::isHs(const pat::PackedGenParticle truthParticle, int pdgId){
 
 
 // Print properties of particle (ppp = print particle properties)
+// ppp with PID and with status (for truth particles)
 template <typename T> void MiniFromPat::pppWpidWstatus(const char* text, const size_t idx, const size_t noParticles, const T particle, const char* addText) const {
-    ppp(text, idx, noParticles, particle, particle.pdgId(), particle.status(), addText);
+    ppp(text, idx, noParticles, particle, particle.pdgId(), particle.status(), -1., addText);
 }
 
-//void MiniFromPat::ppp
+// ppp with isolation and boolean if ID is passed (for leptons)
+template <typename T> void MiniFromPat::pppWisoWpassid(const char* text, const size_t idx, const size_t noParticles, const T particle, const int pid, const int status, const char* addText) const {
+    // Isolation depends on particle type
+    double iso = -1.;
+    if (fabs(particle.pdgId()) == 13){ // muon
+        iso = particle.trackIso();
+    }
+    ppp(text, idx, noParticles, particle, particle.pdgId(), particle.status(), iso, addText);
+}
 
-template <typename T> void MiniFromPat::ppp(const char* text, const size_t idx, const size_t noParticles, const T particle, const int pid, const int status, const char* addText) const {
-    printf("%20s: Idx: %3lu/%3lu; ID: %8d; Status: %3d; pt: %8.3f; eta: %6.3f; phi: %6.3f; %s\n",
-            text, idx, noParticles, pid, status, particle.pt(), particle.eta(), particle.phi(), addText);
+// Generic base ppp method
+template <typename T> void MiniFromPat::ppp(const char* text, const size_t idx, const size_t noParticles, const T particle, const int pid, const int status, const double iso, const char* addText) const {
+    printf("%20s: Idx: %3lu/%3lu; ID: %8d; Status: %3d; pt: %8.3f; eta: %6.3f; phi: %6.3f; iso: %6.3f; %s\n",
+            text, idx, noParticles, pid, status, particle.pt(), particle.eta(), particle.phi(), iso, addText);
     fflush(stdout);
 }
 
