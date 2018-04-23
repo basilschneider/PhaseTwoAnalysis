@@ -140,7 +140,7 @@ class MiniFromPat : public edm::one::EDAnalyzer<edm::one::SharedResources, edm::
         template <typename T> bool matchAny(const edm::Handle<std::vector<pat::PackedGenParticle>> genParts, T particle, bool hs);
         bool isHs(const pat::PackedGenParticle truthParticle, int pdgId);
         template <typename T> void printParticlePropsWpidWstatus(const char* text, const size_t idx, const size_t noParticles, const T particle, const char* addText="") const ;
-        template <typename T> void printParticleProps(const char* text, const size_t idx, const size_t noParticles, const T particle, const int pid, const int status, const char* addText="") const ;
+        template <typename T> void printParticleProps(const char* text, const size_t idx, const size_t noParticles, const T particle, const int pid=-1, const int status=-1, const char* addText="") const ;
 
         bool isME0MuonSelNew(const reco::Muon&, double, double, double, edm::EventSetup const& );
 
@@ -1213,7 +1213,7 @@ MiniFromPat::recoAnalysis(const edm::Event& iEvent, const edm::EventSetup& iSetu
         }
         // Truth jets
         for (size_t i=0; i<genJets->size(); ++i){
-            printParticleProps("Truth jets", i, genJets->size(), genJets->at(i), -1, -1);
+            printParticleProps("Truth jets", i, genJets->size(), genJets->at(i));
         }
         // Truth MET
         printf("%20s: Idx: %3d/%3d; ID: %8s; Status: %3s; pt: %8.3f; eta: %6.3f; phi: %6.3f\n",
@@ -1238,7 +1238,7 @@ MiniFromPat::recoAnalysis(const edm::Event& iEvent, const edm::EventSetup& iSetu
         }
         // Reco jets
         for (size_t i=0; i<jets->size(); ++i){
-            printParticleProps("Reco jets", i, jets->size(), jets->at(i), -1, -1);
+            printParticleProps("Reco jets", i, jets->size(), jets->at(i));
         }
         // Reco MET
         printf("%20s: Idx: %3d/%3d; ID: %8s; Status: %3s; pt: %8.3f; eta: %6.3f; phi: %6.3f\n",
