@@ -2126,7 +2126,7 @@ template <typename T> void MiniFromPat::pppWisoWpassid(const char* text, const s
 
 // Generic base ppp method
 template <typename T> void MiniFromPat::ppp(const char* text, const size_t idx, const size_t noParticles, const T particle, const int pid, const int status, const double iso, const short int passID, const char* addText) const {
-    printf("%20s: Idx: %3lu/%3lu; ID: %8d; Status: %3d; pt: %8.3f; eta: %6.3f; phi: %6.3f; iso: %6.3f; passID: %1d; %s\n",
+    printf("%20s: Idx: %3lu/%3lu; ID: %8d; Status: %3d; pt: %8.3f; eta: %6.3f; phi: %6.3f; iso: %8.3f; passID: %1d; %s\n",
             text, idx, noParticles, pid, status, particle.pt(), particle.eta(), particle.phi(), iso, passID, addText);
     fflush(stdout);
 }
