@@ -22,6 +22,9 @@ void createMiniEventTree(TTree* t_tree_, MiniEvent_t &ev)
     t_tree_->Branch("mu_phi", &ev.mu_phi);
     t_tree_->Branch("mu_q", &ev.mu_q);
     t_tree_->Branch("mu_mother", &ev.mu_mother);
+    t_tree_->Branch("mu_directmother", &ev.mu_directmother);
+    t_tree_->Branch("mu_matched", &ev.mu_matched);
+    t_tree_->Branch("mu_st20to30", &ev.mu_st20to30);
     t_tree_->Branch("mu_woIso_pt", &ev.mu_woIso_pt);
     t_tree_->Branch("mu_woIso_eta", &ev.mu_woIso_eta);
     t_tree_->Branch("mu_woIso_phi", &ev.mu_woIso_phi);

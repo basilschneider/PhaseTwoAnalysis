@@ -915,7 +915,10 @@ MiniFromPat::recoAnalysis(const edm::Event& iEvent, const edm::EventSetup& iSetu
         ev_.mu_eta.push_back(muons->at(i).eta());
         ev_.mu_phi.push_back(muons->at(i).phi());
         ev_.mu_q.push_back(muons->at(i).charge());
-        ev_.mu_mother.push_back(mother);
+        ev_.mu_mother.push_back(23);
+        ev_.mu_directmother.push_back(mother);
+        ev_.mu_matched.push_back(true);
+        ev_.mu_st20to30.push_back(true);
     }
 
     // Truth muons
@@ -1508,6 +1511,9 @@ MiniFromPat::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
     ev_.mu_phi.clear();
     ev_.mu_q.clear();
     ev_.mu_mother.clear();
+    ev_.mu_directmother.clear();
+    ev_.mu_matched.clear();
+    ev_.mu_st20to30.clear();
     ev_.mu_woIso_pt.clear();
     ev_.mu_woIso_eta.clear();
     ev_.mu_woIso_phi.clear();
