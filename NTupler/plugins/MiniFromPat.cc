@@ -1182,8 +1182,28 @@ MiniFromPat::recoAnalysis(const edm::Event& iEvent, const edm::EventSetup& iSetu
     ev_.mhlt25 = mhlt4v25.Pt();
     ev_.mhlt40 = mhlt4v40.Pt();
 
-    // Event by event comparison
-    if (ev_.event_by_event_comparison){
+    bool evtFound = false;
+    // Secondary event by event comparison: Choose events in Delphes and find them here
+    if (ev_.event_by_event_comparison_secondary){
+        for (size_t i=0; i<genParts->size(); ++i){
+            if (genParts->at(i).status() != 1){ continue; }
+            if (fabs(genParts->at(i).pdgId()) != 13){ continue; }
+            // It's a final state muon!
+            double mupt = genParts->at(i).pt();
+            double mueta = genParts->at(i).eta();
+            double muphi = genParts->at(i).phi();
+            if ((fabs(mupt-6.882438) < 1.e-3) && (fabs(mueta-1.476477)) < 1.e-3 && (fabs(muphi-0.460743) < 1.e-3)){ evtFound = true; }
+            if ((fabs(mupt-6.789154) < 1.e-3) && (fabs(mueta-1.970843)) < 1.e-3 && (fabs(muphi+2.242026) < 1.e-3)){ evtFound = true; }
+            if ((fabs(mupt-8.218305) < 1.e-3) && (fabs(mueta-2.705792)) < 1.e-3 && (fabs(muphi-0.584903) < 1.e-3)){ evtFound = true; }
+            std::cout << "Foo02: pT: " << mupt << "; eta: " << mueta << "; phi: " << muphi << std::endl;
+        }
+    }
+    if (evtFound){
+        std::cout << "Foo01" << std::endl;
+    }
+
+    // Primary event by event comparison: Choose events here and find them in Delphes
+    if (ev_.event_by_event_comparison_primary || evtFound){
 
         //// Find specific events to compare with Delphes ...
         //if (iEvent.id().run() != 1 || iEvent.luminosityBlock() != 680){ return; }
@@ -1191,7 +1211,7 @@ MiniFromPat::recoAnalysis(const edm::Event& iEvent, const edm::EventSetup& iSetu
         //if (e!=964815 && e!=965098 && e!=965115 && e!=965602){ return; }
 
         // ... or find event with kinematic cuts
-        if (mets->at(0).pt() < 300.){ return; }
+        //if (mets->at(0).pt() < 300.){ return; }
 
         // Found event
         printf("Event by event comparison. Compare event:\n");
@@ -1256,8 +1276,6 @@ MiniFromPat::recoAnalysis(const edm::Event& iEvent, const edm::EventSetup& iSetu
         //            isMediumMuon(m, primaryVertex), isTightMuon(m, primaryVertex, iSetup));
         //}
     }
-
-
 
     //// Muons
     //ev_.nlm = 0;

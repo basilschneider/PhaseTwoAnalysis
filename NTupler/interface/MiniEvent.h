@@ -21,7 +21,8 @@ struct MiniEvent_t
     // Cutflow control
     //static constexpr bool fill_rle = false;
     static constexpr bool fill_vld = false;
-    static constexpr bool event_by_event_comparison = false;
+    static constexpr bool event_by_event_comparison_primary = false;
+    static constexpr bool event_by_event_comparison_secondary = false;
 
     // Cut variables
     static constexpr double el_pt_lo = 5.;
