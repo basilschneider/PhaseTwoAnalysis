@@ -847,17 +847,10 @@ MiniFromPat::recoAnalysis(const edm::Event& iEvent, const edm::EventSetup& iSetu
         }
 
         // Fill electron variables
-        if (ev_.el1_pt.size() == 0){
-            ev_.el1_pt.push_back(elecs->at(i).pt());
-            ev_.el1_eta.push_back(elecs->at(i).eta());
-            ev_.el1_phi.push_back(elecs->at(i).phi());
-            ev_.el1_q.push_back(elecs->at(i).charge());
-        }else if (ev_.el2_pt.size() == 0){
-            ev_.el2_pt.push_back(elecs->at(i).pt());
-            ev_.el2_eta.push_back(elecs->at(i).eta());
-            ev_.el2_phi.push_back(elecs->at(i).phi());
-            ev_.el2_q.push_back(elecs->at(i).charge());
-        }
+        ev_.el_pt.push_back(elecs->at(i).pt());
+        ev_.el_eta.push_back(elecs->at(i).eta());
+        ev_.el_phi.push_back(elecs->at(i).phi());
+        ev_.el_q.push_back(elecs->at(i).charge());
     }
 
     // Muons
@@ -1511,14 +1504,10 @@ MiniFromPat::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 {
 
     // Clear vectors
-    ev_.el1_pt.clear();
-    ev_.el1_eta.clear();
-    ev_.el1_phi.clear();
-    ev_.el1_q.clear();
-    ev_.el2_pt.clear();
-    ev_.el2_eta.clear();
-    ev_.el2_phi.clear();
-    ev_.el2_q.clear();
+    ev_.el_pt.clear();
+    ev_.el_eta.clear();
+    ev_.el_phi.clear();
+    ev_.el_q.clear();
     ev_.mu_pt.clear();
     ev_.mu_eta.clear();
     ev_.mu_phi.clear();

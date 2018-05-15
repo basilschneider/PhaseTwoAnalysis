@@ -9,14 +9,10 @@ void createMiniEventTree(TTree* t_tree_, MiniEvent_t &ev)
     t_tree_->Branch("genWeight", &ev.genWeight);
     // ntot
     // xs
-    t_tree_->Branch("el1_pt", &ev.el1_pt);
-    t_tree_->Branch("el1_eta", &ev.el1_eta);
-    t_tree_->Branch("el1_phi", &ev.el1_phi);
-    t_tree_->Branch("el1_q", &ev.el1_q);
-    t_tree_->Branch("el2_pt", &ev.el2_pt);
-    t_tree_->Branch("el2_eta", &ev.el2_eta);
-    t_tree_->Branch("el2_phi", &ev.el2_phi);
-    t_tree_->Branch("el2_q", &ev.el2_q);
+    t_tree_->Branch("el_pt", &ev.el_pt);
+    t_tree_->Branch("el_eta", &ev.el_eta);
+    t_tree_->Branch("el_phi", &ev.el_phi);
+    t_tree_->Branch("el_q", &ev.el_q);
     t_tree_->Branch("mu_pt", &ev.mu_pt);
     t_tree_->Branch("mu_eta", &ev.mu_eta);
     t_tree_->Branch("mu_phi", &ev.mu_phi);
