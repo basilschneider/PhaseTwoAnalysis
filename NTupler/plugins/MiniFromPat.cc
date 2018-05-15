@@ -1004,8 +1004,8 @@ MiniFromPat::recoAnalysis(const edm::Event& iEvent, const edm::EventSetup& iSetu
             if (elecs->at(i).charge()*elecs->at(j).charge() > 0){ continue; }
 
             // Are electrons soft?
-            if (elecs->at(i).pt() > ev_.el_pt_hi || elecs->at(i).pt() < ev_.el_pt_lo){ continue; }
-            if (elecs->at(j).pt() > ev_.el_pt_hi || elecs->at(j).pt() < ev_.el_pt_lo){ continue; }
+            //if (elecs->at(i).pt() > ev_.el_pt_hi || elecs->at(i).pt() < ev_.el_pt_lo){ continue; }
+            //if (elecs->at(j).pt() > ev_.el_pt_hi || elecs->at(j).pt() < ev_.el_pt_lo){ continue; }
 
             // Mll for soft SFOS
             TLorentzVector l1, l2;
@@ -1037,8 +1037,8 @@ MiniFromPat::recoAnalysis(const edm::Event& iEvent, const edm::EventSetup& iSetu
             if (muons->at(i).charge()*muons->at(j).charge() > 0){ continue; }
 
             // Are muons soft?
-            if (muons->at(i).pt() > ev_.mu_pt_hi || muons->at(i).pt() < ev_.mu_pt_lo){ continue; }
-            if (muons->at(j).pt() > ev_.mu_pt_hi || muons->at(j).pt() < ev_.mu_pt_lo){ continue; }
+            //if (muons->at(i).pt() > ev_.mu_pt_hi || muons->at(i).pt() < ev_.mu_pt_lo){ continue; }
+            //if (muons->at(j).pt() > ev_.mu_pt_hi || muons->at(j).pt() < ev_.mu_pt_lo){ continue; }
 
             // Mll for soft SFOS
             TLorentzVector l1, l2;
