@@ -3053,8 +3053,8 @@ process.weightCounter = cms.EDAnalyzer('WeightCounter')
 
 # Skim filter
 muonLabel = "slimmedMuons"
-#elecLabel = "phase2Electrons"
-#photLabel = "phase2Photons"
+elecLabel = "phase2Electrons"
+photLabel = "phase2Photons"
 if (options.inputFormat.lower() == "reco"):
     process.phoForYield = cms.EDProducer("CandViewMerger",
         src = cms.VInputTag(
@@ -3084,38 +3084,38 @@ process.selectedMuons = cms.EDFilter("CandPtrSelector",
                                      src = cms.InputTag(muonLabel),
                                      cut = cms.string("pt>10 && abs(eta)<3")
                                      )
-#process.selectedElectrons = cms.EDFilter("CandPtrSelector",
-#                                         src = cms.InputTag(elecLabel),
-#                                         cut = cms.string("pt>10 && abs(eta)<3")
-#                                         )
-#process.selectedPhotons = cms.EDFilter("CandPtrSelector",
-#                                         src = cms.InputTag(photLabel),
-#                                         cut = cms.string("pt>10 && abs(eta)<3")
-#                                         )
+process.selectedElectrons = cms.EDFilter("CandPtrSelector",
+                                         src = cms.InputTag(elecLabel),
+                                         cut = cms.string("pt>10 && abs(eta)<3")
+                                         )
+process.selectedPhotons = cms.EDFilter("CandPtrSelector",
+                                         src = cms.InputTag(photLabel),
+                                         cut = cms.string("pt>10 && abs(eta)<3")
+                                         )
 process.selectedJets = cms.EDFilter("CandPtrSelector",
                                     src = cms.InputTag(jetLabel),
                                     cut = cms.string("pt>20 && abs(eta)<5")
                                     )
-#process.allLeps = cms.EDProducer("CandViewMerger",
-#                                 src = cms.VInputTag(
-#                                                     cms.InputTag("selectedElectrons"),
-#                                                     cms.InputTag("selectedMuons")
-#                                                     )
-#                                 )
-#process.countLeps = cms.EDFilter("CandViewCountFilter",
-#                                 src = cms.InputTag("allLeps"),
-#                                 minNumber = cms.uint32(1)
-#                                 )
-#process.countPhotons = cms.EDFilter("CandViewCountFilter",
-#                                 src = cms.InputTag("selectedPhotons"),
-#                                 minNumber = cms.uint32(0)
-#                                 )
+process.allLeps = cms.EDProducer("CandViewMerger",
+                                 src = cms.VInputTag(
+                                                     cms.InputTag("selectedElectrons"),
+                                                     cms.InputTag("selectedMuons")
+                                                     )
+                                 )
+process.countLeps = cms.EDFilter("CandViewCountFilter",
+                                 src = cms.InputTag("allLeps"),
+                                 minNumber = cms.uint32(1)
+                                 )
+process.countPhotons = cms.EDFilter("CandViewCountFilter",
+                                 src = cms.InputTag("selectedPhotons"),
+                                 minNumber = cms.uint32(0)
+                                 )
 process.countJets = cms.EDFilter("CandViewCountFilter",
                                  src = cms.InputTag("selectedJets"),
                                  minNumber = cms.uint32(2)
                                  )
-#process.preYieldFilter = cms.Sequence(process.selectedMuons+process.selectedElectrons+process.allLeps+process.countLeps+process.selectedPhotons+process.countPhotons+process.selectedJets+process.countJets)
-process.preYieldFilter = cms.Sequence(process.selectedMuons+process.selectedJets+process.countJets)
+process.preYieldFilter = cms.Sequence(process.selectedMuons+process.selectedElectrons+process.allLeps+process.countLeps+process.selectedPhotons+process.countPhotons+process.selectedJets+process.countJets)
+#process.preYieldFilter = cms.Sequence(process.selectedMuons+process.selectedJets+process.countJets)
 
 
 # run Puppi

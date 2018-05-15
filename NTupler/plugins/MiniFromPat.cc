@@ -150,7 +150,7 @@ class MiniFromPat : public edm::one::EDAnalyzer<edm::one::SharedResources, edm::
 
         unsigned int pileup_;
         edm::EDGetTokenT<std::vector<reco::Vertex>> verticesToken_;
-        //edm::EDGetTokenT<std::vector<pat::Electron>> elecsToken_;
+        edm::EDGetTokenT<std::vector<pat::Electron>> elecsToken_;
         edm::EDGetTokenT<reco::BeamSpot> bsToken_;
         edm::EDGetTokenT<std::vector<reco::Conversion>> convToken_;
         edm::EDGetTokenT<std::vector<pat::Muon>> muonsToken_;
@@ -187,7 +187,7 @@ class MiniFromPat : public edm::one::EDAnalyzer<edm::one::SharedResources, edm::
 MiniFromPat::MiniFromPat(const edm::ParameterSet& iConfig):
     pileup_(iConfig.getParameter<unsigned int>("pileup")),
     verticesToken_(consumes<std::vector<reco::Vertex>>(iConfig.getParameter<edm::InputTag>("vertices"))),
-    //elecsToken_(consumes<std::vector<pat::Electron>>(iConfig.getParameter<edm::InputTag>("electrons"))),
+    elecsToken_(consumes<std::vector<pat::Electron>>(iConfig.getParameter<edm::InputTag>("electrons"))),
     bsToken_(consumes<reco::BeamSpot>(iConfig.getParameter<edm::InputTag>("beamspot"))),
     convToken_(consumes<std::vector<reco::Conversion>>(iConfig.getParameter<edm::InputTag>("conversions"))),
     muonsToken_(consumes<std::vector<pat::Muon>>(iConfig.getParameter<edm::InputTag>("muons"))),
@@ -404,8 +404,8 @@ MiniFromPat::recoAnalysis(const edm::Event& iEvent, const edm::EventSetup& iSetu
     Handle<std::vector<reco::Vertex>> vertices;
     iEvent.getByToken(verticesToken_, vertices);
 
-    //Handle<std::vector<pat::Electron>> elecs;
-    //iEvent.getByToken(elecsToken_, elecs);
+    Handle<std::vector<pat::Electron>> elecs;
+    iEvent.getByToken(elecsToken_, elecs);
     Handle<reco::ConversionCollection> conversions;
     iEvent.getByToken(convToken_, conversions);
     Handle<reco::BeamSpot> bsHandle;
@@ -831,34 +831,34 @@ MiniFromPat::recoAnalysis(const edm::Event& iEvent, const edm::EventSetup& iSetu
     }
 
     // Electrons
-    //for (size_t i=0; i<elecs->size(); ++i) {
+    for (size_t i=0; i<elecs->size(); ++i) {
 
-    //    // Only select good electrons
-    //    if (!isGoodElecSOS(elecs->at(i), primaryVertex)){ continue; }
+        // Only select good electrons
+        if (!isGoodElecSOS(elecs->at(i), primaryVertex)){ continue; }
 
-    //    // Only select electrons above certain pT
-    //    if (elecs->at(i).pt() < ev_.el_pt_lo){ continue; }
+        // Only select electrons above certain pT
+        if (elecs->at(i).pt() < ev_.el_pt_lo){ continue; }
 
-    //    ev_.nLep++;
-    //    ev_.nEl++;
-    //    if (elecs->at(i).pt() < ev_.el_pt_hi){
-    //        ev_.nSoftLep++;
-    //        ev_.nSoftEl++;
-    //    }
+        ev_.nLep++;
+        ev_.nEl++;
+        if (elecs->at(i).pt() < ev_.el_pt_hi){
+            ev_.nSoftLep++;
+            ev_.nSoftEl++;
+        }
 
-    //    // Fill electron variables
-    //    if (ev_.el1_pt.size() == 0){
-    //        ev_.el1_pt.push_back(elecs->at(i).pt());
-    //        ev_.el1_eta.push_back(elecs->at(i).eta());
-    //        ev_.el1_phi.push_back(elecs->at(i).phi());
-    //        ev_.el1_q.push_back(elecs->at(i).charge());
-    //    }else if (ev_.el2_pt.size() == 0){
-    //        ev_.el2_pt.push_back(elecs->at(i).pt());
-    //        ev_.el2_eta.push_back(elecs->at(i).eta());
-    //        ev_.el2_phi.push_back(elecs->at(i).phi());
-    //        ev_.el2_q.push_back(elecs->at(i).charge());
-    //    }
-    //}
+        // Fill electron variables
+        if (ev_.el1_pt.size() == 0){
+            ev_.el1_pt.push_back(elecs->at(i).pt());
+            ev_.el1_eta.push_back(elecs->at(i).eta());
+            ev_.el1_phi.push_back(elecs->at(i).phi());
+            ev_.el1_q.push_back(elecs->at(i).charge());
+        }else if (ev_.el2_pt.size() == 0){
+            ev_.el2_pt.push_back(elecs->at(i).pt());
+            ev_.el2_eta.push_back(elecs->at(i).eta());
+            ev_.el2_phi.push_back(elecs->at(i).phi());
+            ev_.el2_q.push_back(elecs->at(i).charge());
+        }
+    }
 
     // Muons
     for (size_t i=0; i<muons->size(); ++i){
@@ -998,39 +998,39 @@ MiniFromPat::recoAnalysis(const edm::Event& iEvent, const edm::EventSetup& iSetu
     //                ev_.lep2_pt.at(0), ev_.lep2_eta.at(0), ev_.lep2_phi.at(0)));
     //}
 
-    //// Is a same flavour opposite sign lepton pair present?
-    //for (size_t i=0; i<elecs->size(); ++i){
-    //    // Only select good electrons
-    //    if (!isGoodElecSOS(elecs->at(i), primaryVertex)){ continue; }
+    // Is a same flavour opposite sign lepton pair present?
+    for (size_t i=0; i<elecs->size(); ++i){
+        // Only select good electrons
+        if (!isGoodElecSOS(elecs->at(i), primaryVertex)){ continue; }
 
-    //    for (size_t j=i+1; j<elecs->size(); ++j){
-    //        // Only select good electrons
-    //        if (!isGoodElecSOS(elecs->at(j), primaryVertex)){ continue; }
+        for (size_t j=i+1; j<elecs->size(); ++j){
+            // Only select good electrons
+            if (!isGoodElecSOS(elecs->at(j), primaryVertex)){ continue; }
 
-    //        // is SFOS?
-    //        if (elecs->at(i).charge()*elecs->at(j).charge() > 0){ continue; }
+            // is SFOS?
+            if (elecs->at(i).charge()*elecs->at(j).charge() > 0){ continue; }
 
-    //        // Are electrons soft?
-    //        if (elecs->at(i).pt() > ev_.el_pt_hi || elecs->at(i).pt() < ev_.el_pt_lo){ continue; }
-    //        if (elecs->at(j).pt() > ev_.el_pt_hi || elecs->at(j).pt() < ev_.el_pt_lo){ continue; }
+            // Are electrons soft?
+            if (elecs->at(i).pt() > ev_.el_pt_hi || elecs->at(i).pt() < ev_.el_pt_lo){ continue; }
+            if (elecs->at(j).pt() > ev_.el_pt_hi || elecs->at(j).pt() < ev_.el_pt_lo){ continue; }
 
-    //        // Mll for soft SFOS
-    //        TLorentzVector l1, l2;
-    //        l1.SetPtEtaPhiM(elecs->at(i).pt(), elecs->at(i).eta(), elecs->at(i).phi(), ev_.mass_el);
-    //        l2.SetPtEtaPhiM(elecs->at(j).pt(), elecs->at(j).eta(), elecs->at(j).phi(), ev_.mass_el);
-    //        double mll = (l1+l2).M();
-    //        if (ev_.mllMin.size() == 0){
-    //            ev_.mllMin.push_back(mll);
-    //        }else if (ev_.mllMin.at(0) > mll){
-    //            ev_.mllMin.at(0) = mll;
-    //        }
-    //        if (ev_.mllMax.size() == 0){
-    //            ev_.mllMax.push_back(mll);
-    //        }else if (ev_.mllMax.at(0) < mll){
-    //            ev_.mllMax.at(0) = mll;
-    //        }
-    //    }
-    //}
+            // Mll for soft SFOS
+            TLorentzVector l1, l2;
+            l1.SetPtEtaPhiM(elecs->at(i).pt(), elecs->at(i).eta(), elecs->at(i).phi(), ev_.mass_el);
+            l2.SetPtEtaPhiM(elecs->at(j).pt(), elecs->at(j).eta(), elecs->at(j).phi(), ev_.mass_el);
+            double mll = (l1+l2).M();
+            if (ev_.mllMin.size() == 0){
+                ev_.mllMin.push_back(mll);
+            }else if (ev_.mllMin.at(0) > mll){
+                ev_.mllMin.at(0) = mll;
+            }
+            if (ev_.mllMax.size() == 0){
+                ev_.mllMax.push_back(mll);
+            }else if (ev_.mllMax.at(0) < mll){
+                ev_.mllMax.at(0) = mll;
+            }
+        }
+    }
 
     for (size_t i=0; i<muons->size(); ++i){
         // Only select good muons
@@ -1071,12 +1071,12 @@ MiniFromPat::recoAnalysis(const edm::Event& iEvent, const edm::EventSetup& iSetu
         //if (fabs(jets->at(i).eta()) > 5) continue;
 
         bool overlaps = false;
-        //for (size_t j = 0; j < elecs->size(); j++) {
-        //    if (fabs(jets->at(i).pt()-elecs->at(j).pt()) < 0.01*elecs->at(j).pt() && ROOT::Math::VectorUtil::DeltaR(elecs->at(j).p4(),jets->at(i).p4()) < 0.01) {
-        //        overlaps = true;
-        //        break;
-        //    }
-        //}
+        for (size_t j = 0; j < elecs->size(); j++) {
+            if (fabs(jets->at(i).pt()-elecs->at(j).pt()) < 0.01*elecs->at(j).pt() && ROOT::Math::VectorUtil::DeltaR(elecs->at(j).p4(),jets->at(i).p4()) < 0.01) {
+                overlaps = true;
+                break;
+            }
+        }
         if (overlaps) continue;
         for (size_t j = 0; j < muons->size(); j++) {
             if (fabs(jets->at(i).pt()-muons->at(j).pt()) < 0.01*muons->at(j).pt() && ROOT::Math::VectorUtil::DeltaR(muons->at(j).p4(),jets->at(i).p4()) < 0.01) {
@@ -1144,25 +1144,25 @@ MiniFromPat::recoAnalysis(const edm::Event& iEvent, const edm::EventSetup& iSetu
         mhlt4v25 += m4;
         mhlt4v40 += m4;
     }
-    //for (size_t i=0; i<elecs->size(); ++i) {
-    //    if (!isGoodElecSOS(elecs->at(i), primaryVertex)){ continue; }
-    //    if (elecs->at(i).pt() < ev_.el_pt_lo){ continue; }
-    //    TLorentzVector e4;
-    //    e4.SetPtEtaPhiM(elecs->at(i).pt(), elecs->at(i).eta(), elecs->at(i).phi(), ev_.mass_el);
-    //    mlt4 += e4;
-    //    mhlt4v25 += e4;
-    //    mhlt4v40 += e4;
-    //}
+    for (size_t i=0; i<elecs->size(); ++i) {
+        if (!isGoodElecSOS(elecs->at(i), primaryVertex)){ continue; }
+        if (elecs->at(i).pt() < ev_.el_pt_lo){ continue; }
+        TLorentzVector e4;
+        e4.SetPtEtaPhiM(elecs->at(i).pt(), elecs->at(i).eta(), elecs->at(i).phi(), ev_.mass_el);
+        mlt4 += e4;
+        mhlt4v25 += e4;
+        mhlt4v40 += e4;
+    }
     for (size_t i=0; i<jets->size(); ++i){
         if (!isGoodJetSOS(jets->at(i))){ continue; }
         if (jets->at(i).pt() < ev_.jet_pt_lo) { continue; }
         bool overlaps = false;
-        //for (size_t j = 0; j < elecs->size(); j++) {
-        //    if (fabs(jets->at(i).pt()-elecs->at(j).pt()) < 0.01*elecs->at(j).pt() && ROOT::Math::VectorUtil::DeltaR(elecs->at(j).p4(),jets->at(i).p4()) < 0.01) {
-        //        overlaps = true;
-        //        break;
-        //    }
-        //}
+        for (size_t j = 0; j < elecs->size(); j++) {
+            if (fabs(jets->at(i).pt()-elecs->at(j).pt()) < 0.01*elecs->at(j).pt() && ROOT::Math::VectorUtil::DeltaR(elecs->at(j).p4(),jets->at(i).p4()) < 0.01) {
+                overlaps = true;
+                break;
+            }
+        }
         if (overlaps) continue;
         for (size_t j = 0; j < muons->size(); j++) {
             if (fabs(jets->at(i).pt()-muons->at(j).pt()) < 0.01*muons->at(j).pt() && ROOT::Math::VectorUtil::DeltaR(muons->at(j).p4(),jets->at(i).p4()) < 0.01) {
@@ -1245,15 +1245,10 @@ MiniFromPat::recoAnalysis(const edm::Event& iEvent, const edm::EventSetup& iSetu
 
         // Reco objects
         printf("\n%20s\n", "Reco objects");
-        //// Reco electrons
-        //for (size_t i=0; i<elecs->size(); ++i){
-        //    //// Additionally print SumPt
-        //    //char SumPt[20];
-        //    //snprintf(SumPt, sizeof SumPt, "%f", elecs->at(i)->SumPt);
-        //    char addText[60] = "sumPt: XXXXX";
-        //    //strcat(addText, SumPt);
-        //    ppp("Reco electrons", i, elecs->size(), elecs->at(i), elecs->at(i).charge()>0 ? -11: 11, 1, addText);
-        //}
+        // Reco electrons
+        for (size_t i=0; i<elecs->size(); ++i){
+            pppWisoWpassid("Reco electrons", i, elecs->size(), elecs->at(i), elecs->at(i).charge()>0 ? -11: 11, 1, isGoodElecSOS(elecs->at(i), primaryVertex));
+        }
         // Reco muons
         for (size_t i=0; i<muons->size(); ++i){
             pppWisoWpassid("Reco muons", i, muons->size(), muons->at(i), muons->at(i).charge()>0 ? -13: 13, 1, isGoodMuonSOS(muons->at(i), primaryVertex, iSetup));
@@ -1516,14 +1511,14 @@ MiniFromPat::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 {
 
     // Clear vectors
-    //ev_.el1_pt.clear();
-    //ev_.el1_eta.clear();
-    //ev_.el1_phi.clear();
-    //ev_.el1_q.clear();
-    //ev_.el2_pt.clear();
-    //ev_.el2_eta.clear();
-    //ev_.el2_phi.clear();
-    //ev_.el2_q.clear();
+    ev_.el1_pt.clear();
+    ev_.el1_eta.clear();
+    ev_.el1_phi.clear();
+    ev_.el1_q.clear();
+    ev_.el2_pt.clear();
+    ev_.el2_eta.clear();
+    ev_.el2_phi.clear();
+    ev_.el2_q.clear();
     ev_.mu_pt.clear();
     ev_.mu_eta.clear();
     ev_.mu_phi.clear();
@@ -1765,8 +1760,8 @@ MiniFromPat::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
     //ev_.vld_mu_iso_others_dz.clear();
     //ev_.vld_mu_good_others_dz.clear();
 
-    ev_.nLep = /*ev_.nEl =*/ ev_.nMu = 0;
-    ev_.nSoftLep = /*ev_.nSoftEl =*/ ev_.nSoftMu = 0;
+    ev_.nLep = ev_.nEl = ev_.nMu = 0;
+    ev_.nSoftLep = ev_.nSoftEl = ev_.nSoftMu = 0;
     ev_.nJet25 = ev_.nJet40 = ev_.nJet60 = ev_.nJet100 = ev_.nJet150 = ev_.nBJet = 0;
     ev_.met = ev_.met_eta = ev_.met_phi = ev_.genmet = ev_.genmet_eta = ev_.genmet_phi = 0.;
     ev_.ht25 = ev_.ht40 = ev_.ht60 = ev_.ht100 = ev_.ht150 = 0.;

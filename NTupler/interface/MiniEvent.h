@@ -38,12 +38,12 @@ struct MiniEvent_t
     static constexpr double truth_match_diff_dr = .1;
 
     double genWeight;
-    Int_t nLep, nMu/*, nEl*/;
-    Int_t nSoftLep, nSoftMu/*, nSoftEl*/;
+    Int_t nLep, nMu, nEl;
+    Int_t nSoftLep, nSoftMu, nSoftEl;
     Int_t nJet25, nJet40, nJet60, nJet100, nJet150, nBJet;
 
-    //std::vector<double> el1_pt, el1_eta, el1_phi, el2_pt, el2_eta, el2_phi;
-    //std::vector<int> el1_q, el2_q;
+    std::vector<double> el1_pt, el1_eta, el1_phi, el2_pt, el2_eta, el2_phi;
+    std::vector<int> el1_q, el2_q;
     std::vector<double> mu_pt, mu_eta, mu_phi;
     std::vector<int> mu_q, mu_mother, mu_directmother;
     std::vector<bool> mu_matched, mu_st20to30;
