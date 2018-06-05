@@ -1897,7 +1897,7 @@ bool MiniFromPat::isGoodElecSOS(const pat::Electron & patEl, reco::Vertex primar
     if (!isIsolatedElec(patEl)){ return false; }
 
     // ID cuts
-    if (!isTightElec(patEl)){ return false; }
+    if (!isMediumElec(patEl)){ return false; }
 
     float dxy=0;
     float dz=0;
