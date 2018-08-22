@@ -833,11 +833,18 @@ MiniFromPat::recoAnalysis(const edm::Event& iEvent, const edm::EventSetup& iSetu
     // Electrons
     for (size_t i=0; i<elecs->size(); ++i) {
 
-        // Only select good electrons
-        if (!isGoodElecSOS(elecs->at(i), primaryVertex)){ continue; }
-
         // Only select electrons above certain pT
         if (elecs->at(i).pt() < ev_.el_pt_lo){ continue; }
+
+        // Fill muon without isolation, if not yet done so
+        if (isMediumElec(elecs->at(i))){
+            ev_.el_woIso_pt.push_back(elecs->at(i).pt());
+            ev_.el_woIso_eta.push_back(elecs->at(i).eta());
+            ev_.el_woIso_phi.push_back(elecs->at(i).phi());
+        }
+
+        // Only select good electrons
+        if (!isGoodElecSOS(elecs->at(i), primaryVertex)){ continue; }
 
         ev_.nLep++;
         ev_.nEl++;
@@ -1508,6 +1515,9 @@ MiniFromPat::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
     ev_.el_eta.clear();
     ev_.el_phi.clear();
     ev_.el_q.clear();
+    ev_.el_woIso_pt.clear();
+    ev_.el_woIso_eta.clear();
+    ev_.el_woIso_phi.clear();
     ev_.mu_pt.clear();
     ev_.mu_eta.clear();
     ev_.mu_phi.clear();
