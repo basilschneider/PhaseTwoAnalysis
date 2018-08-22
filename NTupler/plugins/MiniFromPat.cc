@@ -124,11 +124,13 @@ class MiniFromPat : public edm::one::EDAnalyzer<edm::one::SharedResources, edm::
         bool isMediumElec(const pat::Electron & patEl);
         bool isTightElec(const pat::Electron & patEl);
         bool isIsolatedElec(const pat::Electron & patEl);
+        bool passIpElec(const pat::Electron & patEl, reco::Vertex primaryVertex);
         bool isGoodElecSOS(const pat::Electron & patEl, reco::Vertex primaryVertex);
         bool isLooseMuon(const pat::Muon & patMu, const edm::EventSetup& iSetup);
         bool isMediumMuon(const pat::Muon & patMu, reco::Vertex primaryVertex);
         bool isTightMuon(const pat::Muon & patMu, reco::Vertex primaryVertex, const edm::EventSetup& iSetup);
         bool isIsolatedMuon(const pat::Muon & patMu);
+        bool passIpMuon(const pat::Muon & patMu, reco::Vertex primaryVertex);
         bool isGoodMuonSOS(const pat::Muon & patMu, reco::Vertex primaryVertex, edm::EventSetup const& iSetup);
         bool isGoodJetSOS(const pat::Jet & patJet);
         bool isGoodElecTruthSOS(const pat::PackedGenParticle truthEl, const std::vector<size_t> jGenJets, const edm::Handle<std::vector<reco::GenJet>> genJets);
@@ -836,11 +838,21 @@ MiniFromPat::recoAnalysis(const edm::Event& iEvent, const edm::EventSetup& iSetu
         // Only select electrons above certain pT
         if (elecs->at(i).pt() < ev_.el_pt_lo){ continue; }
 
-        // Fill muon without isolation, if not yet done so
+        // Fill electrons before certain cuts
         if (isMediumElec(elecs->at(i))){
             ev_.el_recoId_pt.push_back(elecs->at(i).pt());
             ev_.el_recoId_eta.push_back(elecs->at(i).eta());
             ev_.el_recoId_phi.push_back(elecs->at(i).phi());
+            if (passIpElec(elecs->at(i), primaryVertex)){
+                ev_.el_recoIdIp_pt.push_back(elecs->at(i).pt());
+                ev_.el_recoIdIp_eta.push_back(elecs->at(i).eta());
+                ev_.el_recoIdIp_phi.push_back(elecs->at(i).phi());
+            }
+            if (isIsolatedElec(elecs->at(i))){
+                ev_.el_recoIdIso_pt.push_back(elecs->at(i).pt());
+                ev_.el_recoIdIso_eta.push_back(elecs->at(i).eta());
+                ev_.el_recoIdIso_phi.push_back(elecs->at(i).phi());
+            }
         }
 
         // Only select good electrons
@@ -866,11 +878,21 @@ MiniFromPat::recoAnalysis(const edm::Event& iEvent, const edm::EventSetup& iSetu
         // Only select muons above certain pT
         if (muons->at(i).pt() < ev_.mu_pt_lo){ continue; }
 
-        // Fill muon without isolation, if not yet done so
+        // Fill muons before certain cuts
         if (isTightMuon(muons->at(i), primaryVertex, iSetup)){
             ev_.mu_recoId_pt.push_back(muons->at(i).pt());
             ev_.mu_recoId_eta.push_back(muons->at(i).eta());
             ev_.mu_recoId_phi.push_back(muons->at(i).phi());
+            if (passIpMuon(muons->at(i), primaryVertex)){
+                ev_.mu_recoIdIp_pt.push_back(muons->at(i).pt());
+                ev_.mu_recoIdIp_eta.push_back(muons->at(i).eta());
+                ev_.mu_recoIdIp_phi.push_back(muons->at(i).phi());
+            }
+            if (isIsolatedMuon(muons->at(i))){
+                ev_.mu_recoIdIso_pt.push_back(muons->at(i).pt());
+                ev_.mu_recoIdIso_eta.push_back(muons->at(i).eta());
+                ev_.mu_recoIdIso_phi.push_back(muons->at(i).phi());
+            }
         }
 
         // Only select good muons
@@ -1518,6 +1540,18 @@ MiniFromPat::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
     ev_.el_recoId_pt.clear();
     ev_.el_recoId_eta.clear();
     ev_.el_recoId_phi.clear();
+    ev_.el_recoIdIp_pt.clear();
+    ev_.el_recoIdIp_eta.clear();
+    ev_.el_recoIdIp_phi.clear();
+    ev_.el_recoIdIso_pt.clear();
+    ev_.el_recoIdIso_eta.clear();
+    ev_.el_recoIdIso_phi.clear();
+    ev_.el_q.clear();
+    ev_.el_mother.clear();
+    ev_.el_matched.clear();
+    ev_.el_pt_truth.clear();
+    ev_.el_eta_truth.clear();
+    ev_.el_phi_truth.clear();
     ev_.mu_pt.clear();
     ev_.mu_eta.clear();
     ev_.mu_phi.clear();
@@ -1529,6 +1563,15 @@ MiniFromPat::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
     ev_.mu_recoId_pt.clear();
     ev_.mu_recoId_eta.clear();
     ev_.mu_recoId_phi.clear();
+    ev_.mu_recoIdIp_pt.clear();
+    ev_.mu_recoIdIp_eta.clear();
+    ev_.mu_recoIdIp_phi.clear();
+    ev_.mu_recoIdIso_pt.clear();
+    ev_.mu_recoIdIso_eta.clear();
+    ev_.mu_recoIdIso_phi.clear();
+    ev_.mu_q.clear();
+    ev_.mu_mother.clear();
+    ev_.mu_matched.clear();
     ev_.mu_pt_truth.clear();
     ev_.mu_eta_truth.clear();
     ev_.mu_phi_truth.clear();
@@ -1902,13 +1945,7 @@ bool MiniFromPat::isIsolatedElec(const pat::Electron & patEl){
     return true;
 }
 
-bool MiniFromPat::isGoodElecSOS(const pat::Electron & patEl, reco::Vertex primaryVertex){
-    // Isolation
-    if (!isIsolatedElec(patEl)){ return false; }
-
-    // ID cuts
-    if (!isMediumElec(patEl)){ return false; }
-
+bool MiniFromPat::passIpElec(const pat::Electron & patEl, reco::Vertex primaryVertex){
     float dxy=0;
     float dz=0;
     if(patEl.gsfTrack().isNonnull()){
@@ -1916,6 +1953,18 @@ bool MiniFromPat::isGoodElecSOS(const pat::Electron & patEl, reco::Vertex primar
         dz=std::abs(patEl.gsfTrack()->dz(primaryVertex.position()));
     }
     if (sqrt(dxy*dz) > .01){ return false; }
+    return true;
+}
+
+bool MiniFromPat::isGoodElecSOS(const pat::Electron & patEl, reco::Vertex primaryVertex){
+    // Isolation
+    if (!isIsolatedElec(patEl)){ return false; }
+
+    // ID cuts
+    if (!isMediumElec(patEl)){ return false; }
+
+    // IP cuts
+    if (!passIpElec(patEl, primaryVertex)){ return false; }
 
     return true;
 }
@@ -1983,6 +2032,13 @@ bool MiniFromPat::isIsolatedMuon(const pat::Muon & patMu){
     return true;
 }
 
+bool MiniFromPat::passIpMuon(const pat::Muon & patMu, reco::Vertex primaryVertex){
+    double dxy = std::abs(patMu.muonBestTrack()->dxy(primaryVertex.position()));
+    double dz = std::abs(patMu.muonBestTrack()->dz(primaryVertex.position()));
+    if (sqrt(dxy*dz) > .01){ return false; }
+    return true;
+}
+
 bool MiniFromPat::isGoodMuonSOS(const pat::Muon & patMu, reco::Vertex primaryVertex, edm::EventSetup const& iSetup){
     // Isolation
     if (!isIsolatedMuon(patMu)){ return false; }
@@ -1990,10 +2046,8 @@ bool MiniFromPat::isGoodMuonSOS(const pat::Muon & patMu, reco::Vertex primaryVer
     // ID cuts
     if (!isTightMuon(patMu, primaryVertex, iSetup)){ return false; }
 
-    // IP3D cuts
-    double dxy = std::abs(patMu.muonBestTrack()->dxy(primaryVertex.position()));
-    double dz = std::abs(patMu.muonBestTrack()->dz(primaryVertex.position()));
-    if (sqrt(dxy*dz) > .01){ return false; }
+    // IP cuts
+    if (!passIpMuon(patMu, primaryVertex)){ return false; }
 
     return true;
 }
