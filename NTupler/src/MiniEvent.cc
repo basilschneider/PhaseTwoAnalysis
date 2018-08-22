@@ -13,9 +13,9 @@ void createMiniEventTree(TTree* t_tree_, MiniEvent_t &ev)
     t_tree_->Branch("el_eta", &ev.el_eta);
     t_tree_->Branch("el_phi", &ev.el_phi);
     t_tree_->Branch("el_q", &ev.el_q);
-    t_tree_->Branch("el_woIso_pt", &ev.el_woIso_pt);
-    t_tree_->Branch("el_woIso_eta", &ev.el_woIso_eta);
-    t_tree_->Branch("el_woIso_phi", &ev.el_woIso_phi);
+    t_tree_->Branch("el_recoId_pt", &ev.el_recoId_pt);
+    t_tree_->Branch("el_recoId_eta", &ev.el_recoId_eta);
+    t_tree_->Branch("el_recoId_phi", &ev.el_recoId_phi);
     t_tree_->Branch("mu_pt", &ev.mu_pt);
     t_tree_->Branch("mu_eta", &ev.mu_eta);
     t_tree_->Branch("mu_phi", &ev.mu_phi);
@@ -24,9 +24,9 @@ void createMiniEventTree(TTree* t_tree_, MiniEvent_t &ev)
     t_tree_->Branch("mu_directmother", &ev.mu_directmother);
     t_tree_->Branch("mu_matched", &ev.mu_matched);
     t_tree_->Branch("mu_st20to30", &ev.mu_st20to30);
-    t_tree_->Branch("mu_woIso_pt", &ev.mu_woIso_pt);
-    t_tree_->Branch("mu_woIso_eta", &ev.mu_woIso_eta);
-    t_tree_->Branch("mu_woIso_phi", &ev.mu_woIso_phi);
+    t_tree_->Branch("mu_recoId_pt", &ev.mu_recoId_pt);
+    t_tree_->Branch("mu_recoId_eta", &ev.mu_recoId_eta);
+    t_tree_->Branch("mu_recoId_phi", &ev.mu_recoId_phi);
     t_tree_->Branch("mu_pt_truth", &ev.mu_pt_truth);
     t_tree_->Branch("mu_eta_truth", &ev.mu_eta_truth);
     t_tree_->Branch("mu_phi_truth", &ev.mu_phi_truth);

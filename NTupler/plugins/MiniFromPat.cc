@@ -838,9 +838,9 @@ MiniFromPat::recoAnalysis(const edm::Event& iEvent, const edm::EventSetup& iSetu
 
         // Fill muon without isolation, if not yet done so
         if (isMediumElec(elecs->at(i))){
-            ev_.el_woIso_pt.push_back(elecs->at(i).pt());
-            ev_.el_woIso_eta.push_back(elecs->at(i).eta());
-            ev_.el_woIso_phi.push_back(elecs->at(i).phi());
+            ev_.el_recoId_pt.push_back(elecs->at(i).pt());
+            ev_.el_recoId_eta.push_back(elecs->at(i).eta());
+            ev_.el_recoId_phi.push_back(elecs->at(i).phi());
         }
 
         // Only select good electrons
@@ -868,9 +868,9 @@ MiniFromPat::recoAnalysis(const edm::Event& iEvent, const edm::EventSetup& iSetu
 
         // Fill muon without isolation, if not yet done so
         if (isTightMuon(muons->at(i), primaryVertex, iSetup)){
-            ev_.mu_woIso_pt.push_back(muons->at(i).pt());
-            ev_.mu_woIso_eta.push_back(muons->at(i).eta());
-            ev_.mu_woIso_phi.push_back(muons->at(i).phi());
+            ev_.mu_recoId_pt.push_back(muons->at(i).pt());
+            ev_.mu_recoId_eta.push_back(muons->at(i).eta());
+            ev_.mu_recoId_phi.push_back(muons->at(i).phi());
         }
 
         // Only select good muons
@@ -1515,9 +1515,9 @@ MiniFromPat::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
     ev_.el_eta.clear();
     ev_.el_phi.clear();
     ev_.el_q.clear();
-    ev_.el_woIso_pt.clear();
-    ev_.el_woIso_eta.clear();
-    ev_.el_woIso_phi.clear();
+    ev_.el_recoId_pt.clear();
+    ev_.el_recoId_eta.clear();
+    ev_.el_recoId_phi.clear();
     ev_.mu_pt.clear();
     ev_.mu_eta.clear();
     ev_.mu_phi.clear();
@@ -1526,9 +1526,9 @@ MiniFromPat::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
     ev_.mu_directmother.clear();
     ev_.mu_matched.clear();
     ev_.mu_st20to30.clear();
-    ev_.mu_woIso_pt.clear();
-    ev_.mu_woIso_eta.clear();
-    ev_.mu_woIso_phi.clear();
+    ev_.mu_recoId_pt.clear();
+    ev_.mu_recoId_eta.clear();
+    ev_.mu_recoId_phi.clear();
     ev_.mu_pt_truth.clear();
     ev_.mu_eta_truth.clear();
     ev_.mu_phi_truth.clear();
