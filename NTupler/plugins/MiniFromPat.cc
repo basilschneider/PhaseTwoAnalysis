@@ -833,7 +833,7 @@ MiniFromPat::recoAnalysis(const edm::Event& iEvent, const edm::EventSetup& iSetu
     }
 
     // Electrons
-    for (size_t i=0; i<elecs->size(); ++i) {
+    for (size_t i=0; i<elecs->size(); ++i){
 
         // Only select electrons above certain pT
         if (elecs->at(i).pt() < ev_.el_pt_lo){ continue; }
@@ -865,11 +865,56 @@ MiniFromPat::recoAnalysis(const edm::Event& iEvent, const edm::EventSetup& iSetu
             ev_.nSoftEl++;
         }
 
+        // Check where the electron comes from
+        bool matched = false;
+        int mother = 999;
+        for (size_t j=0; j<genParts->size(); ++j){
+
+            // Only consider electrons
+            if (fabs(genParts->at(j).pdgId()) != 11){ continue; }
+
+            if (!isMatched(genParts->at(j), elecs->at(i))){ continue; }
+
+            // When we reach this point, the electron is matched and we break the loop at the end
+            matched = true;
+
+            // Loop over all mothers to find first non muon
+            const reco::Candidate* mom = genParts->at(j).mother(0);
+            //printf("Mom: %d\n", mom->pdgId());
+            while (mom->numberOfMothers() != 0){
+                if (fabs(mom->pdgId()) == 5){ break; }
+                //if (fabs(mom->pdgId()) != 11){
+                //    printf("MomFinal: %d\n", mom->pdgId());
+                //    break;
+                //}
+                mom = mom->mother(0);
+                //printf("Mom: %d\n", mom->pdgId());
+            }
+            mother = mom->pdgId();
+
+            //printf("GEN  Elec: pt: %f, eta: %f, phi: %f, mother: %d\n", genParts->at(j).pt(), genParts->at(j).eta(), genParts->at(j).phi(), mother);
+            //printf("RECO Elec: pt: %f, eta: %f, phi: %f, mother: %d\n", elecs->at(i).pt(), elecs->at(i).eta(), elecs->at(i).phi(), mother);
+
+            break;
+        }
+
         // Fill electron variables
         ev_.el_pt.push_back(elecs->at(i).pt());
         ev_.el_eta.push_back(elecs->at(i).eta());
         ev_.el_phi.push_back(elecs->at(i).phi());
         ev_.el_q.push_back(elecs->at(i).charge());
+        ev_.el_mother.push_back(mother);
+        ev_.el_matched.push_back(matched);
+    }
+
+    // Truth electrons
+    for (size_t i=0; i<genParts->size(); ++i){
+        if (genParts->at(i).status() != 1){ continue; }
+        if (fabs(genParts->at(i).pdgId()) != 11){ continue; }
+        if (genParts->at(i).pt() < 10.){ continue; }
+        ev_.el_pt_truth.push_back(genParts->at(i).pt());
+        ev_.el_eta_truth.push_back(genParts->at(i).eta());
+        ev_.el_phi_truth.push_back(genParts->at(i).phi());
     }
 
     // Muons
@@ -905,11 +950,9 @@ MiniFromPat::recoAnalysis(const edm::Event& iEvent, const edm::EventSetup& iSetu
             ev_.nSoftMu++;
         }
 
-        // Skip the rest if we already have two good muons
-        //if (ev_.mu2_pt.size() != 0){ continue; }
-
         // Check where the muon comes from
-        int mother = -1;
+        bool matched = false;
+        int mother = 999;
         for (size_t j=0; j<genParts->size(); ++j){
 
             // Only consider muons
@@ -917,30 +960,36 @@ MiniFromPat::recoAnalysis(const edm::Event& iEvent, const edm::EventSetup& iSetu
 
             if (!isMatched(genParts->at(j), muons->at(i))){ continue; }
 
+            // When we reach this point, the muon is matched and we break the loop at the end
+            matched = true;
+
             // Loop over all mothers to find first non muon
             const reco::Candidate* mom = genParts->at(j).mother(0);
+            //printf("Mom: %d\n", mom->pdgId());
             while (mom->numberOfMothers() != 0){
-                //printf("Mom: %d\n", mom->pdgId());
-                if (fabs(mom->pdgId()) != 13){
-                    //printf("MomFinal: %d\n", mom->pdgId());
-                    mother = mom->pdgId();
-                    break;
-                }
+                if (fabs(mom->pdgId()) == 5){ break; }
+                //if (fabs(mom->pdgId()) != 13){
+                //    printf("MomFinal: %d\n", mom->pdgId());
+                //    break;
+                //}
                 mom = mom->mother(0);
+                //printf("Mom: %d\n", mom->pdgId());
             }
+            mother = mom->pdgId();
 
-            //printf("GEN  Muon: pt: %f, eta: %f, mother: %d\n", genParts->at(j).pt(), genParts->at(j).eta(), mother);
-            //printf("RECO Muon: pt: %f, eta: %f, mother: %d\n", muons->at(i).pt(), muons->at(i).eta(), mother);
+            //printf("GEN  Muon: pt: %f, eta: %f, phi: %f, mother: %d\n", genParts->at(j).pt(), genParts->at(j).eta(), genParts->at(j).phi(), mother);
+            //printf("RECO Muon: pt: %f, eta: %f, phi: %f, mother: %d\n", muons->at(i).pt(), muons->at(i).eta(), muons->at(i).phi(), mother);
+
+            break;
         }
+
         // Fill muon variables
         ev_.mu_pt.push_back(muons->at(i).pt());
         ev_.mu_eta.push_back(muons->at(i).eta());
         ev_.mu_phi.push_back(muons->at(i).phi());
         ev_.mu_q.push_back(muons->at(i).charge());
-        ev_.mu_mother.push_back(23);
-        ev_.mu_directmother.push_back(mother);
-        ev_.mu_matched.push_back(true);
-        ev_.mu_st20to30.push_back(true);
+        ev_.mu_mother.push_back(mother);
+        ev_.mu_matched.push_back(matched);
     }
 
     // Truth muons
@@ -1536,7 +1585,6 @@ MiniFromPat::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
     ev_.el_pt.clear();
     ev_.el_eta.clear();
     ev_.el_phi.clear();
-    ev_.el_q.clear();
     ev_.el_recoId_pt.clear();
     ev_.el_recoId_eta.clear();
     ev_.el_recoId_phi.clear();
@@ -1555,11 +1603,6 @@ MiniFromPat::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
     ev_.mu_pt.clear();
     ev_.mu_eta.clear();
     ev_.mu_phi.clear();
-    ev_.mu_q.clear();
-    ev_.mu_mother.clear();
-    ev_.mu_directmother.clear();
-    ev_.mu_matched.clear();
-    ev_.mu_st20to30.clear();
     ev_.mu_recoId_pt.clear();
     ev_.mu_recoId_eta.clear();
     ev_.mu_recoId_phi.clear();
