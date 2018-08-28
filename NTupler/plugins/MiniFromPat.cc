@@ -1978,13 +1978,16 @@ bool MiniFromPat::isTightElec(const pat::Electron & patEl){
 }
 
 bool MiniFromPat::isIsolatedElec(const pat::Electron & patEl){
-    double elIso;
-    if( patEl.isEB() )
-        elIso = (patEl.puppiNoLeptonsChargedHadronIso() + patEl.puppiNoLeptonsNeutralHadronIso() + patEl.puppiNoLeptonsPhotonIso()) / patEl.pt();
-    else
-        elIso = (patEl.userFloat("hgcElectronID:caloIsoRing1") + patEl.userFloat("hgcElectronID:caloIsoRing2") + patEl.userFloat("hgcElectronID:caloIsoRing3") + patEl.userFloat("hgcElectronID:caloIsoRing4")) / patEl.energy();
-    if (elIso/patEl.pt() > .5){ return false; }
-    if (elIso > 5.){ return false; }
+    double elIsoAbs, elIsoRel;
+    if (patEl.isEB()){
+        elIsoAbs = (patEl.puppiNoLeptonsChargedHadronIso() + patEl.puppiNoLeptonsNeutralHadronIso() + patEl.puppiNoLeptonsPhotonIso());
+        elIsoRel = elIsoAbs/patEl.pt();
+    }else{
+        elIsoAbs = (patEl.userFloat("hgcElectronID:caloIsoRing1") + patEl.userFloat("hgcElectronID:caloIsoRing2") + patEl.userFloat("hgcElectronID:caloIsoRing3") + patEl.userFloat("hgcElectronID:caloIsoRing4"));
+        elIsoRel = elIsoAbs/patEl.energy();
+    }
+    if (elIsoAbs > 5.){ return false; }
+    if (elIsoRel > .5){ return false; }
     return true;
 }
 
