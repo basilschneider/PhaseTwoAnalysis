@@ -42,18 +42,18 @@ struct MiniEvent_t
     Int_t nSoftLep, nSoftMu, nSoftEl;
     Int_t nJet25, nJet40, nJet60, nJet100, nJet150, nBJet;
 
-    std::vector<double> el_pt, el_eta, el_phi;
-    std::vector<double> el_recoId_pt, el_recoId_eta, el_recoId_phi;
-    std::vector<double> el_recoIdIp_pt, el_recoIdIp_eta, el_recoIdIp_phi;
-    std::vector<double> el_recoIdIso_pt, el_recoIdIso_eta, el_recoIdIso_phi;
+    std::vector<double> el_pt, el_eta, el_phi, el_iso;
+    std::vector<double> el_recoId_pt, el_recoId_eta, el_recoId_phi, el_recoId_iso;
+    std::vector<double> el_recoIdIp_pt, el_recoIdIp_eta, el_recoIdIp_phi, el_recoIdIp_iso;
+    std::vector<double> el_recoIdIso_pt, el_recoIdIso_eta, el_recoIdIso_phi, el_recoIdIso_iso;
     std::vector<int> el_q, el_mother;
     std::vector<bool> el_matched;
     std::vector<double> el_pt_truth, el_eta_truth, el_phi_truth;
 
-    std::vector<double> mu_pt, mu_eta, mu_phi;
-    std::vector<double> mu_recoId_pt, mu_recoId_eta, mu_recoId_phi;
-    std::vector<double> mu_recoIdIp_pt, mu_recoIdIp_eta, mu_recoIdIp_phi;
-    std::vector<double> mu_recoIdIso_pt, mu_recoIdIso_eta, mu_recoIdIso_phi;
+    std::vector<double> mu_pt, mu_eta, mu_phi, mu_iso;
+    std::vector<double> mu_recoId_pt, mu_recoId_eta, mu_recoId_phi, mu_recoId_iso;
+    std::vector<double> mu_recoIdIp_pt, mu_recoIdIp_eta, mu_recoIdIp_phi, mu_recoIdIp_iso;
+    std::vector<double> mu_recoIdIso_pt, mu_recoIdIso_eta, mu_recoIdIso_phi, mu_recoIdIso_iso;
     std::vector<int> mu_q, mu_mother;
     std::vector<bool> mu_matched;
     std::vector<double> mu_pt_truth, mu_eta_truth, mu_phi_truth;

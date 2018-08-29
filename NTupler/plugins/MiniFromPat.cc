@@ -123,12 +123,14 @@ class MiniFromPat : public edm::one::EDAnalyzer<edm::one::SharedResources, edm::
         bool isLooseElec(const pat::Electron & patEl);
         bool isMediumElec(const pat::Electron & patEl);
         bool isTightElec(const pat::Electron & patEl);
+        double getIsoAbsElec(const pat::Electron& patEl);
         bool isIsolatedElec(const pat::Electron & patEl);
         bool passIpElec(const pat::Electron & patEl, reco::Vertex primaryVertex);
         bool isGoodElecSOS(const pat::Electron & patEl, reco::Vertex primaryVertex);
         bool isLooseMuon(const pat::Muon & patMu, const edm::EventSetup& iSetup);
         bool isMediumMuon(const pat::Muon & patMu, reco::Vertex primaryVertex);
         bool isTightMuon(const pat::Muon & patMu, reco::Vertex primaryVertex, const edm::EventSetup& iSetup);
+        double getIsoAbsMuon(const pat::Muon& patMu);
         bool isIsolatedMuon(const pat::Muon & patMu);
         bool passIpMuon(const pat::Muon & patMu, reco::Vertex primaryVertex);
         bool isGoodMuonSOS(const pat::Muon & patMu, reco::Vertex primaryVertex, edm::EventSetup const& iSetup);
@@ -843,15 +845,18 @@ MiniFromPat::recoAnalysis(const edm::Event& iEvent, const edm::EventSetup& iSetu
             ev_.el_recoId_pt.push_back(elecs->at(i).pt());
             ev_.el_recoId_eta.push_back(elecs->at(i).eta());
             ev_.el_recoId_phi.push_back(elecs->at(i).phi());
+            ev_.el_recoId_iso.push_back(getIsoAbsElec(elecs->at(i)));
             if (passIpElec(elecs->at(i), primaryVertex)){
                 ev_.el_recoIdIp_pt.push_back(elecs->at(i).pt());
                 ev_.el_recoIdIp_eta.push_back(elecs->at(i).eta());
                 ev_.el_recoIdIp_phi.push_back(elecs->at(i).phi());
+                ev_.el_recoIdIp_iso.push_back(getIsoAbsElec(elecs->at(i)));
             }
             if (isIsolatedElec(elecs->at(i))){
                 ev_.el_recoIdIso_pt.push_back(elecs->at(i).pt());
                 ev_.el_recoIdIso_eta.push_back(elecs->at(i).eta());
                 ev_.el_recoIdIso_phi.push_back(elecs->at(i).phi());
+                ev_.el_recoIdIso_iso.push_back(getIsoAbsElec(elecs->at(i)));
             }
         }
 
@@ -902,6 +907,7 @@ MiniFromPat::recoAnalysis(const edm::Event& iEvent, const edm::EventSetup& iSetu
         ev_.el_pt.push_back(elecs->at(i).pt());
         ev_.el_eta.push_back(elecs->at(i).eta());
         ev_.el_phi.push_back(elecs->at(i).phi());
+        ev_.el_iso.push_back(getIsoAbsElec(elecs->at(i)));
         ev_.el_q.push_back(elecs->at(i).charge());
         ev_.el_mother.push_back(mother);
         ev_.el_matched.push_back(matched);
@@ -928,15 +934,18 @@ MiniFromPat::recoAnalysis(const edm::Event& iEvent, const edm::EventSetup& iSetu
             ev_.mu_recoId_pt.push_back(muons->at(i).pt());
             ev_.mu_recoId_eta.push_back(muons->at(i).eta());
             ev_.mu_recoId_phi.push_back(muons->at(i).phi());
+            ev_.mu_recoId_iso.push_back(getIsoAbsMuon(muons->at(i)));
             if (passIpMuon(muons->at(i), primaryVertex)){
                 ev_.mu_recoIdIp_pt.push_back(muons->at(i).pt());
                 ev_.mu_recoIdIp_eta.push_back(muons->at(i).eta());
                 ev_.mu_recoIdIp_phi.push_back(muons->at(i).phi());
+                ev_.mu_recoIdIp_iso.push_back(getIsoAbsMuon(muons->at(i)));
             }
             if (isIsolatedMuon(muons->at(i))){
                 ev_.mu_recoIdIso_pt.push_back(muons->at(i).pt());
                 ev_.mu_recoIdIso_eta.push_back(muons->at(i).eta());
                 ev_.mu_recoIdIso_phi.push_back(muons->at(i).phi());
+                ev_.mu_recoIdIso_iso.push_back(getIsoAbsMuon(muons->at(i)));
             }
         }
 
@@ -987,6 +996,7 @@ MiniFromPat::recoAnalysis(const edm::Event& iEvent, const edm::EventSetup& iSetu
         ev_.mu_pt.push_back(muons->at(i).pt());
         ev_.mu_eta.push_back(muons->at(i).eta());
         ev_.mu_phi.push_back(muons->at(i).phi());
+        ev_.mu_iso.push_back(getIsoAbsMuon(muons->at(i)));
         ev_.mu_q.push_back(muons->at(i).charge());
         ev_.mu_mother.push_back(mother);
         ev_.mu_matched.push_back(matched);
@@ -1585,15 +1595,19 @@ MiniFromPat::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
     ev_.el_pt.clear();
     ev_.el_eta.clear();
     ev_.el_phi.clear();
+    ev_.el_iso.clear();
     ev_.el_recoId_pt.clear();
     ev_.el_recoId_eta.clear();
     ev_.el_recoId_phi.clear();
+    ev_.el_recoId_iso.clear();
     ev_.el_recoIdIp_pt.clear();
     ev_.el_recoIdIp_eta.clear();
     ev_.el_recoIdIp_phi.clear();
+    ev_.el_recoIdIp_iso.clear();
     ev_.el_recoIdIso_pt.clear();
     ev_.el_recoIdIso_eta.clear();
     ev_.el_recoIdIso_phi.clear();
+    ev_.el_recoIdIso_iso.clear();
     ev_.el_q.clear();
     ev_.el_mother.clear();
     ev_.el_matched.clear();
@@ -1603,15 +1617,19 @@ MiniFromPat::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
     ev_.mu_pt.clear();
     ev_.mu_eta.clear();
     ev_.mu_phi.clear();
+    ev_.mu_iso.clear();
     ev_.mu_recoId_pt.clear();
     ev_.mu_recoId_eta.clear();
     ev_.mu_recoId_phi.clear();
+    ev_.mu_recoId_iso.clear();
     ev_.mu_recoIdIp_pt.clear();
     ev_.mu_recoIdIp_eta.clear();
     ev_.mu_recoIdIp_phi.clear();
+    ev_.mu_recoIdIp_iso.clear();
     ev_.mu_recoIdIso_pt.clear();
     ev_.mu_recoIdIso_eta.clear();
     ev_.mu_recoIdIso_phi.clear();
+    ev_.mu_recoIdIso_iso.clear();
     ev_.mu_q.clear();
     ev_.mu_mother.clear();
     ev_.mu_matched.clear();
@@ -1977,13 +1995,20 @@ bool MiniFromPat::isTightElec(const pat::Electron & patEl){
     return isTight;
 }
 
-bool MiniFromPat::isIsolatedElec(const pat::Electron & patEl){
-    double elIsoAbs, elIsoRel;
+double MiniFromPat::getIsoAbsElec(const pat::Electron& patEl){
     if (patEl.isEB()){
-        elIsoAbs = (patEl.puppiNoLeptonsChargedHadronIso() + patEl.puppiNoLeptonsNeutralHadronIso() + patEl.puppiNoLeptonsPhotonIso());
+        return (patEl.puppiNoLeptonsChargedHadronIso() + patEl.puppiNoLeptonsNeutralHadronIso() + patEl.puppiNoLeptonsPhotonIso());
+    }else{
+        return (patEl.userFloat("hgcElectronID:caloIsoRing1") + patEl.userFloat("hgcElectronID:caloIsoRing2") + patEl.userFloat("hgcElectronID:caloIsoRing3") + patEl.userFloat("hgcElectronID:caloIsoRing4"));
+    }
+}
+
+bool MiniFromPat::isIsolatedElec(const pat::Electron& patEl){
+    double elIsoAbs = getIsoAbsElec(patEl);
+    double elIsoRel;
+    if (patEl.isEB()){
         elIsoRel = elIsoAbs/patEl.pt();
     }else{
-        elIsoAbs = (patEl.userFloat("hgcElectronID:caloIsoRing1") + patEl.userFloat("hgcElectronID:caloIsoRing2") + patEl.userFloat("hgcElectronID:caloIsoRing3") + patEl.userFloat("hgcElectronID:caloIsoRing4"));
         elIsoRel = elIsoAbs/patEl.energy();
     }
     if (elIsoAbs > 5.){ return false; }
@@ -2062,7 +2087,11 @@ bool MiniFromPat::isTightMuon(const pat::Muon & patMu, reco::Vertex primaryVerte
     return isTight;
 }
 
-bool MiniFromPat::isIsolatedMuon(const pat::Muon & patMu){
+double MiniFromPat::getIsoAbsMuon(const pat::Muon& patMu){
+    return patMu.trackIso();
+}
+
+bool MiniFromPat::isIsolatedMuon(const pat::Muon& patMu){
 
     // PUPPI isolation (apparently buggy)
     //double muIsolation = patMu.puppiChargedHadronIso() + patMu.puppiNeutralHadronIso() + patMu.puppiPhotonIso();
@@ -2072,7 +2101,7 @@ bool MiniFromPat::isIsolatedMuon(const pat::Muon & patMu){
 
     // Tracker based isolation (best what we have for now)
     //double muIsolation = patMu.isolationR03().sumPt;
-    double muIsolation = patMu.trackIso();
+    double muIsolation = getIsoAbsMuon(patMu);
     if (muIsolation / patMu.pt() > 0.5){ return false; }
     if (muIsolation > 5.){ return false; }
     return true;
