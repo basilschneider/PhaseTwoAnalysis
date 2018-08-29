@@ -846,17 +846,20 @@ MiniFromPat::recoAnalysis(const edm::Event& iEvent, const edm::EventSetup& iSetu
             ev_.el_recoId_eta.push_back(elecs->at(i).eta());
             ev_.el_recoId_phi.push_back(elecs->at(i).phi());
             ev_.el_recoId_iso.push_back(getIsoAbsElec(elecs->at(i)));
+            ev_.el_recoId_q.push_back(elecs->at(i).charge());
             if (passIpElec(elecs->at(i), primaryVertex)){
                 ev_.el_recoIdIp_pt.push_back(elecs->at(i).pt());
                 ev_.el_recoIdIp_eta.push_back(elecs->at(i).eta());
                 ev_.el_recoIdIp_phi.push_back(elecs->at(i).phi());
                 ev_.el_recoIdIp_iso.push_back(getIsoAbsElec(elecs->at(i)));
+                ev_.el_recoIdIp_q.push_back(elecs->at(i).charge());
             }
             if (isIsolatedElec(elecs->at(i))){
                 ev_.el_recoIdIso_pt.push_back(elecs->at(i).pt());
                 ev_.el_recoIdIso_eta.push_back(elecs->at(i).eta());
                 ev_.el_recoIdIso_phi.push_back(elecs->at(i).phi());
                 ev_.el_recoIdIso_iso.push_back(getIsoAbsElec(elecs->at(i)));
+                ev_.el_recoIdIso_q.push_back(elecs->at(i).charge());
             }
         }
 
@@ -935,17 +938,20 @@ MiniFromPat::recoAnalysis(const edm::Event& iEvent, const edm::EventSetup& iSetu
             ev_.mu_recoId_eta.push_back(muons->at(i).eta());
             ev_.mu_recoId_phi.push_back(muons->at(i).phi());
             ev_.mu_recoId_iso.push_back(getIsoAbsMuon(muons->at(i)));
+            ev_.mu_recoId_q.push_back(muons->at(i).charge());
             if (passIpMuon(muons->at(i), primaryVertex)){
                 ev_.mu_recoIdIp_pt.push_back(muons->at(i).pt());
                 ev_.mu_recoIdIp_eta.push_back(muons->at(i).eta());
                 ev_.mu_recoIdIp_phi.push_back(muons->at(i).phi());
                 ev_.mu_recoIdIp_iso.push_back(getIsoAbsMuon(muons->at(i)));
+                ev_.mu_recoIdIp_q.push_back(muons->at(i).charge());
             }
             if (isIsolatedMuon(muons->at(i))){
                 ev_.mu_recoIdIso_pt.push_back(muons->at(i).pt());
                 ev_.mu_recoIdIso_eta.push_back(muons->at(i).eta());
                 ev_.mu_recoIdIso_phi.push_back(muons->at(i).phi());
                 ev_.mu_recoIdIso_iso.push_back(getIsoAbsMuon(muons->at(i)));
+                ev_.mu_recoIdIso_q.push_back(muons->at(i).charge());
             }
         }
 
@@ -1609,6 +1615,9 @@ MiniFromPat::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
     ev_.el_recoIdIso_phi.clear();
     ev_.el_recoIdIso_iso.clear();
     ev_.el_q.clear();
+    ev_.el_recoId_q.clear();
+    ev_.el_recoIdIp_q.clear();
+    ev_.el_recoIdIso_q.clear();
     ev_.el_mother.clear();
     ev_.el_matched.clear();
     ev_.el_pt_truth.clear();
@@ -1631,6 +1640,9 @@ MiniFromPat::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
     ev_.mu_recoIdIso_phi.clear();
     ev_.mu_recoIdIso_iso.clear();
     ev_.mu_q.clear();
+    ev_.mu_recoId_q.clear();
+    ev_.mu_recoIdIp_q.clear();
+    ev_.mu_recoIdIso_q.clear();
     ev_.mu_mother.clear();
     ev_.mu_matched.clear();
     ev_.mu_pt_truth.clear();

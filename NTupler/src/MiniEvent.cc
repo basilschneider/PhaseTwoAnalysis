@@ -26,6 +26,9 @@ void createMiniEventTree(TTree* t_tree_, MiniEvent_t &ev)
     t_tree_->Branch("el_recoIdIso_phi", &ev.el_recoIdIso_phi);
     t_tree_->Branch("el_recoIdIso_iso", &ev.el_recoIdIso_iso);
     t_tree_->Branch("el_q", &ev.el_q);
+    t_tree_->Branch("el_recoId_q", &ev.el_recoId_q);
+    t_tree_->Branch("el_recoIdIp_q", &ev.el_recoIdIp_q);
+    t_tree_->Branch("el_recoIdIso_q", &ev.el_recoIdIso_q);
     t_tree_->Branch("el_mother", &ev.el_mother);
     t_tree_->Branch("el_matched", &ev.el_matched);
     t_tree_->Branch("el_pt_truth", &ev.el_pt_truth);
@@ -48,6 +51,9 @@ void createMiniEventTree(TTree* t_tree_, MiniEvent_t &ev)
     t_tree_->Branch("mu_recoIdIso_phi", &ev.mu_recoIdIso_phi);
     t_tree_->Branch("mu_recoIdIso_iso", &ev.mu_recoIdIso_iso);
     t_tree_->Branch("mu_q", &ev.mu_q);
+    t_tree_->Branch("mu_recoId_q", &ev.mu_recoId_q);
+    t_tree_->Branch("mu_recoIdIp_q", &ev.mu_recoIdIp_q);
+    t_tree_->Branch("mu_recoIdIso_q", &ev.mu_recoIdIso_q);
     t_tree_->Branch("mu_mother", &ev.mu_mother);
     t_tree_->Branch("mu_matched", &ev.mu_matched);
     t_tree_->Branch("mu_pt_truth", &ev.mu_pt_truth);
