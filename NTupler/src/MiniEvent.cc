@@ -30,6 +30,7 @@ void createMiniEventTree(TTree* t_tree_, MiniEvent_t &ev)
     t_tree_->Branch("el_recoIdIp_q", &ev.el_recoIdIp_q);
     t_tree_->Branch("el_recoIdIso_q", &ev.el_recoIdIso_q);
     t_tree_->Branch("el_mother", &ev.el_mother);
+    t_tree_->Branch("el_isEB", &ev.el_isEB);
     t_tree_->Branch("el_matched", &ev.el_matched);
     t_tree_->Branch("el_pt_truth", &ev.el_pt_truth);
     t_tree_->Branch("el_eta_truth", &ev.el_eta_truth);

@@ -913,6 +913,7 @@ MiniFromPat::recoAnalysis(const edm::Event& iEvent, const edm::EventSetup& iSetu
         ev_.el_iso.push_back(getIsoAbsElec(elecs->at(i)));
         ev_.el_q.push_back(elecs->at(i).charge());
         ev_.el_mother.push_back(mother);
+        ev_.el_isEB.push_back(elecs->at(i).isEB());
         ev_.el_matched.push_back(matched);
     }
 
@@ -1619,6 +1620,7 @@ MiniFromPat::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
     ev_.el_recoIdIp_q.clear();
     ev_.el_recoIdIso_q.clear();
     ev_.el_mother.clear();
+    ev_.el_isEB.clear();
     ev_.el_matched.clear();
     ev_.el_pt_truth.clear();
     ev_.el_eta_truth.clear();

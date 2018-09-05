@@ -46,7 +46,7 @@ struct MiniEvent_t
     std::vector<double> el_recoId_pt, el_recoId_eta, el_recoId_phi, el_recoId_iso;
     std::vector<double> el_recoIdIp_pt, el_recoIdIp_eta, el_recoIdIp_phi, el_recoIdIp_iso;
     std::vector<double> el_recoIdIso_pt, el_recoIdIso_eta, el_recoIdIso_phi, el_recoIdIso_iso;
-    std::vector<int> el_q, el_recoId_q, el_recoIdIp_q, el_recoIdIso_q, el_mother;
+    std::vector<int> el_q, el_recoId_q, el_recoIdIp_q, el_recoIdIso_q, el_mother, el_isEB;
     std::vector<bool> el_matched;
     std::vector<double> el_pt_truth, el_eta_truth, el_phi_truth;
 
