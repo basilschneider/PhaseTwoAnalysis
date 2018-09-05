@@ -2234,7 +2234,7 @@ double MiniFromPat::DeltaPhi(double phi1, double phi2){
 }
 
 template <typename T> bool MiniFromPat::isMatched(const pat::PackedGenParticle truthParticle, const T particle){
-    if (fabs((truthParticle.pt() - particle.pt())/truthParticle.pt()) > ev_.truth_match_diff_pt_rel){ return false; }
+    if (fabs(truthParticle.pt() - particle.pt()) > ev_.truth_match_diff_pt){ return false; }
     if (DeltaR(truthParticle.eta(), particle.eta(), truthParticle.phi(), particle.phi()) > ev_.truth_match_diff_dr){ return false; }
     return true;
 }

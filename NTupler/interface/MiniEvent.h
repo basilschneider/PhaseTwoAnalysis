@@ -34,7 +34,7 @@ struct MiniEvent_t
     static constexpr double mass_mu = .105658;
     static constexpr double iso_cut_rel = .5;
     static constexpr double iso_cut_abs = 5.;
-    static constexpr double truth_match_diff_pt_rel = .5;
+    static constexpr double truth_match_diff_pt = 2.;
     static constexpr double truth_match_diff_dr = .1;
 
     double genWeight;
