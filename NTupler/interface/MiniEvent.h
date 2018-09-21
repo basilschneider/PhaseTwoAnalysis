@@ -48,6 +48,7 @@ struct MiniEvent_t
     std::vector<double> el_recoIdIso_pt, el_recoIdIso_eta, el_recoIdIso_phi, el_recoIdIso_iso;
     std::vector<int> el_q, el_recoId_q, el_recoIdIp_q, el_recoIdIso_q, el_mother, el_isEB;
     std::vector<bool> el_matched;
+    std::vector<double> el_ip3d, el_ip3d_err, el_sip3d;
     std::vector<double> el_pt_truth, el_eta_truth, el_phi_truth;
 
     std::vector<double> mu_pt, mu_eta, mu_phi, mu_iso;
@@ -56,6 +57,7 @@ struct MiniEvent_t
     std::vector<double> mu_recoIdIso_pt, mu_recoIdIso_eta, mu_recoIdIso_phi, mu_recoIdIso_iso;
     std::vector<int> mu_q, mu_recoId_q, mu_recoIdIp_q, mu_recoIdIso_q, mu_mother;
     std::vector<bool> mu_matched;
+    std::vector<double> mu_ip3d, mu_ip3d_err, mu_sip3d;
     std::vector<double> mu_pt_truth, mu_eta_truth, mu_phi_truth;
 
     //std::vector<double> lep1_pt, lep1_eta, lep1_phi, lep2_pt, lep2_eta, lep2_phi;

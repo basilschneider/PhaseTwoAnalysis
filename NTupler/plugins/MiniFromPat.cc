@@ -60,6 +60,7 @@ Implementation:
 #include "TrackingTools/TransientTrack/interface/TransientTrackBuilder.h"
 #include "TrackingTools/Records/interface/TransientTrackRecord.h"
 #include "TrackingTools/TransientTrack/interface/TransientTrack.h"
+#include "TrackingTools/IPTools/interface/IPTools.h"
 #include "RecoVertex/VertexPrimitives/interface/TransientVertex.h"
 #include "RecoVertex/KalmanVertexFit/interface/KalmanVertexFitter.h"
 #include "SimTracker/Records/interface/TrackAssociatorRecord.h"
@@ -125,6 +126,9 @@ class MiniFromPat : public edm::one::EDAnalyzer<edm::one::SharedResources, edm::
         bool isTightElec(const pat::Electron & patEl);
         double getIsoAbsElec(const pat::Electron& patEl);
         bool isIsolatedElec(const pat::Electron & patEl);
+        double getIp3dElec(const pat::Electron & patEl, reco::Vertex primaryVertex);
+        double getIp3dErrElec(const pat::Electron & patEl, reco::Vertex primaryVertex);
+        double getSip3dElec(const pat::Electron & patEl, reco::Vertex primaryVertex);
         bool passIpElec(const pat::Electron & patEl, reco::Vertex primaryVertex);
         bool isGoodElecSOS(const pat::Electron & patEl, reco::Vertex primaryVertex);
         bool isLooseMuon(const pat::Muon & patMu, const edm::EventSetup& iSetup);
@@ -132,6 +136,9 @@ class MiniFromPat : public edm::one::EDAnalyzer<edm::one::SharedResources, edm::
         bool isTightMuon(const pat::Muon & patMu, reco::Vertex primaryVertex, const edm::EventSetup& iSetup);
         double getIsoAbsMuon(const pat::Muon& patMu);
         bool isIsolatedMuon(const pat::Muon & patMu);
+        double getIp3dMuon(const pat::Muon & patMu, reco::Vertex primaryVertex);
+        double getIp3dErrMuon(const pat::Muon & patMu, reco::Vertex primaryVertex);
+        double getSip3dMuon(const pat::Muon & patMu, reco::Vertex primaryVertex);
         bool passIpMuon(const pat::Muon & patMu, reco::Vertex primaryVertex);
         bool isGoodMuonSOS(const pat::Muon & patMu, reco::Vertex primaryVertex, edm::EventSetup const& iSetup);
         bool isGoodJetSOS(const pat::Jet & patJet);
@@ -168,6 +175,7 @@ class MiniFromPat : public edm::one::EDAnalyzer<edm::one::SharedResources, edm::
         edm::EDGetTokenT<LHEEventProduct> generatorlheToken_;
         //edm::EDGetTokenT<std::vector<pat::Photon>> photonsToken_;
         const ME0Geometry* ME0Geometry_;
+        const TransientTrackBuilder* thebuilder;
         double mvaThres_[3];
         double deepThres_[3];
 
@@ -205,7 +213,8 @@ MiniFromPat::MiniFromPat(const edm::ParameterSet& iConfig):
     generatorlheToken_(consumes<LHEEventProduct>(edm::InputTag("externalLHEProducer","")))//,
     //photonsToken_(consumes<std::vector<pat::Photon>>(iConfig.getParameter<edm::InputTag>("photons")))
 {
-    ME0Geometry_=0;
+    ME0Geometry_= 0;
+    thebuilder = 0;
     //now do what ever initialization is needed
     if (pileup_ == 0) {
         mvaThres_[0] = -0.694;
@@ -911,6 +920,9 @@ MiniFromPat::recoAnalysis(const edm::Event& iEvent, const edm::EventSetup& iSetu
         ev_.el_eta.push_back(elecs->at(i).eta());
         ev_.el_phi.push_back(elecs->at(i).phi());
         ev_.el_iso.push_back(getIsoAbsElec(elecs->at(i)));
+        ev_.el_ip3d.push_back(getIp3dElec(elecs->at(i), primaryVertex));
+        ev_.el_ip3d_err.push_back(getIp3dErrElec(elecs->at(i), primaryVertex));
+        ev_.el_sip3d.push_back(getSip3dElec(elecs->at(i), primaryVertex));
         ev_.el_q.push_back(elecs->at(i).charge());
         ev_.el_mother.push_back(mother);
         ev_.el_isEB.push_back(elecs->at(i).isEB());
@@ -1004,6 +1016,9 @@ MiniFromPat::recoAnalysis(const edm::Event& iEvent, const edm::EventSetup& iSetu
         ev_.mu_eta.push_back(muons->at(i).eta());
         ev_.mu_phi.push_back(muons->at(i).phi());
         ev_.mu_iso.push_back(getIsoAbsMuon(muons->at(i)));
+        ev_.mu_ip3d.push_back(getIp3dMuon(muons->at(i), primaryVertex));
+        ev_.mu_ip3d_err.push_back(getIp3dErrMuon(muons->at(i), primaryVertex));
+        ev_.mu_sip3d.push_back(getSip3dMuon(muons->at(i), primaryVertex));
         ev_.mu_q.push_back(muons->at(i).charge());
         ev_.mu_mother.push_back(mother);
         ev_.mu_matched.push_back(matched);
@@ -1622,6 +1637,9 @@ MiniFromPat::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
     ev_.el_mother.clear();
     ev_.el_isEB.clear();
     ev_.el_matched.clear();
+    ev_.el_ip3d.clear();
+    ev_.el_ip3d_err.clear();
+    ev_.el_sip3d.clear();
     ev_.el_pt_truth.clear();
     ev_.el_eta_truth.clear();
     ev_.el_phi_truth.clear();
@@ -1647,6 +1665,9 @@ MiniFromPat::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
     ev_.mu_recoIdIso_q.clear();
     ev_.mu_mother.clear();
     ev_.mu_matched.clear();
+    ev_.mu_ip3d.clear();
+    ev_.mu_ip3d_err.clear();
+    ev_.mu_sip3d.clear();
     ev_.mu_pt_truth.clear();
     ev_.mu_eta_truth.clear();
     ev_.mu_phi_truth.clear();
@@ -2030,14 +2051,29 @@ bool MiniFromPat::isIsolatedElec(const pat::Electron& patEl){
     return true;
 }
 
+double MiniFromPat::getIp3dElec(const pat::Electron & patEl, reco::Vertex primaryVertex){
+    const reco::TransientTrack &tt = thebuilder->build(patEl.gsfTrack());
+    const std::pair <bool,Measurement1D> &ip3dpv =  IPTools::absoluteImpactParameter3D(tt, primaryVertex);
+
+    if (ip3dpv.first){ return ip3dpv.second.value(); }
+    return 9999.;
+}
+
+double MiniFromPat::getIp3dErrElec(const pat::Electron & patEl, reco::Vertex primaryVertex){
+    const reco::TransientTrack &tt = thebuilder->build(patEl.gsfTrack());
+    const std::pair <bool,Measurement1D> &ip3dpv =  IPTools::absoluteImpactParameter3D(tt, primaryVertex);
+
+    if (ip3dpv.first){ return ip3dpv.second.error(); }
+    return 999.;
+}
+
+double MiniFromPat::getSip3dElec(const pat::Electron & patEl, reco::Vertex primaryVertex){
+    if (getIp3dErrElec(patEl, primaryVertex) == 0){ return 99; }
+    return getIp3dElec(patEl, primaryVertex)/getIp3dErrElec(patEl, primaryVertex);
+}
+
 bool MiniFromPat::passIpElec(const pat::Electron & patEl, reco::Vertex primaryVertex){
-    float dxy=0;
-    float dz=0;
-    if(patEl.gsfTrack().isNonnull()){
-        dxy=std::abs(patEl.gsfTrack()->dxy(primaryVertex.position()));
-        dz=std::abs(patEl.gsfTrack()->dz(primaryVertex.position()));
-    }
-    if (sqrt(dxy*dz) > .01){ return false; }
+    if (getIp3dElec(patEl, primaryVertex) > .01){ return false; }
     return true;
 }
 
@@ -2121,10 +2157,29 @@ bool MiniFromPat::isIsolatedMuon(const pat::Muon& patMu){
     return true;
 }
 
+double MiniFromPat::getIp3dMuon(const pat::Muon & patMu, reco::Vertex primaryVertex){
+    const reco::TransientTrack &tt = thebuilder->build(patMu.muonBestTrack());
+    const std::pair <bool,Measurement1D> &ip3dpv = IPTools::absoluteImpactParameter3D(tt, primaryVertex);
+
+    if (ip3dpv.first){ return ip3dpv.second.value(); }
+    return 9999.;
+}
+
+double MiniFromPat::getIp3dErrMuon(const pat::Muon & patMu, reco::Vertex primaryVertex){
+    const reco::TransientTrack &tt = thebuilder->build(patMu.muonBestTrack());
+    const std::pair <bool,Measurement1D> &ip3dpv = IPTools::absoluteImpactParameter3D(tt, primaryVertex);
+
+    if (ip3dpv.first){ return ip3dpv.second.error(); }
+    return 999.;
+}
+
+double MiniFromPat::getSip3dMuon(const pat::Muon & patMu, reco::Vertex primaryVertex){
+    if (getIp3dErrMuon(patMu, primaryVertex) == 0){ return 99; }
+    return getIp3dMuon(patMu, primaryVertex)/getIp3dErrMuon(patMu, primaryVertex);
+}
+
 bool MiniFromPat::passIpMuon(const pat::Muon & patMu, reco::Vertex primaryVertex){
-    double dxy = std::abs(patMu.muonBestTrack()->dxy(primaryVertex.position()));
-    double dz = std::abs(patMu.muonBestTrack()->dz(primaryVertex.position()));
-    if (sqrt(dxy*dz) > .01){ return false; }
+    if (getIp3dMuon(patMu, primaryVertex) > .01){ return false; }
     return true;
 }
 
@@ -2364,6 +2419,10 @@ MiniFromPat::beginRun(edm::Run const& iRun, edm::EventSetup const& iSetup)
     edm::ESHandle<ME0Geometry> hGeom;
     iSetup.get<MuonGeometryRecord>().get(hGeom);
     ME0Geometry_ =( &*hGeom);
+
+    edm::ESHandle<TransientTrackBuilder> builder;
+    iSetup.get<TransientTrackRecord>().get("TransientTrackBuilder", builder);
+    thebuilder = &*(builder.product());
 }
 
 // ------------ method called when ending the processing of a run  ------------

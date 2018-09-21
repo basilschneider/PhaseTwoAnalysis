@@ -32,6 +32,9 @@ void createMiniEventTree(TTree* t_tree_, MiniEvent_t &ev)
     t_tree_->Branch("el_mother", &ev.el_mother);
     t_tree_->Branch("el_isEB", &ev.el_isEB);
     t_tree_->Branch("el_matched", &ev.el_matched);
+    t_tree_->Branch("el_ip3d", &ev.el_ip3d);
+    t_tree_->Branch("el_ip3d_err", &ev.el_ip3d_err);
+    t_tree_->Branch("el_sip3d", &ev.el_sip3d);
     t_tree_->Branch("el_pt_truth", &ev.el_pt_truth);
     t_tree_->Branch("el_eta_truth", &ev.el_eta_truth);
     t_tree_->Branch("el_phi_truth", &ev.el_phi_truth);
@@ -57,6 +60,9 @@ void createMiniEventTree(TTree* t_tree_, MiniEvent_t &ev)
     t_tree_->Branch("mu_recoIdIso_q", &ev.mu_recoIdIso_q);
     t_tree_->Branch("mu_mother", &ev.mu_mother);
     t_tree_->Branch("mu_matched", &ev.mu_matched);
+    t_tree_->Branch("mu_ip3d", &ev.mu_ip3d);
+    t_tree_->Branch("mu_ip3d_err", &ev.mu_ip3d_err);
+    t_tree_->Branch("mu_sip3d", &ev.mu_sip3d);
     t_tree_->Branch("mu_pt_truth", &ev.mu_pt_truth);
     t_tree_->Branch("mu_eta_truth", &ev.mu_eta_truth);
     t_tree_->Branch("mu_phi_truth", &ev.mu_phi_truth);
